@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="150dp"
+    android:layout_height="150dp"
+    android:layout_marginBottom="8dp"
+    app:cardBackgroundColor="#203153"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="1dp"
+    android:layout_margin="5dp"
+    android:id="@+id/card_View">
+
+    <RelativeLayout
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="@drawable/bg_player_gradient">
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="100dp"
+            android:background="#92454545"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_music"
+            android:id="@+id/songImage"
+            android:layout_gravity="center_horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@id/tv_title"
+            android:layout_alignParentTop="true"
+            android:contentDescription="TODO" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:padding="4dp"
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            android:text="Stay with me"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_react"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="15dp"
+            app:cardCornerRadius="7dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/purple_700"
+            android:layout_margin="10dp"
+            android:layout_alignParentEnd="true">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="3dp">
+                <ImageView
+                    android:id="@+id/iv_react"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"/>
+                <TextView
+                    android:id="@+id/tv_reactCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#fff"
+                    android:layout_gravity="center"/>
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

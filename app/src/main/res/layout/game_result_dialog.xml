@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    app:cardBackgroundColor="#00FFFFFF"
+    android:layout_margin="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:text="@string/game_over"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:padding="10dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:layout_margin="5dp"
+                android:textSize="15sp"
+                android:padding="10dp"
+                android:background="@drawable/bg_green"
+                android:text="@string/highest"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"/>
+
+            <TextView
+                android:id="@+id/tv_highest"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:padding="10dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp">
+
+            <TextView
+
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:textSize="15sp"
+                android:layout_margin="5dp"
+                android:padding="10dp"
+                android:gravity="center"
+                android:background="@drawable/bg_yello"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:text="@string/current"/>
+
+            <TextView
+                android:id="@+id/tv_current"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                android:textSize="20sp"
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:padding="10dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+
+            android:id="@+id/bubble_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="vertical"
+            android:background="@drawable/other_msg"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_image"
+                android:layout_width="160dp"
+                android:layout_height="90dp"
+                app:cardCornerRadius="8dp"
+                android:layout_margin="5dp"
+                android:elevation="10dp"
+                android:visibility="gone">
+                <ImageView
+                    android:id="@+id/ivDisplayImage"
+                    android:layout_width="160dp"
+                    android:layout_height="90dp"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="TODO" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_audio"
+                android:layout_width="160dp"
+                android:layout_height="90dp"
+                app:cardCornerRadius="8dp"
+                android:layout_margin="5dp"
+                android:elevation="10dp"
+                android:visibility="gone">
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:scaleType="centerCrop"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_baseline_campaign_24"
+                    android:contentDescription="TODO" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_text"
+                android:layout_width="160dp"
+                android:layout_height="90dp"
+                app:cardCornerRadius="8dp"
+                android:layout_margin="5dp"
+                android:elevation="10dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_displayWord"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="display word"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
+                    android:textColor="@android:color/black"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/tv_ansA"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:text="A"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp"/>
+
+            <TextView
+                android:id="@+id/tv_ansB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:text="B"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:id="@+id/tv_ansC"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:text="B"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:id="@+id/tv_resultAns"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:text="A"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp"/>
+
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:padding="15dp">
+
+
+            <Button
+                android:id="@+id/bt_quit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_red"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:text="@string/quit"/>
+
+            <Button
+                android:id="@+id/bt_restart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/restart"
+                android:background="@drawable/bg_green"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:layout_alignParentEnd="true"
+                tools:ignore="RelativeOverlap" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="7dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_profile"
+        android:layout_width="65dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_baseline_account_circle_24"
+        android:layout_height="65dp"/>
+
+    <TextView
+        android:id="@+id/tv_post_writer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_toEndOf="@id/iv_profile"
+        android:padding="7dp"
+        android:layout_alignTop="@id/iv_profile"
+        android:gravity="center_vertical"
+        android:text="Calamus"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/card_writer"
+        android:layout_below="@id/iv_profile"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="49dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/et_post"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bg_transparent"
+                android:gravity="top"
+                android:hint="Discuss or share your knowledge"
+                android:padding="7dp"
+                android:textColor="@android:color/black"
+                android:textSize="15sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/iv_post"
+                    android:layout_width="match_parent"
+                    android:layout_height="270dp"
+                    android:background="#92454545"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"
+                    android:layout_gravity="center_horizontal"
+                    android:contentDescription="TODO"/>
+                <ImageView
+                    android:id="@+id/iv_cancel"
+                    android:src="@drawable/ic_baseline_cancel_24"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@id/iv_post"
+                    android:layout_margin="15dp"
+                    android:visibility="gone"
+                    android:contentDescription="TODO" />
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <androidx.cardview.widget.CardView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="0dp"
+        android:id="@+id/card_writer"
+        android:layout_alignParentBottom="true">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="7dp"
+            android:background="@drawable/bg_comment_enter_text"
+            android:gravity="center_vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize= "16sp"
+                android:textColor="@android:color/black"
+                android:layout_centerVertical="true"
+                android:text="Add photo to this post"
+                android:layout_marginStart="15dp"/>
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="15dp"
+                android:src="@drawable/ic_baseline_photo_24"
+                android:contentDescription="TODO" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <ProgressBar
+        android:layout_marginTop="15dp"
+        android:id="@+id/pb_loading"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bg_progressbar"
+        android:padding="5dp"/>
+
+</RelativeLayout>
+

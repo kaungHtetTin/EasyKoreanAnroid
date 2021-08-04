@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:id="@+id/orderNoti_layout"
+    android:foreground="?android:attr/selectableItemBackground"
+    tools:targetApi="m">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_noti"
+        android:layout_width="60dp"
+        android:src="@drawable/ic_baseline_account_circle_24"
+        android:layout_height="60dp"/>
+
+    <ImageView
+        android:id="@+id/iv_blueMark"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_alignBottom="@id/iv_noti"
+        android:layout_alignEnd="@id/iv_noti"
+        android:src="@drawable/ic_baseline_check_circle_24"
+        android:contentDescription="TODO" />
+
+    <TextView
+        android:id="@+id/tv_orderNoti"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/iv_noti"
+        android:textSize="16sp"
+        android:text="This is noti content"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="5dp"
+        android:padding="3dp"
+        android:layout_alignParentEnd="true"/>
+
+    <TextView
+        android:id="@+id/tv_notiTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/iv_noti"
+        android:padding="3dp"
+        android:text="time"
+        android:layout_below="@id/tv_orderNoti"/>
+
+    <ImageView
+        android:id="@+id/iv_notiAction"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_toEndOf="@id/tv_notiTime"
+        android:layout_alignBottom="@id/tv_notiTime"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="3dp"/>
+
+</RelativeLayout>

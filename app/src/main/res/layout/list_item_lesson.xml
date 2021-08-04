@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:cardCornerRadius="7dp"
+        android:layout_margin="7dp"
+        app:cardElevation="2dp"
+        android:background="@android:color/white">
+        <ImageView
+            android:id="@+id/lessonItemIv1"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_feather"
+            android:contentDescription="TODO"/>
+
+        <ImageView
+            android:id="@+id/iv_video_circle"
+            android:src="@drawable/ic_play_circle_outline_black_24dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:padding="25dp"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/iv_vipMark"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/vip_lesson"
+            android:layout_alignBottom="@id/lessonItemIv1"
+            android:layout_alignEnd="@id/lessonItemIv1"/>
+    </androidx.cardview.widget.CardView>
+
+
+    <TextView
+        android:gravity="center_vertical"
+        android:id="@+id/lessonItemTv21"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/card"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:textColor="@android:color/black"
+        android:text="Calamus Education"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/tv_learned"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Learned"
+        android:textStyle="italic"
+        android:textSize="12sp"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="10dp"
+        android:layout_above="@id/divider"
+        android:visibility="gone"/>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_margin="7dp"
+        android:layout_below="@id/card"
+        android:background="#F0F3F5"/>
+
+</RelativeLayout>

@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">Easy Korean</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="for_higher_education_of_myanmar">For Higher Education Of Myanmar</string>
+    <string name="welcome_to_calamus">Welcome to Calamus</string>
+    <string name="no_account_sign_up"> Create New Account</string>
+    <string name="calamus_education">Calamus Education</string>
+    <string name="search">Search</string>
+    <string name="comment">Comment</string>
+    <string name="no_comment_yet">No Comment Yet</string>
+    <string name="write_a_comment">Write a comment</string>
+    <string name="calamus">Calamus</string>
+    <string name="title_activity_my_discussion">MyDiscussionActivity</string>
+
+    <!-- Strings used for fragments for navigation -->
+    <string name="remove">Remove</string>
+    <string name="edit_the_post">Edit the post</string>
+    <string name="delete_the_post">Delete the post</string>
+    <string name="report_this_post_to_admin">Report this post to Admin</string>
+    <string name="save_the_post">Save the post</string>
+    <string name="enter_your_name">Enter your name</string>
+    <string name="enter_your_email">Enter your email</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="version_update_status">Version Update Status</string>
+    <string name="about_update">About Update</string>
+    <string name="ad">Ad</string>
+    <string name="restart">RESTART</string>
+    <string name="quit">QUIT</string>
+    <string name="current">CURRENT</string>
+    <string name="highest">HIGHEST</string>
+    <string name="game_over">Game Over</string>
+    <string name="korean_course_app_for_myanmar">Korean Course App For Myanmar</string>
+    <string name="medifire_get">If there is no google playservice get update on mediafire</string>
+    <string name="playstore_get">Get it on PlayStore</string>
+    <string name="get_it_on_mediafire">Get it on Mediafire</string>
+    <string name="get_other_products_on_playstore">Get Other Products On Playstore</string>
+    <string name="add_a_comment">Add a comment</string>
+    <string name="description">Media Controls</string>
+    <string name="help_center">Join On Facebook For Help</string>
+    <string name="forget_password"><u>Forget Password</u></string>
+
+</resources>

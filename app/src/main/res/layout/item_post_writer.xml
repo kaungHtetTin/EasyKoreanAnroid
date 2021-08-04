@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:padding="7dp"
+    app:cardBackgroundColor="@color/cardview_light_background"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="2dp"
+    android:id="@+id/card_writer"  >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_profile"
+                android:layout_width="40dp"
+                android:layout_margin="10dp"
+                android:src="@drawable/ic_baseline_account_circle_24"
+                android:layout_height="40dp"/>
+
+            <TextView
+                android:id="@+id/et_post_writer"
+                android:layout_width="wrap_content"
+                android:layout_height="37dp"
+                android:layout_marginEnd="20dp"
+                android:layout_toEndOf="@id/iv_profile"
+                android:padding="7dp"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:layout_alignParentEnd="true"
+                android:text="Discuss or share your knowledge"
+                android:textColor="@android:color/black"
+                android:background="@drawable/input_bg"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:padding="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_marginStart="15dp"
+                android:id="@+id/iv_noti"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:elevation="5dp"
+                android:background="@drawable/bg_circle_light_blue"
+                android:padding="7dp"
+                android:src="@drawable/ic_time_reminder"
+                android:contentDescription="TODO" />
+
+            <ImageView
+                android:id="@+id/noti_red_mark"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:visibility="gone"
+                android:layout_alignEnd="@id/iv_noti"
+                android:layout_alignTop="@id/iv_noti"
+                android:src="@drawable/bg_noti_alart"
+                android:contentDescription="TODO" />
+
+            <ImageView
+                android:id="@+id/announcement"
+                android:layout_marginStart="30dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:padding="5dp"
+                android:elevation="5dp"
+                android:background="@drawable/bg_circle_light_blue"
+                android:layout_toEndOf="@id/iv_noti"
+                android:src="@drawable/ic_announcement"
+                android:contentDescription="TODO" />
+
+            <ImageView
+                android:id="@+id/my_discussion"
+                android:layout_marginStart="30dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:padding="7dp"
+                android:elevation="5dp"
+                android:background="@drawable/bg_circle_light_blue"
+                android:layout_toEndOf="@id/announcement"
+                android:src="@drawable/my_discussion"
+                android:contentDescription="TODO" />
+
+            <ImageView
+                android:id="@+id/calamus_discussion"
+                android:layout_marginStart="30dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:elevation="5dp"
+                android:background="@drawable/bg_circle_light_blue"
+                android:layout_toEndOf="@id/my_discussion"
+                android:src="@drawable/ic_feather"
+                android:contentDescription="TODO" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

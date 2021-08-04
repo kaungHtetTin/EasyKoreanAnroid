@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.calamus.easykorean">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <queries>
+        <intent>
+            <action android:name="com.google.android.youtube.api.service.START" />
+        </intent>
+    </queries>
+
+    <application
+        android:name=".ApplicationClass"
+        android:allowBackup="true"
+        android:icon="@mipmap/kommmainicon"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:requestLegacyExternalStorage="true"
+        android:roundIcon="@mipmap/kommmainicon"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="m">
+        <activity android:name=".ForgetPasswordActivity"></activity>
+        <activity
+            android:name=".AlbumSongActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+        <activity
+            android:name=".SongDetailActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+        <activity
+            android:name=".PlayerActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+        <activity
+            android:name=".SongListActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+        <activity android:name=".AnnouncementActivity" />
+        <activity android:name=".LikeListActivity" />
+        <activity
+            android:name=".VideoPlayerActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".SavedVideoActivity" />
+        <activity android:name=".GammingActivity" />
+        <activity android:name=".SaveWordActivity" />
+        <activity android:name=".SavePostActivity" />
+        <activity android:name=".UpdateActivity" />
+        <activity android:name=".WebSiteActivity" />
+        <activity android:name=".EditProfileActivity" />
+        <activity android:name=".NotiListActivity" />
+        <activity android:name=".WritePostActivity" />
+        <activity
+            android:name=".PhotoActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".CommentActivity" />
+        <activity
+            android:name=".MyDiscussionActivity"
+            android:label="@string/title_activity_my_discussion" />
+        <activity android:name=".MyYouTubeVideoActivity" />
+        <activity android:name=".DetailActivity" />
+        <activity android:name=".LessonActivity" />
+        <activity
+            android:name=".SignUpActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SplashScreenActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <service android:name=".service.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".service.DownloaderService" />
+        <service
+            android:name=".service.MusicService"
+            android:enabled="true"
+            android:stopWithTask="true" />
+
+        <receiver
+            android:name=".app.NotificationReceiver"
+            android:enabled="true"
+            android:permission="TODO">
+            <intent-filter>
+                <action android:name="actionprevious" />
+                <action android:name="actionnext" />
+                <action android:name="actionplay" />
+            </intent-filter>
+        </receiver>
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2472405866346270~3264377846" />
+    </application>
+
+</manifest>

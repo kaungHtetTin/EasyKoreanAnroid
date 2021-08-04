@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GammingActivity">
+
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/web_adview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-2472405866346270/2510952382"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerPlayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/web_adview"/>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#00FFFFFF"
+        android:layout_above="@id/button_layout"
+        android:layout_below="@id/web_adview"/>
+
+    <TextView
+        android:id="@+id/tv_highest_score"
+        android:layout_width="50dp"
+        android:text="1000"
+        android:layout_height="50dp"
+        android:padding="7dp"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:textColor="@android:color/black"
+        android:background="@drawable/bg_circle_green"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@id/tv_current_score"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
+        android:elevation="5dp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/tv_current_score"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:padding="7dp"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@id/button_layout"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
+        android:elevation="5dp"
+        android:background="@drawable/bg_circle_yellow"
+        android:gravity="center"/>
+
+    <LinearLayout
+        android:id="@+id/button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="30dp"
+        android:paddingBottom="10dp"
+        android:background="@drawable/bg_game_button_layout"
+
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/bt_a"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:text="a"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:background="@drawable/bg_button"
+            android:layout_margin="5dp"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/bt_b"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:text="b"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:background="@drawable/bg_button"
+            android:layout_margin="5dp"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/bt_c"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:text="c"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:background="@drawable/bg_button"
+            android:layout_margin="5dp"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/bg_loading_black"
+        android:padding="5dp"
+        android:visibility="gone"
+        android:theme="@style/loading"/>
+
+</RelativeLayout>

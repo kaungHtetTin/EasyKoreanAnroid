@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/newfeediv"
+            android:src="@drawable/ic_baseline_account_circle_24"
+            android:padding="3dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="4dp"/>
+
+        <ImageView
+            android:id="@+id/iv_blueMark"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignBottom="@id/newfeediv"
+            android:layout_alignEnd="@id/newfeediv"
+            android:src="@drawable/ic_baseline_check_circle_24"
+            android:contentDescription="TODO" />
+
+        <TextView
+            android:id="@+id/newfeedtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_toRightOf="@id/newfeediv"
+            android:textColor="@android:color/black"
+            android:text="@string/calamus"
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/newfeediv"
+            android:layout_below="@id/newfeedtitle"
+            android:layout_alignParentRight="true"
+            android:textIsSelectable="true"
+            android:id="@+id/newfeedtime"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+        <TextView
+            android:id="@+id/tv_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:padding="7dp"
+            android:linksClickable="true"
+            android:autoLink="all"
+            android:textIsSelectable="true"
+            android:layout_below="@id/newfeedtime"/>
+
+        <TextView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reading more..."
+            android:id="@+id/tv_readmore"
+            android:gravity="end"
+            android:visibility="gone"
+            android:layout_marginEnd="5dp"
+            android:layout_below="@id/tv_body"
+            android:layout_marginBottom="7dp"/>
+
+        <ImageView
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="270dp"
+            android:background="#92454545"
+            android:scaleType="centerCrop"
+            android:id="@+id/newfeedImage"
+            android:visibility="gone"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@id/tv_readmore"
+            android:contentDescription="TODO" />
+
+
+        <ImageView
+            android:id="@+id/iv_react"
+            android:layout_below="@id/newfeedImage"
+            android:layout_marginTop="15dp"
+            android:layout_width="31dp"
+            android:layout_height="31dp"
+            android:background="@drawable/ic_normal_react"
+            android:layout_marginStart="20dp"
+            android:padding="1dp"
+            android:contentDescription="TODO"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_reactCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="15dp"
+            app:cardCornerRadius="7dp"
+            app:cardElevation="4dp"
+            android:background="@color/colorPrimaryDark"
+            android:layout_below="@id/newfeedImage"
+            android:layout_margin="15dp"
+            android:layout_alignParentEnd="true">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="3dp">
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/ic_react_love"/>
+                <TextView
+                    android:id="@+id/tv_reactCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="123k"
+                    android:layout_gravity="center"/>
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+
+        <ImageView
+            android:id="@+id/icon_cmt"
+            android:layout_below="@id/newfeedImage"
+            android:layout_marginTop="15dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_speech_bubble_875"
+            android:padding="2dp"
+            android:layout_marginStart="35dp"
+            android:layout_toEndOf="@id/iv_react"
+            android:contentDescription="TODO"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/nf_cmt_tv"
+            android:text="View comments"
+            android:layout_below="@id/icon_cmt"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"/>
+
+    </RelativeLayout>
+

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@drawable/side_nav_bar">
+
+    <LinearLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_login"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:padding="15dp"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/sr1"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:text="@string/welcome_to_calamus"
+                android:textColor="@android:color/black"/>
+
+            <ImageView
+                android:layout_toEndOf="@id/sr1"
+                android:layout_alignBottom="@id/sr1"
+                android:layout_alignTop="@id/sr1"
+                android:src="@drawable/ic_feather"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:contentDescription="TODO" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:text="This is korean course for you."/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="Version 1.15"
+            android:layout_marginBottom="30dp"
+            tools:ignore="RtlHardcoded" />
+
+        <ProgressBar
+            android:id="@+id/pb_loading"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:visibility="gone"
+            android:background="@drawable/bg_progressbar"
+            android:padding="7dp"/>
+
+        <EditText
+            android:id="@+id/et_phone"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:padding="5dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:drawablePadding="8dp"
+            android:background="@drawable/bg_comment_enter_text"
+            android:layout_marginTop="10dp"
+            android:inputType="phone"
+            android:hint="Phone number( Type in english)"/>
+
+        <EditText
+            android:id="@+id/et_password"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:padding="5dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:drawablePadding="8dp"
+            android:background="@drawable/bg_comment_enter_text"
+            android:layout_marginTop="10dp"
+            android:inputType="textPassword"
+            android:hint="Enter your password"/>
+
+        <Button
+            android:id="@+id/bt_log_in"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:text="Login"
+            android:background="@drawable/bg_button"/>
+
+        <TextView
+            android:id="@+id/tv_forget_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:layout_marginBottom="10dp"
+            android:text="@string/forget_password"/>
+
+        <TextView
+            android:id="@+id/tv_error"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="#F00"/>
+
+        <TextView
+            android:id="@+id/signup_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:text="@string/no_account_sign_up"
+            android:padding="5dp"
+            android:gravity="center"
+            android:background="@drawable/bg_corner_blue"
+            android:drawableStart="@drawable/ic_create_acc"
+            android:textColor="@color/colorAccent"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_call_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/help_center"
+        android:textStyle="bold"
+        android:drawablePadding="10dp"
+        android:textColor="@android:color/black"
+        app:drawableStartCompat="@drawable/ic_facebook"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>

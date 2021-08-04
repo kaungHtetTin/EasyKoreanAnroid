@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv1"
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose Your Profile Image"
+                android:textSize="13sp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_profile"
+                    android:layout_width="70dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/bg_circle"
+                    android:layout_height="70dp"
+                    android:src="@drawable/ic_baseline_account_circle_24"/>
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ic_baseline_add_a_photo_24"/>
+            </RelativeLayout>
+
+            <View
+                android:layout_marginTop="20dp"
+                android:background="@color/divider"
+                android:layout_height="1dp"
+                android:layout_width="fill_parent"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="12dp"
+                android:layout_height="wrap_content"
+                android:text="Edit Detail About You"
+                android:textSize="13sp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+
+            <EditText
+                android:id="@+id/et_name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:padding="5dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:background="@drawable/bg_comment_enter_text"
+                android:layout_marginTop="10dp"
+                android:drawablePadding="8dp"
+                app:drawableStartCompat="@drawable/ic_baseline_account_circle_24"
+                android:hint="@string/enter_your_name"/>
+
+            <EditText
+                android:id="@+id/et_email"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:padding="5dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:drawablePadding="8dp"
+                app:drawableStartCompat="@drawable/ic_baseline_email_24"
+                android:background="@drawable/bg_comment_enter_text"
+                android:layout_marginTop="10dp"
+                android:inputType="textEmailAddress"
+                android:hint="@string/enter_your_email"/>
+
+            <RelativeLayout
+                android:background="@drawable/bg_comment_enter_text"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:padding="5dp"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_transparent"
+                    android:hint="Gender"
+                    app:drawableStartCompat="@drawable/ic_gender" />
+
+                <TextView
+                    android:id="@+id/tv_gender_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:padding="5dp"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_transparent"
+                    android:layout_alignParentEnd="true"
+                    android:text="Edit"
+                    android:textStyle="bold"
+                    android:layout_marginEnd="3dp"
+                    app:drawableStartCompat="@drawable/ic_baseline_edit_24" />
+
+                <TextView
+                    android:id="@+id/tv_myGener"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:layout_margin="15dp"
+                    android:layout_below="@id/tv_gender_edit"
+                    android:hint="edit your gender"/>
+
+                <Spinner
+                    android:id="@+id/sp_gender"
+                    android:visibility="gone"
+                    android:layout_alignParentEnd="true"
+                    android:layout_width="wrap_content"
+                    android:layout_below="@id/tv_gender_edit"
+                    android:layout_height="45dp"/>
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:background="@drawable/bg_comment_enter_text"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_birthday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:padding="5dp"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_transparent"
+                    android:hint="Birthday"
+                    app:drawableStartCompat="@drawable/ic_born_year" />
+
+                <TextView
+                    android:id="@+id/tv_birthday_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:padding="5dp"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_transparent"
+                    android:layout_alignParentEnd="true"
+                    android:text="Edit"
+                    android:textStyle="bold"
+                    android:layout_marginEnd="3dp"
+                    app:drawableStartCompat="@drawable/ic_baseline_edit_24" />
+
+                <TextView
+                    android:id="@+id/tv_myBirthday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:layout_margin="15dp"
+                    android:layout_below="@id/tv_birthday"
+                    android:hint="edit your birthday"/>
+
+                <RelativeLayout
+                    android:id="@+id/bd_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:orientation="horizontal"
+                    android:layout_below="@id/tv_birthday">
+                    <Spinner
+                        android:id="@+id/sp_birth_day"
+                        android:layout_width="wrap_content"
+                        android:layout_height="45dp"/>
+                    <Spinner
+                        android:id="@+id/sp_birth_month"
+                        android:layout_width="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_height="45dp" />
+                    <Spinner
+                        android:id="@+id/sp_birth_year"
+                        android:layout_width="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_height="45dp"/>
+
+                    <Button
+                        android:id="@+id/bt_cancel"
+                        android:layout_width="50dp"
+                        android:layout_height="25dp"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:text="cancel"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/bg_corner_blue"
+                        android:layout_toStartOf="@id/bt_done"
+                        android:layout_below="@id/sp_birth_day"/>
+
+                    <Button
+                        android:id="@+id/bt_done"
+                        android:layout_width="50dp"
+                        android:layout_height="25dp"
+                        android:text="Done"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/bg_slid_blue_round_corner"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/sp_birth_day"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <EditText
+                android:id="@+id/et_education"
+                android:background="@drawable/bg_comment_enter_text"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:padding="5dp"
+                android:gravity="center_vertical"
+                android:drawablePadding="8dp"
+                android:hint="Education"
+                android:layout_marginTop="10dp"
+                app:drawableStartCompat="@drawable/ic_university" />
+
+            <EditText
+                android:id="@+id/et_work"
+                android:background="@drawable/bg_comment_enter_text"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:padding="5dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:hint="Work At"
+                android:drawablePadding="8dp"
+                app:drawableStartCompat="@drawable/ic_baseline_work_24" />
+
+
+            <EditText
+                android:id="@+id/et_region"
+                android:background="@drawable/bg_comment_enter_text"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:padding="5dp"
+                android:gravity="center_vertical"
+                android:drawablePadding="8dp"
+                android:layout_marginTop="10dp"
+                android:hint="Region( eg. Yangon)"
+                app:drawableStartCompat="@drawable/ic_baseline_location_city_24" />
+
+            <Button
+                android:id="@+id/bt_save"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:textColor="@android:color/white"
+                android:text="@string/save_changes"
+                android:background="@drawable/bg_button"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <ProgressBar
+        android:layout_marginTop="10dp"
+        android:id="@+id/pb_loading"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/bg_progressbar"
+        android:padding="5dp"/>
+
+</RelativeLayout>

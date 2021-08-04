@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:padding="10dp">
+
+<ImageView
+    android:id="@+id/iv_save"
+    android:layout_width="120dp"
+    android:padding="1dp"
+    android:background="@drawable/rounded_outline"
+    android:layout_height="90dp"
+    android:scaleType="centerCrop"
+    android:contentDescription="TODO" />
+
+<ImageButton
+    android:id="@+id/bt_iv_more"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:layout_marginEnd="10dp"
+    android:background="@drawable/bg_transparent"
+    android:src="@drawable/ic_baseline_more_horiz_24"
+    android:layout_alignParentEnd="true"
+    android:contentDescription="TODO" />
+
+<TextView
+    android:id="@+id/tv_body"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_toEndOf="@id/iv_save"
+    android:padding="7dp"
+    android:layout_toStartOf="@id/bt_iv_more"
+    android:textColor="@android:color/black"/>
+
+<TextView
+    android:id="@+id/tv_postOwner"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_toEndOf="@id/iv_save"
+    android:padding="7dp"
+    android:layout_alignParentEnd="true"
+    android:layout_marginTop="5dp"
+    android:layout_below="@id/tv_body"/>
+
+</RelativeLayout>
