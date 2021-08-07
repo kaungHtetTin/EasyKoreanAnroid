@@ -144,6 +144,7 @@ public class DetailActivity extends AppCompatActivity {
             postExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
+                    content=processJson(lessonResult);
                     wv.loadDataWithBaseURL("file:///",processJson(lessonResult),"text/html","UTF-8",null);
                     swipe.setRefreshing(false);
                 }
@@ -171,7 +172,6 @@ public class DetailActivity extends AppCompatActivity {
             } else {
                 // Proceed to the next level.
                     finish();
-
             }
         } else if (item.getTitle().toString().equals("FONT")){
 
