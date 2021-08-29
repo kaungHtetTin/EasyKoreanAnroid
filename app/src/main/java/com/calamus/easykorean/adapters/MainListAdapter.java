@@ -18,7 +18,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.calamus.easykorean.GammingActivity;
 import com.calamus.easykorean.LessonActivity;
 import com.calamus.easykorean.R;
@@ -26,7 +25,6 @@ import com.calamus.easykorean.SaveWordActivity;
 import com.calamus.easykorean.SongListActivity;
 import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.models.CategoryModel;
-
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;

@@ -7,19 +7,22 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+
 import com.calamus.easykorean.adapters.AnnouncementAdapter;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.models.AnounceModel;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.Executor;
@@ -36,7 +39,7 @@ public class AnnouncementActivity extends AppCompatActivity {
     Executor postExecutor;
     String userId;
 
-
+    boolean isVip;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,9 +51,17 @@ public class AnnouncementActivity extends AppCompatActivity {
 
         share=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         userId=share.getString("phone",null);
-
+        isVip=share.getBoolean("isVIP",false);
         postExecutor = ContextCompat.getMainExecutor(this);
         setUpView();
+
+        MobileAds.initialize(this, initializationStatus -> {});
+        AdView adView = findViewById(R.id.adview);
+        if(!isVip){
+            adView.setVisibility(View.VISIBLE);
+            AdRequest request=new AdRequest.Builder().build();
+            adView.loadAd(request);
+        }
 
     }
 

@@ -4,18 +4,14 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,14 +29,11 @@ import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.RealPathUtil;
 import com.calamus.easykorean.app.Routing;
-
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
 import java.util.concurrent.Executor;
-
 import me.myatminsoe.mdetect.MDetect;
 
 public class EditProfileActivity extends AppCompatActivity {

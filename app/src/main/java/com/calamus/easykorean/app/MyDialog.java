@@ -2,10 +2,7 @@ package com.calamus.easykorean.app;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
-
 import com.calamus.easykorean.R;
-
 
 /*
 This class is used to create alert dialog

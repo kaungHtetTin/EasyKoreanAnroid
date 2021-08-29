@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.webkit.JavascriptInterface;
 
+import com.calamus.easykorean.TeacherActivity;
+
 public class WebAppInterface {
     Context mContext;
 
@@ -16,7 +18,9 @@ public class WebAppInterface {
     /** Show a toast from the web page */
     @JavascriptInterface
     public void showToast(String toast) {
-        Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse("https://m.me/easykoreancalamus"));
+        Intent intent=new Intent(mContext, TeacherActivity.class);
+        intent.putExtra("team","Developer");
+        intent.putExtra("imageUrl","https://www.calamuseducation.com/appthumbs/kommmainicon.png");
         mContext.startActivity(intent);
     }
 

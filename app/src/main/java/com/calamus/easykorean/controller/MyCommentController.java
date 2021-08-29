@@ -32,7 +32,7 @@ public class MyCommentController {
                 public void onResponse(String response) {
                     if(!postOwnerId.equals(writer_id)){
                         NotificationController notificationController=new NotificationController(c);
-                        notificationController.sendNotification(currentUserName+CorR,tokenPC);
+                        notificationController.sendNotification(currentUserName+CorR,tokenPC,"Easy Korean","1");
                     }
 
                     Log.e("AddCommentRes: ", response);

@@ -1,6 +1,5 @@
 package com.calamus.easykorean.adapters;
 
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -22,9 +21,6 @@ import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.controller.LikeController;
 import com.calamus.easykorean.models.SongOnlineModel;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-
 import java.util.ArrayList;
 import static com.calamus.easykorean.app.AppHandler.reactFormat;
 import static com.calamus.easykorean.app.AppHandler.setPhotoFromRealUrl;

@@ -1,11 +1,9 @@
 package com.calamus.easykorean.adapters;
 
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -14,16 +12,13 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.calamus.easykorean.CommentActivity;
 import com.calamus.easykorean.MyYouTubeVideoActivity;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.app.SQLiteHandler;
 import com.calamus.easykorean.models.SaveModel;
-
 import java.util.ArrayList;
-
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
 
 public class SaveAdapter extends RecyclerView.Adapter<SaveAdapter.Holder> {

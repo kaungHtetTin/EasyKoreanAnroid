@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -50,7 +49,7 @@ public class SaveWordActivity extends AppCompatActivity {
 
         MobileAds.initialize(this, initializationStatus -> {});
 
-        AdView adView = findViewById(R.id.web_adview);
+        AdView adView = findViewById(R.id.adview);
         if(!isVip){
             adView.setVisibility(View.VISIBLE);
             AdRequest request=new AdRequest.Builder().build();

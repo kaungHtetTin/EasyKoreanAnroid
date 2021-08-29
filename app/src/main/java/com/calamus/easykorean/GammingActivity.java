@@ -7,7 +7,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -38,10 +37,8 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
@@ -97,7 +94,7 @@ public class GammingActivity extends AppCompatActivity {
 
         MobileAds.initialize(this, initializationStatus -> {});
 
-        AdView adView = findViewById(R.id.web_adview);
+        AdView adView = findViewById(R.id.adview);
         if(!isVip){
             adView.setVisibility(View.VISIBLE);
             AdRequest request=new AdRequest.Builder().build();

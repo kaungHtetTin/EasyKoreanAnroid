@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -30,17 +29,16 @@ import android.widget.Toast;
 import com.calamus.easykorean.app.MyDialog;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.hbisoft.pickit.PickiT;
 import com.hbisoft.pickit.PickiTCallbacks;
 import com.calamus.easykorean.adapters.NewFeedAdapter;
 import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.models.NewfeedModel;
-
 import java.util.Objects;
 import java.util.concurrent.Executor;
-
 import me.myatminsoe.mdetect.MDetect;
-
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
 
 
@@ -56,7 +54,7 @@ public class WritePostActivity extends AppCompatActivity implements PickiTCallba
     boolean action;
     String cloudImageUrl,ivName="";
     PickiT pickiT;
-
+    boolean isVip;
     Executor postExecutor;
 
 
@@ -68,6 +66,7 @@ public class WritePostActivity extends AppCompatActivity implements PickiTCallba
         imageProfile=sharedPreferences.getString("imageUrl",null);
         userName=sharedPreferences.getString("Username",null);
         phone=sharedPreferences.getString("phone",null);
+        isVip=sharedPreferences.getBoolean("isVIP",false);
         postExecutor = ContextCompat.getMainExecutor(this);
         MDetect.INSTANCE.init(Objects.requireNonNull(this));
         pickiT = new PickiT(this, this, this);
@@ -81,6 +80,13 @@ public class WritePostActivity extends AppCompatActivity implements PickiTCallba
 
 
         setUpView();
+        AdView adView = findViewById(R.id.adview);
+        if(!isVip){
+            adView.setVisibility(View.VISIBLE);
+            AdRequest request=new AdRequest.Builder().build();
+            adView.loadAd(request);
+        }
+
 
     }
 

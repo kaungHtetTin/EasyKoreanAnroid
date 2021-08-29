@@ -5,14 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.app.Config;
@@ -24,8 +26,12 @@ import com.calamus.easykorean.fragments.FragmentOne;
 import com.calamus.easykorean.fragments.FragmentThree;
 import com.calamus.easykorean.fragments.FragmentTwo;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.messaging.FirebaseMessaging;
 import java.util.Objects;
+
+import static com.calamus.easykorean.app.AppHandler.makeActiveNow;
+import static com.calamus.easykorean.app.AppHandler.makeOffline;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,41 +45,62 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences share;
     public static boolean pagerPosition,isHome=true;
     String currentUserId;
-
+    BroadcastReceiver mRegistrationBroadcastReceiver;
+    RelativeLayout mainLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mainLayout=findViewById(R.id.activity_main);
         share = getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         currentUserId=share.getString("phone",null);
         FirebaseMessaging.getInstance().subscribeToTopic("koreaUsers");
         FirebaseMessaging.getInstance().subscribeToTopic("easyKorea");
 
         setUpView();
-
+        makeActiveNow(Long.parseLong(currentUserId)+"");
         String goSomeWhere= Objects.requireNonNull(getIntent().getExtras()).getString("message",null);
-        if(goSomeWhere.equals("splash")){
-            String version=share.getString("version","");
-            if(!version.equals("1.15"))confirmUpdate(); //check the version in generaldata.php
+        switch (goSomeWhere) {
+            case "splash":
+                String version = share.getString("version", "");
+                if (!version.equals("2.17")) confirmUpdate(); //check the version in generaldata.php
 
-        }else if(goSomeWhere.equals("login")){
-            Toast.makeText(this,"Welcome!",Toast.LENGTH_SHORT).show();
-        }else{
-            Intent intent=new Intent(MainActivity.this,NotiListActivity.class);
-            startActivity(intent);
+                break;
+            case "login":
+                Toast.makeText(this, "Welcome!", Toast.LENGTH_SHORT).show();
+                break;
+            case "1":
+            case "postFeed":
+                Intent intent = new Intent(MainActivity.this, NotiListActivity.class);
+                startActivity(intent);
+                break;
+
+            default: {
+                Intent intent1 = new Intent(MainActivity.this, ClassRoomActivity.class);
+                intent1.putExtra("action",goSomeWhere);
+                startActivity(intent1);
+                break;
+            }
         }
 
         // new push notification is received
-        BroadcastReceiver mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
 
                 if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
                     FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
-                } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
+                } else if (intent.getAction().equals("MessageArrived")) {
                     // new push notification is received
                     String message = intent.getStringExtra("message");
-                    Toast.makeText(getApplicationContext(), "Notification: " + AppHandler.setMyanmar(message), Toast.LENGTH_LONG).show();
+                    String sender = intent.getStringExtra("sender");
+                    final Snackbar sb=Snackbar.make(mainLayout,sender+" : "+message,Snackbar.LENGTH_INDEFINITE);
+                    sb.setAction("View", v ->{
+                        Intent intent1 = new Intent(MainActivity.this, ClassRoomActivity.class);
+                        intent1.putExtra("action","");
+                        startActivity(intent1);
+                            }
+                    ).setActionTextColor(Color.WHITE).show();
                 }
             }
         };
@@ -203,11 +230,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
+        SplashScreenActivity.mListener=null;
         try{
             if(FragmentFour.canExit()||pagerPosition){
                 if(isHome){
                     super.onBackPressed();
+                    makeOffline(Long.parseLong(currentUserId)+"");
                 }else{
                     viewPager.setCurrentItem(0);
 
@@ -224,7 +252,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void comfirm_exist(){
 
-        MyDialog myDialog=new MyDialog(this, "Exit Confirmation", "Do you really want to exit?", () -> finish());
+        MyDialog myDialog=new MyDialog(this, "Exit Confirmation", "Do you really want to exit?", () ->{
+            finish();
+            makeOffline(Long.parseLong(currentUserId)+"");
+
+        });
         myDialog.showMyDialog();
     }
 
@@ -247,8 +279,8 @@ public class MainActivity extends AppCompatActivity {
 
         // register new push message receiver
         // by doing this, the activity will be notified each time a new message arrives
-        //  LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-        // new IntentFilter(Config.PUSH_NOTIFICATION));
+          LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+         new IntentFilter("MessageArrived"));
 
         // clear the notification area when the app is opened
         NotificationUtils.clearNotifications(getApplicationContext());

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
+
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.calamus.easykorean.MainActivity;
@@ -78,7 +80,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String imageUrl = data.getString("image");
             String timestamp = data.getString("timestamp");
             JSONObject payload = data.getJSONObject("payload");
-
+            String go=payload.getString("go");
 
             SharedPreferences sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor;
@@ -88,17 +90,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
                 // app is in foreground, broadcast the push message
-                Intent pushNotification = new Intent(Config.PUSH_NOTIFICATION);
-                pushNotification.putExtra("message", message);
-                LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
+               if(go.equals("2")){
+                   Intent pushNotification = new Intent("MessageArrived");
+                   pushNotification.putExtra("sender", title);
+                   pushNotification.putExtra("message",message);
+                   LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
 
-                // play notification sound
-                NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
-               // notificationUtils.playNotificationSound();
+               }
+
             } else {
                 // app is in background, show the notification in notification tray
                 Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
-                resultIntent.putExtra("message", message);
+                resultIntent.putExtra("message",go);
 
 
                 // check for image attachment
@@ -110,9 +113,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
             }
         } catch (JSONException e) {
-            Log.e(TAG, "Json Exception: " + e.getMessage());
+            Log.e(TAG, "Json NOti: " + e.getMessage());
         } catch (Exception e) {
-            Log.e(TAG, "Exception: " + e.getMessage());
+            Log.e(TAG, "Exception Noti: " + e.getMessage());
         }
     }
 

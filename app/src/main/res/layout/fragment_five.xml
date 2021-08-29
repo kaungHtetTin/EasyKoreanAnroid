@@ -11,8 +11,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         app:cardCornerRadius="5dp"
-        app:cardElevation="2dp"
-        android:foreground="?android:attr/selectableItemBackground">
+        app:cardElevation="1dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:id="@+id/layout_header">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"

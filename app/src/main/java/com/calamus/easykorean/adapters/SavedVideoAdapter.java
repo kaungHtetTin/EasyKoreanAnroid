@@ -9,16 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.VideoPlayerActivity;
 import com.calamus.easykorean.app.MyDialog;
 import com.calamus.easykorean.models.SavedVideoModel;
-
 import java.io.File;
 import java.util.ArrayList;
 

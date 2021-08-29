@@ -1,7 +1,7 @@
 package com.calamus.easykorean.adapters;
 
-
 import android.app.Activity;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,12 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.calamus.easykorean.MyDiscussionActivity;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.models.LikeListModel;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import me.myatminsoe.mdetect.MDetect;
-
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
 import static com.calamus.easykorean.app.AppHandler.setPhotoFromRealUrl;
 
@@ -74,6 +75,17 @@ public class LikeListAdapter extends RecyclerView.Adapter<LikeListAdapter.Holder
             iv_profile=view.findViewById(R.id.iv_profile);
             iv_isVip=view.findViewById(R.id.iv_blueMark);
             tv_name=view.findViewById(R.id.tv_name);
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    LikeListModel model=data.get(getAbsoluteAdapterPosition());
+                    Intent intent=new Intent(c, MyDiscussionActivity.class);
+                    intent.putExtra("userId",model.getUserId());
+                    intent.putExtra("userName",model.getUserName());
+                    c.startActivity(intent);
+                }
+            });
         }
     }
 

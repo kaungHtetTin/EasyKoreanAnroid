@@ -76,7 +76,7 @@ public class LessonActivity extends AppCompatActivity implements android.widget.
 
         MobileAds.initialize(this, initializationStatus -> {});
 
-        AdView adView = findViewById(R.id.web_adview);
+        AdView adView = findViewById(R.id.adview);
         if(!isVip){
             adView.setVisibility(View.VISIBLE);
             AdRequest request=new AdRequest.Builder().build();

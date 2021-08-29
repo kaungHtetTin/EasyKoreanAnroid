@@ -138,10 +138,11 @@ public class LikeListActivity extends AppCompatActivity {
             JSONArray ja=new JSONArray(response);
             for(int i=0;i<ja.length();i++){
                 JSONObject jo=ja.getJSONObject(i);
+                String userId=jo.getString("userId");
                 String userName=jo.getString("userName");
                 String userImage=jo.getString("userImage");
                 String isVip=jo.getString("vip");
-                likeList.add(new LikeListModel(userName,userImage,isVip));
+                likeList.add(new LikeListModel(userId,userName,userImage,isVip));
             }
 
             adapter.notifyDataSetChanged();

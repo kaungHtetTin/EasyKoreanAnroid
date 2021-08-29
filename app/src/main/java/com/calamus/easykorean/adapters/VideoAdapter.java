@@ -5,7 +5,6 @@ import android.content.*;
 import android.view.*;
 import android.widget.*;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.calamus.easykorean.MyYouTubeVideoActivity;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.app.AppHandler;
@@ -15,14 +14,10 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
-
 import me.myatminsoe.mdetect.MDetect;
-
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
 
-public class
-VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder>
-        implements Filterable {
+public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> implements Filterable {
 
     private final Activity c;
     private final ArrayList<VideoModel> data;
@@ -80,7 +75,7 @@ VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder>
                     });
 
         } catch (Exception e) {
-           // Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
+
         }
     }
 

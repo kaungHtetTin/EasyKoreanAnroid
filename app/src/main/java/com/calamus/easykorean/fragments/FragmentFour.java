@@ -2,9 +2,13 @@ package com.calamus.easykorean.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
@@ -16,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.calamus.easykorean.R;
+import com.calamus.easykorean.SearchingActivity;
 import com.calamus.easykorean.adapters.NewFeedAdapter;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
@@ -26,6 +31,8 @@ import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
+
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -59,7 +66,7 @@ public class FragmentFour extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v=inflater.inflate(R.layout.fragment_four,container,false);
-
+        setHasOptionsMenu(true);
         MDetect.INSTANCE.init(getActivity());
         share=getActivity().getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         setupViews();
@@ -275,6 +282,24 @@ public class FragmentFour extends Fragment {
             }).url(Routing.GET_ANNOUNCEMENT+"?major=korea&userId="+userId);
             myHttp.runTask();
         }).start();
+    }
+
+    public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater){
+        menu.add("SEARCH")
+                .setIcon(R.drawable.ic_search)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
+        if (item.getTitle().toString().equals("SEARCH")){
+            Intent intent=new Intent(getActivity(), SearchingActivity.class);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

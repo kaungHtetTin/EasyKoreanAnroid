@@ -1,19 +1,18 @@
 package com.calamus.easykorean.app;
 
-
 import android.widget.ImageView;
-
 import com.calamus.easykorean.R;
+import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import me.myatminsoe.mdetect.MDetect;
 import me.myatminsoe.mdetect.Rabbit;
 
@@ -145,6 +144,25 @@ public class AppHandler {
             return null;
         }
     }
+    public static void setPhotoFromRealUrl(String url,ImageView iv,final ShimmerFrameLayout container){
+        Picasso.get()
+                .load(url)
+                .centerInside()
+                .fit()
+                .error(R.drawable.ic_baseline_account_circle_24)
+                .into(iv, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        container.hideShimmer();
+                        container.stopShimmer();
+                    }
+                    @Override
+                    public void onError(Exception e) {
+                        container.hideShimmer();
+                        container.stopShimmer();
+                    }
+                });
+    }
 
     public static  String downloadFormat(int i){
         DecimalFormat decimalFormat = new DecimalFormat("0.0");
@@ -176,6 +194,30 @@ public class AppHandler {
                     .field("record",record);
             myHttp.runTask();
         }).start();
+    }
+
+    public static String changeFont(String s){
+        String result="";
+        if(MDetect.INSTANCE.isUnicode()){
+            result=s;
+        }else{
+            result= Rabbit.zg2uni(s);
+        }
+        return result;
+    }
+
+    public static void makeActiveNow(String userId){
+        DatabaseReference dbA = FirebaseDatabase.getInstance().getReference().child("korea").child("Active").child(userId);
+        dbA.child("active").setValue(true);
+        dbA.child("time").setValue(System.currentTimeMillis());
+        dbA.child("time").onDisconnect().setValue(System.currentTimeMillis());
+        dbA.child("active").onDisconnect().setValue(false);
+    }
+
+    public static  void makeOffline(String userId){
+        DatabaseReference dbA = FirebaseDatabase.getInstance().getReference().child("korea").child("Active").child(userId);
+        dbA.child("active").setValue(false);
+        dbA.child("time").setValue(System.currentTimeMillis());
     }
 
 }

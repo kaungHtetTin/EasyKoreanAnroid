@@ -12,11 +12,11 @@
         android:clipToPadding="false"
         android:layout_alignParentTop="true"
         android:scrollbars="none"
-        android:layout_above="@id/web_adview"/>
+        android:layout_above="@id/adview"/>
 
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/web_adview"
+        android:id="@+id/adview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         ads:adSize="BANNER"

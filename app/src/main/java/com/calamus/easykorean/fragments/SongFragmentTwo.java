@@ -13,15 +13,12 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.adapters.SongLocalAdapter;
 import com.calamus.easykorean.models.SongModel;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
-
 import static android.media.MediaMetadataRetriever.METADATA_KEY_DURATION;
 
 public class SongFragmentTwo extends Fragment {

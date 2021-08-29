@@ -11,7 +11,6 @@ import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -40,7 +39,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.Executor;
-
 import static com.calamus.easykorean.app.AppHandler.reactFormat;
 import static com.calamus.easykorean.app.AppHandler.setPhotoFromRealUrl;
 
@@ -99,7 +97,7 @@ public class SongDetailActivity extends AppCompatActivity implements DownloadCom
 
         setUpView();
 
-        AdView adView = findViewById(R.id.web_adview);
+        AdView adView = findViewById(R.id.adview);
         getSongLyrics();
         setMediaPlayer();
 

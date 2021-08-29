@@ -15,16 +15,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_nf"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/divider"
+                android:layout_above="@id/adview"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="-4dp"
-                android:layout_marginBottom="4dp"
+                android:layout_marginTop="-3dp"
+                android:layout_marginBottom="3dp"
                 android:clipToPadding="false"
                 android:scrollbars="vertical" />
+
+            <com.google.android.gms.ads.AdView
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/adview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                ads:adSize="BANNER"
+                android:layout_above="@id/divider"
+                ads:adUnitId="ca-app-pub-2472405866346270/2510952382"
+                android:layout_centerHorizontal="true"/>
 
             <View
                 android:id="@+id/divider"

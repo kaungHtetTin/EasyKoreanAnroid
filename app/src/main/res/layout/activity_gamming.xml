@@ -8,7 +8,7 @@
 
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/web_adview"
+        android:id="@+id/adview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         ads:adSize="BANNER"
@@ -23,7 +23,7 @@
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="15dp"
         android:layout_alignParentEnd="true"
-        android:layout_below="@id/web_adview"/>
+        android:layout_below="@id/adview"/>
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:background="#00FFFFFF"
         android:layout_above="@id/button_layout"
-        android:layout_below="@id/web_adview"/>
+        android:layout_below="@id/adview"/>
 
     <TextView
         android:id="@+id/tv_highest_score"

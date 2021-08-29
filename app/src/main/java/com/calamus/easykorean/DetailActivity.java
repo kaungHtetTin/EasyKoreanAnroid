@@ -7,7 +7,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -70,8 +69,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
         MobileAds.initialize(this, initializationStatus -> {});
-
-        AdView adView = findViewById(R.id.web_adview);
+        AdView adView = findViewById(R.id.adview);
         if(!isVip){
             adView.setVisibility(View.VISIBLE);
             AdRequest request=new AdRequest.Builder().build();
@@ -91,8 +89,6 @@ public class DetailActivity extends AppCompatActivity {
 
             timer.start();
         }
-
-
     }
 
 

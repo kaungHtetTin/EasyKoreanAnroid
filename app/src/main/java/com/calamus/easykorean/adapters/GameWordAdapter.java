@@ -1,4 +1,5 @@
 package com.calamus.easykorean.adapters;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.media.AudioManager;
@@ -8,15 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.models.GameWordModel;
-
 import java.io.IOException;
 import java.util.ArrayList;
 

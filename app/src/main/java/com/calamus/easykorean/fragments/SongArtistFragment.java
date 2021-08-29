@@ -18,7 +18,6 @@ import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.models.SongArtistModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 

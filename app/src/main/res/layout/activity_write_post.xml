@@ -4,10 +4,22 @@
     android:layout_height="match_parent"
     android:padding="7dp">
 
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-2472405866346270/2510952382"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"/>
+
+
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/iv_profile"
         android:layout_width="65dp"
         android:layout_margin="10dp"
+        android:layout_below="@id/adview"
         android:src="@drawable/ic_baseline_account_circle_24"
         android:layout_height="65dp"/>
 
@@ -22,6 +34,7 @@
         android:gravity="center_vertical"
         android:text="Calamus"
         android:textSize="18sp"
+        android:layout_below="@id/adview"
         android:textStyle="bold"
         android:textColor="@android:color/black"/>
 
@@ -118,6 +131,7 @@
         android:layout_marginTop="15dp"
         android:id="@+id/pb_loading"
         android:layout_width="28dp"
+        android:layout_below="@id/adview"
         android:layout_height="28dp"
         android:layout_centerHorizontal="true"
         android:background="@drawable/bg_progressbar"

@@ -16,10 +16,20 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <com.google.android.gms.ads.AdView
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/adview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                ads:adSize="BANNER"
+                ads:adUnitId="ca-app-pub-2472405866346270/2510952382"
+                android:visibility="gone"
+                android:layout_centerHorizontal="true"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_nf"
                 android:layout_width="match_parent"
+                android:layout_below="@id/adview"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
                 android:scrollbars="none" />

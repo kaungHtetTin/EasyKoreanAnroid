@@ -1,9 +1,7 @@
 package com.calamus.easykorean.app;
 
 import android.util.Log;
-
 import com.calamus.easykorean.interfaces.DownloadComplete;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;

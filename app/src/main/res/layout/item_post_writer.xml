@@ -81,25 +81,13 @@
                 android:contentDescription="TODO" />
 
             <ImageView
-                android:id="@+id/my_discussion"
-                android:layout_marginStart="30dp"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:padding="7dp"
-                android:elevation="5dp"
-                android:background="@drawable/bg_circle_light_blue"
-                android:layout_toEndOf="@id/announcement"
-                android:src="@drawable/my_discussion"
-                android:contentDescription="TODO" />
-
-            <ImageView
                 android:id="@+id/calamus_discussion"
                 android:layout_marginStart="30dp"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:elevation="5dp"
                 android:background="@drawable/bg_circle_light_blue"
-                android:layout_toEndOf="@id/my_discussion"
+                android:layout_toEndOf="@id/announcement"
                 android:src="@drawable/ic_feather"
                 android:contentDescription="TODO" />
 

@@ -30,6 +30,7 @@ import static com.calamus.easykorean.ApplicationClass.ACTION_PLAY;
 import static com.calamus.easykorean.ApplicationClass.ACTON_PREVIOUS;
 import static com.calamus.easykorean.ApplicationClass.CHANNEL_ID_2;
 import static com.calamus.easykorean.app.AppHandler.getFileByte;
+import static com.calamus.easykorean.app.AppHandler.makeOffline;
 import static com.calamus.easykorean.fragments.SongFragmentTwo.songLocalLists;
 
 public class MusicService extends Service implements MediaPlayer.OnCompletionListener, AudioManager.OnAudioFocusChangeListener {
@@ -275,6 +276,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         mediaPlayer.release();
         mediaPlayer=null;
         this.stopSelf();
+
     }
 
 

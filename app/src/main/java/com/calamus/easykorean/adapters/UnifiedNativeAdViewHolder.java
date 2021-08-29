@@ -3,7 +3,6 @@ package com.calamus.easykorean.adapters;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.calamus.easykorean.R;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 

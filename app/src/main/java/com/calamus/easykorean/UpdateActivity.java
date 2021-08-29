@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,16 +30,13 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.snackbar.Snackbar;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.Executor;
-
 import me.myatminsoe.mdetect.MDetect;
-
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
 
 
@@ -77,7 +73,7 @@ public class UpdateActivity extends AppCompatActivity {
 
         MobileAds.initialize(this, initializationStatus -> {});
 
-        AdView adView = findViewById(R.id.web_adview);
+        AdView adView = findViewById(R.id.adview);
         if(!isVip){
             adView.setVisibility(View.VISIBLE);
             AdRequest request=new AdRequest.Builder().build();

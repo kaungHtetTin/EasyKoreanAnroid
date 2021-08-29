@@ -15,27 +15,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
-import com.calamus.easykorean.EditProfileActivity;
+import com.calamus.easykorean.ClassRoomActivity;
+import com.calamus.easykorean.MyDiscussionActivity;
 import com.calamus.easykorean.PhotoActivity;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.SavePostActivity;
 import com.calamus.easykorean.SavedVideoActivity;
+import com.calamus.easykorean.SettingActivity;
 import com.calamus.easykorean.SplashScreenActivity;
 import com.calamus.easykorean.UpdateActivity;
 import com.calamus.easykorean.WebSiteActivity;
 import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.app.Routing;
-
 import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import me.myatminsoe.mdetect.MDetect;
@@ -52,12 +52,12 @@ public class FragmentFive extends Fragment {
 
 
     String[] title = {
-            "Edit your profile",
+            "Chat with\n"+"classmates",
+            "Account Setting",
             "Like us\n"+"on facebook",
-            "Ask a"+ "\nteacher",
-            "Saved Posts\n",
-            "Downloaded Videos",
             "Pay For VIP",
+            "Downloaded Videos",
+            "Saved Posts",
             "Check Update",
             "Share",
             "Rate Us",
@@ -88,8 +88,18 @@ public class FragmentFive extends Fragment {
         iv=v.findViewById(R.id.iv_header);
         tv_phone=v.findViewById(R.id.tv_phone);
         tv_phone.setText(phone);
+        v.findViewById(R.id.layout_header).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getActivity(), MyDiscussionActivity.class);
+                intent.putExtra("userId",phone);
+                intent.putExtra("userName","My Discussion");
+                startActivity(intent);
+            }
+        });
 
         StaggeredGridLayoutManager gm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+
 
         menuRecycler.setLayoutManager(gm);
         menuRecycler.setItemAnimator(new DefaultItemAnimator());
@@ -120,12 +130,12 @@ public class FragmentFive extends Fragment {
         private final String [] data;
         private final LayoutInflater mInflater;
         int[] resId = {
-                R.drawable.ic_baseline_account_circle_24,
+                R.drawable.ic_chat,
+                R.drawable.ic_baseline_settings_24,
                 R.drawable.ic_facebook,
-                R.drawable.ic_messenger,
-                R.drawable.ic_save,
-                R.drawable.ic_downloaded_video,
                 R.drawable.ic_attach_money_black_24dp,
+                R.drawable.ic_downloaded_video,
+                R.drawable.ic_save,
                 R.drawable.ic_cloud_download_black_24dp,
                 R.drawable.ic_share_black_24dp,
                 R.drawable.ic_rate_review_black_24dp,
@@ -146,7 +156,12 @@ public class FragmentFive extends Fragment {
         @NotNull
         @Override
         public MyAdapter.Holder onCreateViewHolder(@NotNull ViewGroup parent, int p2) {
-            View view = mInflater.inflate(R.layout.list_drawer, parent, false);
+            View view;
+            if(p2>3){
+                view = mInflater.inflate(R.layout.list_drawer_linear, parent, false);
+            }else{
+                view = mInflater.inflate(R.layout.list_drawer, parent, false);
+            }
             return new MyAdapter.Holder(view);
         }
 
@@ -154,6 +169,11 @@ public class FragmentFive extends Fragment {
         public void onBindViewHolder(@NotNull MyAdapter.Holder holder, final int i) {
             holder.tv.setText(data[i]);
             holder.iv.setBackgroundResource(resId[i]);
+
+           if(i>3){
+               StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
+               layoutParams.setFullSpan(true);
+           }
         }
 
         public class Holder extends RecyclerView.ViewHolder {
@@ -178,28 +198,26 @@ public class FragmentFive extends Fragment {
     public void setting(int position){
         switch (position) {
             case 0:{
-                Intent intent=new Intent(getActivity(), EditProfileActivity.class);
+                Intent intent=new Intent(getActivity(), ClassRoomActivity.class);
+                intent.putExtra("action","");
                 startActivity(intent);
                 break;
             }
 
             case 1:{
-                openFacebookPage("easykoreancalamus");
+                Intent intent=new Intent(getActivity(), SettingActivity.class);
+                startActivity(intent);
                 break;
             }
 
             case 2:{
-                if (isOnline()) {
-                    Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse("https://m.me/easykoreancalamus"));
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(getActivity(), "Please check your internet connection", Toast.LENGTH_SHORT).show();
-                }
+                openFacebookPage("easykoreancalamus");
                 break;
             }
 
             case 3: {
-                Intent i = new Intent(getActivity(), SavePostActivity.class);
+                Intent i = new Intent(getActivity(), WebSiteActivity.class);
+                i.putExtra("link", Routing.PAYMENT);
                 startActivity(i);
                 break;
             }
@@ -211,8 +229,8 @@ public class FragmentFive extends Fragment {
                 break;
             }
             case 5:
-                Intent i = new Intent(getActivity(), WebSiteActivity.class);
-                i.putExtra("link", Routing.PAYMENT);
+
+                Intent i = new Intent(getActivity(), SavePostActivity.class);
                 startActivity(i);
                 break;
             case 6:

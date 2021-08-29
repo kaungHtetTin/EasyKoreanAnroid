@@ -9,9 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.calamus.easykorean.AlbumSongActivity;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.models.SongArtistModel;

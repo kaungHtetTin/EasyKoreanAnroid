@@ -1,6 +1,5 @@
 package com.calamus.easykorean.adapters;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -24,20 +23,16 @@ import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.app.MyDialog;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.models.LessonModel;
-
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import me.myatminsoe.mdetect.MDetect;
-
 import static com.calamus.easykorean.LessonActivity.eCode;
 import static com.calamus.easykorean.LessonActivity.fragmentId;
 import static com.calamus.easykorean.LessonActivity.picLink;
 import static com.calamus.easykorean.LessonActivity.level;
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
 
-
-public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.Holder>
-        implements Filterable {
+public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.Holder> implements Filterable {
 
     private final Activity c;
     private final ArrayList<LessonModel> data;

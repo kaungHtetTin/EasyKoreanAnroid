@@ -18,20 +18,21 @@ public class NotificationController {
     }
 
 
-    public void sendNotification(String message, String token){
+    public void sendNotification(String message, String token,String title,String action){
         new Thread(() -> {
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.POST, new MyHttp.Response() {
                 @Override
                 public void onResponse(String response) {}
                 @Override
-                public void onError(String msg) {}
-            }).url(Routing.SEND_NOTI)
-                    .field("title","Easy Korean")
+                public void onError(String msg) {
+
+                }
+            }).url(Routing.PUSH_NOTIFICATION)
+                    .field("title",title)
                     .field("message",message)
-                    .field("regId",token)
-                    .field("push_type","individual")
-                    .field("topic","")
-                    .field("go","postFeed");
+                    .field("to",token)
+                    .field("action",action);
+
             myHttp.runTask();
         }).start();
 

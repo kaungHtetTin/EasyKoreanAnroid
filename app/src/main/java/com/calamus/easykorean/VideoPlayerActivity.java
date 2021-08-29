@@ -1,7 +1,6 @@
 package com.calamus.easykorean;
 
 import java.io.IOException;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -18,8 +17,6 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.FrameLayout;
-
 import com.calamus.easykorean.service.MusicService;
 
 public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callback, MediaPlayer.OnPreparedListener, VideoControllerView.MediaPlayerControl,AudioManager.OnAudioFocusChangeListener  {
@@ -43,6 +40,10 @@ public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callb
         setContentView(R.layout.activity_video_player);
 
         audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        playbackAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build();
         videoUri= (Uri) getIntent().getExtras().get("videoData");
 
         videoSurface = findViewById(R.id.videoSurface);

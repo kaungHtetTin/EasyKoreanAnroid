@@ -4,7 +4,6 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -12,10 +11,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -38,6 +35,9 @@ import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.controller.MyCommentController;
 import com.calamus.easykorean.models.CommentModel;
 import com.calamus.easykorean.models.NewfeedModel;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.hbisoft.pickit.PickiT;
 import com.hbisoft.pickit.PickiTCallbacks;
 import org.json.JSONArray;
@@ -88,7 +88,13 @@ public class CommentActivity extends AppCompatActivity implements PickiTCallback
 
         action="0";
         CorR=" commented on your post";
-
+        MobileAds.initialize(this, initializationStatus -> {});
+        AdView adView = findViewById(R.id.adview);
+        if(!b){
+            adView.setVisibility(View.VISIBLE);
+            AdRequest request=new AdRequest.Builder().build();
+            adView.loadAd(request);
+        }
 
 
     }

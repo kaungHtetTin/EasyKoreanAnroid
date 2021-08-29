@@ -2,7 +2,6 @@ package com.calamus.easykorean;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,17 +11,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.app.UserInformation;
-
 import org.json.JSONObject;
-
 import java.util.Objects;
 import java.util.concurrent.Executor;
-
 import me.myatminsoe.mdetect.MDetect;
 
 public class SignUpActivity extends AppCompatActivity {

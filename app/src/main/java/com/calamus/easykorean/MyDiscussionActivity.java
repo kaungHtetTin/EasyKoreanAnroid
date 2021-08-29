@@ -1,6 +1,5 @@
 package com.calamus.easykorean;
 
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -8,11 +7,11 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 import com.calamus.easykorean.adapters.DiscussAdapter;
 import com.calamus.easykorean.app.MyHttp;
@@ -21,7 +20,9 @@ import com.calamus.easykorean.models.DiscussionModel;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -51,6 +52,9 @@ public class MyDiscussionActivity extends AppCompatActivity {
     private static final String AD_UNIT_ID="ca-app-pub-2472405866346270/3806485083";
     AdLoader adLoader;
     final List<UnifiedNativeAd> nativeAds=new ArrayList<>();
+
+    boolean isVip;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +62,7 @@ public class MyDiscussionActivity extends AppCompatActivity {
         MDetect.INSTANCE.init(this);
         share=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         currentUserId=share.getString("phone","");
+        isVip=share.getBoolean("isVIP",false);
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -74,6 +79,14 @@ public class MyDiscussionActivity extends AppCompatActivity {
 
         setupViews();
         testFetch(count,false);
+
+        MobileAds.initialize(this, initializationStatus -> {});
+        AdView adView = findViewById(R.id.adview);
+        if(!isVip){
+            adView.setVisibility(View.VISIBLE);
+            AdRequest request=new AdRequest.Builder().build();
+            adView.loadAd(request);
+        }
     }
 
 
@@ -86,10 +99,15 @@ public class MyDiscussionActivity extends AppCompatActivity {
         // recycler.addItemDecoration(new SpacingItemDecoration(2, XUtils.toPx(Objects.requireNonNull(getActivity()), 2), true));
         recycler.setItemAnimator(new DefaultItemAnimator());
 
+
+
+
         postList.add(0,"kaung");
-        adapter = new DiscussAdapter(this, postList);
+        adapter = new DiscussAdapter(this, postList,userId);
         recycler.setAdapter(adapter);
         swipe.setRefreshing(true);
+
+
 
         recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -152,6 +170,7 @@ public class MyDiscussionActivity extends AppCompatActivity {
         }).start();
     }
 
+
     public void doAsResult(String response){
 
         swipe.setRefreshing(false);
@@ -186,7 +205,6 @@ public class MyDiscussionActivity extends AppCompatActivity {
         }
 
     }
-
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

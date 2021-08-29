@@ -1,6 +1,5 @@
 package com.calamus.easykorean;
 
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -13,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import me.myatminsoe.mdetect.MDetect;
-
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
 
 

@@ -1,7 +1,5 @@
 package com.calamus.easykorean.adapters;
 
-
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
@@ -26,7 +23,6 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.calamus.easykorean.AnnouncementActivity;
 import com.calamus.easykorean.CommentActivity;
 import com.calamus.easykorean.LikeListActivity;
@@ -47,20 +43,15 @@ import com.calamus.easykorean.models.NewfeedModel;
 import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
-
 import me.myatminsoe.mdetect.MDetect;
-
 import static com.calamus.easykorean.app.AppHandler.commentFormat;
 import static com.calamus.easykorean.app.AppHandler.formatTime;
 import static com.calamus.easykorean.app.AppHandler.reactFormat;
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
 import static com.calamus.easykorean.app.AppHandler.viewCountFormat;
-
 
 public  class NewFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -242,7 +233,7 @@ public  class NewFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                             if(!model.getUserId().equals(currentUserId)){
                                 NotificationController notificationController=new NotificationController(c);
-                                notificationController.sendNotification(userName+" reacted your post.",model.getUserToken());
+                                notificationController.sendNotification(userName+" reacted your post.",model.getUserToken(),"Easy Korean","1");
                             }
                             model.setIsLike("1");
                             model.setPostLikes(rectCount+"");
@@ -366,12 +357,15 @@ public  class NewFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             iv_profile.setOnClickListener(v -> {
                 NewfeedModel model = (NewfeedModel) data.get(getAbsoluteAdapterPosition());
-                goPhoto(model.getUserImage(),"");
+                Intent intent=new Intent(c, MyDiscussionActivity.class);
+                intent.putExtra("userId",model.getUserId());
+                intent.putExtra("userName",model.getUserName());
+                c.startActivity(intent);
             });
 
             bt_iv_more.setOnClickListener(v -> {
                 NewfeedModel model=(NewfeedModel)data.get(getAbsoluteAdapterPosition());
-                showMenu(v,model,getAdapterPosition());
+                showMenu(v,model,getAbsoluteAdapterPosition());
             });
 
             iv_cmt.setOnClickListener(v -> {
@@ -394,6 +388,39 @@ public  class NewFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 intent.putExtra("userName",model.getUserName());
                 c.startActivity(intent);
             });
+
+        }
+
+        private void goTO(NewfeedModel model){
+            if(model.getIsVideo().equals("0")){
+                Intent intent=new Intent(c, CommentActivity.class);
+                intent.putExtra("postId",model.getPostId());
+                intent.putExtra("time","");//for comment seen
+                c.startActivity(intent);
+            }else{
+
+                goVideo(model);
+
+            }
+
+        }
+
+        private void goVideo(NewfeedModel model){
+            String videoId=model.getPostImage().substring(model.getPostImage().indexOf("vi/")+3);
+            videoId=videoId.substring(0,videoId.length()-6);
+            Intent intent=new Intent(c, MyYouTubeVideoActivity.class);
+            intent.putExtra("videoTitle","");
+            intent.putExtra("videoId",videoId);
+            intent.putExtra("time",Long.parseLong(model.getPostId()));
+            c.startActivity(intent);
+
+        }
+
+        private void goPhoto(String imageUrl, String des){
+            Intent intent=new Intent(c, PhotoActivity.class);
+            intent.putExtra("image",imageUrl);
+            intent.putExtra("des",des);
+            c.startActivity(intent);
 
         }
     }
@@ -424,60 +451,10 @@ public  class NewFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
 
-    private void sharePost(String postId,String isVideo,String imageUrl){
 
-        String shareBody="";
-        if(isVideo.equals("0")){
-            shareBody ="https://www.calamuseducation.com/spost.php?id="+postId;
-        }
-        else{
-            String videoId=imageUrl.substring(imageUrl.indexOf("vi/")+3);
-            videoId=videoId.substring(0,videoId.length()-6);
-            shareBody="https://www.calamuseducation.com/vpost.php?id="+postId+"&v="+videoId;
-        }
-
-        Intent shareingIntent = new Intent(Intent.ACTION_SEND);
-        shareingIntent.setType("text/plain");
-        shareingIntent.putExtra(Intent.EXTRA_SUBJECT, "Try out this best Language App.");
-        shareingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
-        c.startActivity(Intent.createChooser(shareingIntent, "Share via"));
-    }
-
-    private void goTO(NewfeedModel model){
-        if(model.getIsVideo().equals("0")){
-            Intent intent=new Intent(c, CommentActivity.class);
-            intent.putExtra("postId",model.getPostId());
-            intent.putExtra("time","");//for comment seen
-            c.startActivity(intent);
-        }else{
-
-            goVideo(model);
-
-        }
-
-    }
-
-    private void goVideo(NewfeedModel model){
-        String videoId=model.getPostImage().substring(model.getPostImage().indexOf("vi/")+3);
-        videoId=videoId.substring(0,videoId.length()-6);
-        Intent intent=new Intent(c, MyYouTubeVideoActivity.class);
-        intent.putExtra("videoTitle","");
-        intent.putExtra("videoId",videoId);
-        intent.putExtra("time",Long.parseLong(model.getPostId()));
-        c.startActivity(intent);
-
-    }
-
-    private void goPhoto(String imageUrl, String des){
-        Intent intent=new Intent(c, PhotoActivity.class);
-        intent.putExtra("image",imageUrl);
-        intent.putExtra("des",des);
-        c.startActivity(intent);
-
-    }
 
     public class WriterHolder extends RecyclerView.ViewHolder{
-        ImageView iv,iv_noti,iv_notiRedMark,iv_myDiscussion,iv_announcement,iv_calamus;
+        ImageView iv,iv_noti,iv_notiRedMark,iv_announcement,iv_calamus;
         CardView cardView;
         TextView tv;
         public WriterHolder(@NonNull View itemView) {
@@ -488,7 +465,6 @@ public  class NewFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             iv=itemView.findViewById(R.id.iv_profile);
             iv_noti=itemView.findViewById(R.id.iv_noti);
             iv_notiRedMark=itemView.findViewById(R.id.noti_red_mark);
-            iv_myDiscussion=itemView.findViewById(R.id.my_discussion);
             iv_announcement=itemView.findViewById(R.id.announcement);
             iv_calamus=itemView.findViewById(R.id.calamus_discussion);
             tv.setOnClickListener(v -> {
@@ -514,13 +490,6 @@ public  class NewFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             iv_noti.setOnClickListener(v -> {
                 iv_notiRedMark.setVisibility(View.GONE);
                 Intent intent=new Intent(c, NotiListActivity.class);
-                c.startActivity(intent);
-            });
-
-            iv_myDiscussion.setOnClickListener(v -> {
-                Intent intent=new Intent(c, MyDiscussionActivity.class);
-                intent.putExtra("userId",currentUserId);
-                intent.putExtra("userName","My Discussion");
                 c.startActivity(intent);
             });
 

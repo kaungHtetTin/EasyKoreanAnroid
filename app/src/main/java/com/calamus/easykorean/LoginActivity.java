@@ -1,14 +1,10 @@
 package com.calamus.easykorean;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -17,18 +13,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.app.UserInformation;
-
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
-
-import java.util.Objects;
 import java.util.concurrent.Executor;
-
 
 public class LoginActivity extends AppCompatActivity {
 

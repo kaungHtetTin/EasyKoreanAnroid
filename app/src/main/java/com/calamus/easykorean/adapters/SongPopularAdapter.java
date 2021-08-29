@@ -17,7 +17,6 @@ import com.calamus.easykorean.SongDetailActivity;
 import com.calamus.easykorean.models.SongOnlineModel;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
-
 import static com.calamus.easykorean.app.AppHandler.reactFormat;
 import static com.calamus.easykorean.app.AppHandler.setPhotoFromRealUrl;
 

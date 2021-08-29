@@ -1,6 +1,5 @@
 package com.calamus.easykorean.adapters;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -9,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -21,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.calamus.easykorean.LikeListActivity;
+import com.calamus.easykorean.MyDiscussionActivity;
 import com.calamus.easykorean.PhotoActivity;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.app.AppHandler;
@@ -166,7 +165,7 @@ public class VideoCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                     if(!cModel.getWriterId().equals(currentUserId)){
                         NotificationController notificationController=new NotificationController(c);
-                        notificationController.sendNotification(userName+" reacted your comment.",cModel.getWriterToken());
+                        notificationController.sendNotification(userName+" reacted your comment.",cModel.getWriterToken(),"Easy Korean","1");
                     }
 
                     cModel.setIsLiked("1");
@@ -225,10 +224,32 @@ public class VideoCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 }
             });
 
+            iv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final CommentModel cModel=(CommentModel)data.get(getAbsoluteAdapterPosition());
+                    Intent intent=new Intent(c, MyDiscussionActivity.class);
+                    intent.putExtra("userId",cModel.getWriterId());
+                    intent.putExtra("userName",cModel.getWriterId());
+                    c.startActivity(intent);
+                }
+            });
+
+            tv_name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final CommentModel cModel=(CommentModel)data.get(getAbsoluteAdapterPosition());
+                    Intent intent=new Intent(c, MyDiscussionActivity.class);
+                    intent.putExtra("userId",cModel.getWriterId());
+                    intent.putExtra("userName",cModel.getWriterId());
+                    c.startActivity(intent);
+                }
+            });
+
 
             itemView.setOnLongClickListener(v -> {
                 final CommentModel cModel=(CommentModel)data.get(getAbsoluteAdapterPosition());
-                showMenu(v,cModel,getAdapterPosition());
+                showMenu(v,cModel,getAbsoluteAdapterPosition());
                 return false;
             });
 

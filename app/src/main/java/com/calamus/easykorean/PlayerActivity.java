@@ -1,6 +1,5 @@
 package com.calamus.easykorean;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.palette.graphics.Palette;

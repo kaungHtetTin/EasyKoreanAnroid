@@ -24,7 +24,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.Executor;
-
 import me.myatminsoe.mdetect.MDetect;
 
 
@@ -78,7 +77,7 @@ public class NotiListActivity extends AppCompatActivity {
 
         MobileAds.initialize(this, initializationStatus -> {});
 
-        AdView adView = findViewById(R.id.web_adview);
+        AdView adView = findViewById(R.id.adview);
         if(!isVip){
             adView.setVisibility(View.VISIBLE);
             AdRequest request=new AdRequest.Builder().build();

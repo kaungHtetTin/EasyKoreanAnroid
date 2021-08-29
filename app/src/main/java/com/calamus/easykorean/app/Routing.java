@@ -37,6 +37,17 @@ public class Routing {
     public static final String SEARCH_MY_ACCOUNT=DOMAIN_API+"/searchaccount/";
     public static final String VERIFY_CODE=DOMAIN_API+"/emailverify/";
     public static final String RESET_PASSWORD_BY_CODE=DOMAIN_API+"/resetpasswordbycode/";
+    public static final String RESET_PASSWORD_BY_USER=DOMAIN_API+"/resetpasswordbyuser/";
+    public static final String CHECK_CURRENT_PASSWORD=DOMAIN_API+"/checkpassword/";
+
+    public static final String ADD_FRIEND=DOMAIN_API+"/addfriend";
+    public static final String CONFIRM_FRIEND=DOMAIN_API+"/confirmfriend";
+    public static final String UN_FRIEND=DOMAIN_API+"/unfriend";
+    public static final String GET_FRIEND_REQUEST=DOMAIN_API+"/getfriendreq/";
+    public static final String REMOVE_FRIEND_REQUEST=DOMAIN_API+"/removefriendrequest";
+    public static final String GET_FRIENDS=DOMAIN_API+"/getfriends/";
+    public static final String SEARCHING=DOMAIN_API+"/search/";
+
     //app routes
     public static final String GET_FORM=DOMAIN_API+"/form/korea";   //
     public static final String GET_LOGIN_USERDATA=DOMAIN_API+"/login/korean";   //
@@ -49,7 +60,8 @@ public class Routing {
     public static final String UPDATE_GAME_SCORE=DOMAIN_API+"/gamers/korean/scores/update";//
 
 
-    public static final String PAYMENT="https://www.calamuseducation.com/easykorean/payment.html";
+    public static final String PAYMENT=DOMAIN_API+"/payment/korea";
     public static final String SEND_NOTI="https://www.calamuseducation.com/easykorean/pushnotification/sendnotification.php";
     public static final String APP_UPDATE="https://www.calamuseducation.com/easykorean/versioncontrol.php";
+    public static final String PUSH_NOTIFICATION=DOMAIN_API+"/pushnotification";
 }

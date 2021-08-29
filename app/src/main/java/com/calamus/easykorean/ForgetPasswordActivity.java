@@ -18,14 +18,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.app.UserInformation;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.Objects;
 import java.util.concurrent.Executor;
 
@@ -90,6 +87,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                 bt_facebook.setVisibility(View.GONE);
                 tv_error.setAnimation(animOut);
                 bt_facebook.setAnimation(animOut);
+
                 if(!TextUtils.isEmpty(et_phone.getText().toString())){
                     bt_search.setEnabled(false);
                     phone=et_phone.getText().toString();

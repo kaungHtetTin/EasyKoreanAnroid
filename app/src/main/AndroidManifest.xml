@@ -26,7 +26,13 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".ForgetPasswordActivity"></activity>
+        <activity android:name=".SearchingActivity"/>
+        <activity android:name=".TeacherActivity" />
+        <activity android:name=".ChattingActivity" />
+        <activity android:name=".ClassRoomActivity" />
+        <activity android:name=".ResetPasswordActivity" />
+        <activity android:name=".SettingActivity" />
+        <activity android:name=".ForgetPasswordActivity" />
         <activity
             android:name=".AlbumSongActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
