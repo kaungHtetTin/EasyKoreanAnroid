@@ -11,11 +11,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import com.calamus.easykorean.adapters.SongOnlineAdapter;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
+import com.calamus.easykorean.models.AdModel;
 import com.calamus.easykorean.models.SongOnlineModel;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -32,7 +34,7 @@ public class AlbumSongActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     private SwipeRefreshLayout swipe;
     private SongOnlineAdapter adapter;
-    private final ArrayList<SongOnlineModel> songOnlineLists = new ArrayList<>();
+    private final ArrayList<Object> songOnlineLists = new ArrayList<>();
     private final ArrayList<SongOnlineModel> songOnlineLists_Pop = new ArrayList<>();
     SharedPreferences sharedPreferences;
 
@@ -108,7 +110,7 @@ public class AlbumSongActivity extends AppCompatActivity {
 
                         if((visibleItemCount+pastVisibleItems)>=totalItemCount-7){
                             loading=false;
-                            count+=30;
+                            count+=10;
                             fetchSong(count,false);
                         }
                     }
@@ -208,7 +210,7 @@ public class AlbumSongActivity extends AppCompatActivity {
                 songOnlineLists.add(new SongOnlineModel(songId,title,artist,reactCount,commentCount,downloadCount,url,isLiked,drama));
             }
 
-            adapter.notifyDataSetChanged();
+            LoadApp();
 
         }catch (Exception e){
             loading=false;
@@ -237,5 +239,47 @@ public class AlbumSongActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
+    }
+
+    private void LoadApp(){
+
+        new Thread(() -> {
+            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
+                @Override
+                public void onResponse(String response) {
+                    postExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                JSONObject jo=new JSONObject(response);
+                                String id=jo.getString("id");
+                                String name=jo.getString("name");
+                                String description=jo.getString("description");
+                                String url=jo.getString("url");
+                                String cover=jo.getString("cover");
+                                String icon=jo.getString("icon");
+                                String type=jo.getString("type");
+                                if(songOnlineLists.size()>6&&songOnlineLists.size()<12){
+                                    songOnlineLists.add(4,new AdModel(id,name,description,url,cover,icon,type));
+                                }else{
+                                    songOnlineLists.add(new AdModel(id,name,description,url,cover,icon,type));
+                                }
+
+                                adapter.notifyDataSetChanged();
+
+                            }catch (Exception e){
+                                Log.e("Add json: ",e.toString());
+                            }
+
+                        }
+                    });
+                }
+                @Override
+                public void onError(String msg) {
+                    Log.e("Add err: ", msg);
+                }
+            }).url(Routing.GET_APP_ADS+"/"+count);
+            myHttp.runTask();
+        }).start();
     }
 }

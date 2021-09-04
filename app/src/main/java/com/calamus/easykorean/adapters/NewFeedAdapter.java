@@ -6,12 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -38,6 +40,7 @@ import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.controller.LikeController;
 import com.calamus.easykorean.controller.NotificationController;
+import com.calamus.easykorean.models.AdModel;
 import com.calamus.easykorean.models.AnounceModel;
 import com.calamus.easykorean.models.NewfeedModel;
 import com.google.android.gms.ads.formats.NativeAd;
@@ -49,6 +52,7 @@ import java.util.concurrent.Executor;
 import me.myatminsoe.mdetect.MDetect;
 import static com.calamus.easykorean.app.AppHandler.commentFormat;
 import static com.calamus.easykorean.app.AppHandler.formatTime;
+import static com.calamus.easykorean.app.AppHandler.myAdClick;
 import static com.calamus.easykorean.app.AppHandler.reactFormat;
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
 import static com.calamus.easykorean.app.AppHandler.viewCountFormat;
@@ -98,30 +102,29 @@ public  class NewFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             View view=mInflater.inflate(R.layout.item_post_writer,parent,false);
             return new WriterHolder(view);
         }else if(viewType==1){
-            View unifiedNativeLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.ad_unified, parent, false);
-            return new UnifiedNativeAdViewHolder(unifiedNativeLayoutView);
 
-        }else if(viewType==2){
             View view = mInflater.inflate(R.layout.item_newfeed, parent, false);
             return new Holder(view);
-        }else{
+        }else if(viewType==2){
             View view = mInflater.inflate(R.layout.item_anounce, parent, false);
             return new AnounceHolder(view);
+        }else{
+            View view = mInflater.inflate(R.layout.item_appads, parent, false);
+            return new AdHolder(view);
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        boolean b=data.get(position) instanceof UnifiedNativeAd;
 
         if(position==0){
             return  0;
         }else{
-            if(data.get(position) instanceof UnifiedNativeAd){
+            if(data.get(position) instanceof NewfeedModel){
                 return 1;
-            }else if(data.get(position) instanceof NewfeedModel){
+            }else if(data.get(position) instanceof AnounceModel){
                 return 2;
-            }else{
+            }else {
                 return 3;
             }
         }
@@ -137,10 +140,7 @@ public  class NewFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if(notiRedMark){ holder1.iv_notiRedMark.setVisibility(View.VISIBLE);}
         }else{
 
-            if(data.get(i) instanceof UnifiedNativeAd){
-                UnifiedNativeAd unifiedNativeAd = (UnifiedNativeAd) data.get(i);
-                populateNativeAdView(unifiedNativeAd, ((UnifiedNativeAdViewHolder)holder).getAdView());
-            }else if(data.get(i) instanceof NewfeedModel){
+            if(data.get(i) instanceof NewfeedModel){
                 try {
                     final NewfeedModel model = (NewfeedModel) data.get(i);
                     Holder postHolder=(Holder)holder;
@@ -254,55 +254,38 @@ public  class NewFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 } catch (Exception e) {
                     // Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-            }else{
+            }else if(data.get(i) instanceof AnounceModel){
                 AnounceHolder anounceHolder=(AnounceHolder)holder;
                 AnounceModel model=(AnounceModel) data.get(i);
                 anounceHolder.wv.loadUrl(model.getlinkAounce()+"/"+currentUserId);
+            }else if(data.get(i) instanceof AdModel){
+                AdHolder adHolder=(AdHolder)holder;
+                AdModel model=(AdModel)data.get(i);
+                adHolder.tvAppName.setText(model.getAppName());
+                adHolder.tvAppDes.setText(model.getAppDes());
+                AppHandler.setPhotoFromRealUrl(adHolder.ivCover,model.getAppCover());
+                AppHandler.setPhotoFromRealUrl(adHolder.ivIcon,model.getAppIcon());
+
+                if(!model.getType().equals("")){
+                    adHolder.btAppInstall.setVisibility(View.VISIBLE);
+                    adHolder.btAppInstall.setText(model.getType());
+                }else {
+                    adHolder.btAppInstall.setVisibility(View.GONE);
+                }
+
+                adHolder.btAppInstall.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        c.startActivity(new Intent(Intent.ACTION_VIEW,
+                                Uri.parse(model.getLink())));
+                        myAdClick(model.getId());
+                    }
+                });
             }
 
         }
 
     }
-
-    private void populateNativeAdView(UnifiedNativeAd unifiedNativeAd, UnifiedNativeAdView adView) {
-        ((TextView)adView.getHeadlineView()).setText(unifiedNativeAd.getHeadline());
-        ((TextView)adView.getBodyView()).setText(unifiedNativeAd.getBody());
-        ((TextView)adView.getCallToActionView()).setText(unifiedNativeAd.getCallToAction());
-
-        NativeAd.Image icon=unifiedNativeAd.getIcon();
-
-        if(icon==null){
-            adView.getIconView().setVisibility(View.INVISIBLE);
-        }else {
-            ((ImageView)adView.getIconView()).setImageDrawable(icon.getDrawable());
-            adView.getIconView().setVisibility(View.VISIBLE);
-        }
-
-        if(unifiedNativeAd.getStore()==null){
-            adView.getStoreView().setVisibility(View.INVISIBLE);
-        }else {
-            adView.getStoreView().setVisibility(View.VISIBLE);
-            ((TextView)adView.getStoreView()).setText(unifiedNativeAd.getStore());
-        }
-
-        if(unifiedNativeAd.getStarRating()==null){
-            adView.getStarRatingView().setVisibility(View.INVISIBLE);
-        }else {
-            adView.getStarRatingView().setVisibility(View.VISIBLE);
-            ((RatingBar)adView.getStarRatingView()).setRating(unifiedNativeAd.getStarRating().floatValue());
-        }
-
-        if(unifiedNativeAd.getAdvertiser()==null){
-            adView.getAdvertiserView().setVisibility(View.INVISIBLE);
-        }else {
-            adView.getAdvertiserView().setVisibility(View.VISIBLE);
-            ((TextView)adView.getAdvertiserView()).setText(unifiedNativeAd.getAdvertiser());
-        }
-
-        adView.setNativeAd(unifiedNativeAd);
-    }
-
-
 
     public class Holder extends RecyclerView.ViewHolder {
         TextView tv_userName,tv_time,tv_body,tv_read_more,tvViewCmt,tvCount,tvReactCount;
@@ -580,4 +563,20 @@ public  class NewFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         i.putExtra("postId",postId);
         c.startActivity(i);
     }
+
+    public class AdHolder extends RecyclerView.ViewHolder{
+
+        ImageView ivCover,ivIcon;
+        TextView tvAppName,tvAppDes;
+        Button btAppInstall;
+        public AdHolder(View view){
+            super(view);
+            ivCover=view.findViewById(R.id.iv_appCover);
+            ivIcon=view.findViewById(R.id.iv_appIcon);
+            tvAppName=view.findViewById(R.id.tv_appName);
+            tvAppDes=view.findViewById(R.id.tv_appDes);
+            btAppInstall=view.findViewById(R.id.bt_appInstall);
+        }
+    }
+
 }

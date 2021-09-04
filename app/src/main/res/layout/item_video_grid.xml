@@ -53,8 +53,21 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/black"
                 android:layout_toEndOf="@id/card_videoThumb"
-                android:layout_alignParentEnd="true"
+                android:layout_toStartOf="@id/ib_download"
                 android:textSize="16sp"/>
+
+            <ImageButton
+                android:id="@+id/ib_download"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/bg_circle_light_blue"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="7dp"
+                android:layout_alignParentTop="true"
+                android:elevation="5dp"
+                android:src="@drawable/ic_download"/>
+
 
             <TextView
                 android:padding="7dp"

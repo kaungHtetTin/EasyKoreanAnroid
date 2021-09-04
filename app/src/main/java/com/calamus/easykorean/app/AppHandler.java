@@ -1,5 +1,6 @@
 package com.calamus.easykorean.app;
 
+import android.util.Log;
 import android.widget.ImageView;
 import com.calamus.easykorean.R;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -218,6 +219,23 @@ public class AppHandler {
         DatabaseReference dbA = FirebaseDatabase.getInstance().getReference().child("korea").child("Active").child(userId);
         dbA.child("active").setValue(false);
         dbA.child("time").setValue(System.currentTimeMillis());
+    }
+
+    public static void myAdClick(String id){
+        new Thread(() -> {
+            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.POST, new MyHttp.Response() {
+                @Override
+                public void onResponse(String response) {
+                    Log.e("Record Click:", response);
+                }
+                @Override
+                public void onError(String msg) {
+                    Log.e("RecordClick Err:",msg);
+                }
+            }).url(Routing.CLICK_AD)
+                    .field("id",id);
+            myHttp.runTask();
+        }).start();
     }
 
 }

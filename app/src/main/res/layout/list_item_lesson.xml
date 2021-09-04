@@ -44,16 +44,27 @@
 
 
     <TextView
-        android:gravity="center_vertical"
         android:id="@+id/lessonItemTv21"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/card"
         android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true"
         android:textColor="@android:color/black"
+        android:layout_toStartOf="@id/ib_download"
         android:text="Calamus Education"
         android:textSize="16sp"/>
+
+    <ImageButton
+        android:id="@+id/ib_download"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/bg_circle_light_blue"
+        android:layout_marginEnd="5dp"
+        android:layout_marginTop="7dp"
+        android:layout_alignParentTop="true"
+        android:elevation="5dp"
+        android:src="@drawable/ic_download"/>
 
     <TextView
         android:id="@+id/tv_learned"
@@ -71,7 +82,8 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_margin="7dp"
+        android:layout_marginStart="7dp"
+        android:layout_marginEnd="7dp"
         android:layout_below="@id/card"
         android:background="#F0F3F5"/>
 

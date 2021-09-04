@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    android:layout_marginTop="4dp"
+    android:padding="7dp"
+    app:cardBackgroundColor="@color/cardview_light_background"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="1dp"
+    android:id="@+id/card_View">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <ImageView
+            android:id="@+id/iv_appCover"
+            android:layout_width="match_parent"
+            android:scaleType="centerCrop"
+            android:layout_height="300dp" />
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="12sp"
+            android:text="Ad"
+            android:gravity="center"
+            android:padding="2dp"
+            android:background="#ffcc66"/>
+
+        <ImageView
+
+            android:id="@+id/iv_appIcon"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_margin="4dp"
+            android:layout_below="@id/iv_appCover"/>
+
+        <TextView
+            android:id="@+id/tv_appName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_alignTop="@id/iv_appIcon"
+            android:layout_toEndOf="@id/iv_appIcon"/>
+
+        <TextView
+            android:id="@+id/tv_appDes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/iv_appIcon"
+            android:layout_below="@id/tv_appName"
+            android:textColor="@color/black"/>
+
+        <ImageView
+            android:src="@drawable/ic_feather"
+            android:id="@+id/iv_googlePlay"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_circle_light_blue"
+            android:layout_below="@id/tv_appDes"
+            android:layout_toEndOf="@id/iv_appIcon"
+            android:layout_marginStart="4dp"/>
+
+        <Button
+            android:id="@+id/bt_appInstall"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_below="@id/iv_appIcon"
+            android:layout_margin="15dp"
+            android:background="@drawable/bg_button"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@color/white"/>
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

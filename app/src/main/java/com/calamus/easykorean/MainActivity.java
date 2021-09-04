@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         switch (goSomeWhere) {
             case "splash":
                 String version = share.getString("version", "");
-                if (!version.equals("2.17")) confirmUpdate(); //check the version in generaldata.php
+                if (!version.equals("2.19")) confirmUpdate(); //check the version in generaldata.php
 
                 break;
             case "login":

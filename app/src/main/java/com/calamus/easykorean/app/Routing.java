@@ -24,13 +24,13 @@ public class Routing {
     public static final String LIKE_A_POST=DOMAIN_API+"/posts/like";//
     public static final String LIKE_A_SONG=DOMAIN_API+"/songs/like";//
     public static final String FETCH_POST_LIKE=DOMAIN_API+"/posts/likes";//
-    public static final String GET_SONGS=DOMAIN_API+"/songs/get";//
+    public static final String GET_SONGS=DOMAIN_API+"/songs/v2/get";//
     public static final String SEARCH_A_SONG=DOMAIN_API+"/songs/search";//
     public static final String DOWNLOAD_A_SONG=DOMAIN_API+"/songs/download";//
     public static final String GET_POPULAR_SONG=DOMAIN_API+"/songs/popular";
     public static final String GET_SONG_LYRICS=DOMAIN_API+"/songs/lyrics/";
     public static final String GET_SONG_ARTIST=DOMAIN_API+"/songs/artists";
-    public static final String GET_SONG_BY_ARTIST=DOMAIN_API+"/songs/";
+    public static final String GET_SONG_BY_ARTIST=DOMAIN_API+"/songs/v2/";
     public static final String RECORD_A_CLICK=DOMAIN_API+"/click/korean";
     public static final String GET_PROFILE=DOMAIN_API+"/getprofile";
     public static final String PLAY_VIDEO=DOMAIN_API+"/playvideo/";
@@ -48,6 +48,8 @@ public class Routing {
     public static final String GET_FRIENDS=DOMAIN_API+"/getfriends/";
     public static final String SEARCHING=DOMAIN_API+"/search/";
 
+    public static final String GET_VIDEO_URL=DOMAIN_API+"/posts/videourl/";
+
     //app routes
     public static final String GET_FORM=DOMAIN_API+"/form/korea";   //
     public static final String GET_LOGIN_USERDATA=DOMAIN_API+"/login/korean";   //
@@ -58,6 +60,9 @@ public class Routing {
     public static final String GET_GAME_WORD=DOMAIN_API+"/game/korean";//
     public static final String GET_GAME_SCORE=DOMAIN_API+"/gamers/korean/scores";//
     public static final String UPDATE_GAME_SCORE=DOMAIN_API+"/gamers/korean/scores/update";//
+
+    public static final String GET_APP_ADS=DOMAIN_API+"/appads";
+    public static final String CLICK_AD=DOMAIN_API+"/appads/click";
 
 
     public static final String PAYMENT=DOMAIN_API+"/payment/korea";

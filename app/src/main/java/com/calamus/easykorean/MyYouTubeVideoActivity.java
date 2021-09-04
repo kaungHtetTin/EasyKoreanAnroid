@@ -83,7 +83,7 @@ public class MyYouTubeVideoActivity extends YouTubeBaseActivity implements Picki
     WebView wv;
     long a;
     String isVip="0";
-    ImageButton ib_download,ib_downloaded;
+
     String isLiked,postLikes;
     String timeCheck="";
     ImageView iv_react;
@@ -106,7 +106,6 @@ public class MyYouTubeVideoActivity extends YouTubeBaseActivity implements Picki
         isVIP=sharedPreferences.getBoolean("isVIP",false);
         currentUserId=sharedPreferences.getString("phone",null);
 
-        ib_download=findViewById(R.id.ib_download);
         videoId = Objects.requireNonNull(getIntent().getExtras()).getString("videoId");
         videoTitle=getIntent().getExtras().getString("videoTitle");
         timeCheck=getIntent().getExtras().getString("cmtTime","");
@@ -136,21 +135,6 @@ public class MyYouTubeVideoActivity extends YouTubeBaseActivity implements Picki
             };
             timer.start();
         }
-
-        ib_download.setOnClickListener(view -> {
-            if(isVIP){
-                Toast.makeText(getApplicationContext(),"Start downloading",Toast.LENGTH_SHORT).show();
-                Intent intent=new Intent(MyYouTubeVideoActivity.this,DownloaderService.class);
-                String checkTitle=videoTitle.replace("/"," ");
-                intent.putExtra("dir",getExternalFilesDir(Environment.DIRECTORY_MOVIES).getPath());
-                intent.putExtra("filename",checkTitle+".mp4");
-                intent.putExtra("downloadUrl",videoUrl);
-                startService(intent);
-            }else {
-                showVIPRegistrationDialog();
-            }
-
-        });
 
         card_reatCount.setOnClickListener(view -> {
             Intent intent=new Intent(MyYouTubeVideoActivity.this, LikeListActivity.class);
@@ -183,7 +167,7 @@ public class MyYouTubeVideoActivity extends YouTubeBaseActivity implements Picki
         tv_reactCount=findViewById(R.id.tv_reactCount);
         iv_react=findViewById(R.id.iv_react);
         card_reatCount=findViewById(R.id.card_reactCount);
-        ib_downloaded=findViewById(R.id.ib_downloaded);
+
 
         layout=findViewById(R.id.yt_cmt_layout);
         progressBar=findViewById(R.id.loading_pb);
@@ -229,15 +213,8 @@ public class MyYouTubeVideoActivity extends YouTubeBaseActivity implements Picki
 
                 isLiked="1";
 
-
             }
 
-        });
-
-
-        ib_downloaded.setOnClickListener(view -> {
-            Intent intent=new Intent(MyYouTubeVideoActivity.this,SavedVideoActivity.class);
-            startActivity(intent);
         });
     }
 
@@ -548,11 +525,6 @@ public class MyYouTubeVideoActivity extends YouTubeBaseActivity implements Picki
                             if(reactCount!=0){
                                 card_reatCount.setVisibility(View.VISIBLE);
                                 tv_reactCount.setText(reactFormat(reactCount));
-                            }
-
-                            if(!videoUrl.equals("")){
-                                ib_download.setVisibility(View.VISIBLE);
-
                             }
 
                         }catch (Exception e){

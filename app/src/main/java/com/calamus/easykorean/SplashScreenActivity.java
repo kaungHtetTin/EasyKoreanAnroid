@@ -59,6 +59,11 @@ public class SplashScreenActivity extends AppCompatActivity {
         getWordOfTheDay(Routing.GET_WORD_OF_THE_DAY);//get word of the day
         setScreen();
 
+        if(autoLogin){
+            UserInformation userInformation=new UserInformation(SplashScreenActivity.this);
+            userInformation.getGeneralData(phone);
+        }
+
     }
 
 
@@ -82,11 +87,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                     }
                     // Get new FCM registration token
                     String token = task.getResult();
-
-                    if(autoLogin){
-                        UserInformation userInformation=new UserInformation(SplashScreenActivity.this);
-                        userInformation.getGeneralData(phone);
-                    }
 
                     editor.putString("token",token);
                     editor.apply();

@@ -5,9 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -15,21 +17,27 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.SongDetailActivity;
 import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.controller.LikeController;
+import com.calamus.easykorean.models.AdModel;
 import com.calamus.easykorean.models.SongOnlineModel;
-import com.google.android.gms.ads.MobileAds;
+
 import java.util.ArrayList;
+
+import static com.calamus.easykorean.app.AppHandler.myAdClick;
 import static com.calamus.easykorean.app.AppHandler.reactFormat;
 import static com.calamus.easykorean.app.AppHandler.setPhotoFromRealUrl;
 
 
-public class SongOnlineAdapter extends RecyclerView.Adapter<SongOnlineAdapter.Holder> {
+public class SongOnlineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Activity c;
-    private final ArrayList<SongOnlineModel> data;
+    private final ArrayList<Object> data;
     private final ArrayList<SongOnlineModel> dataPopular;
     private final LayoutInflater mInflater;
     SharedPreferences sharedPreferences;
@@ -37,7 +45,7 @@ public class SongOnlineAdapter extends RecyclerView.Adapter<SongOnlineAdapter.Ho
 
     @SuppressLint("SimpleDateFormat")
 
-    public SongOnlineAdapter(Activity c, ArrayList<SongOnlineModel> data,ArrayList<SongOnlineModel> dataPopular) {
+    public SongOnlineAdapter(Activity c, ArrayList<Object> data,ArrayList<SongOnlineModel> dataPopular) {
         this.data = data;
         this.dataPopular=dataPopular;
         this.c = c;
@@ -45,7 +53,10 @@ public class SongOnlineAdapter extends RecyclerView.Adapter<SongOnlineAdapter.Ho
         sharedPreferences=c.getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         currentUserId=sharedPreferences.getString("phone","000");
 
-        MobileAds.initialize(c, initializationStatus -> {});
+        MobileAds.initialize(c,new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {}
+        });
     }
 
     @Override
@@ -54,81 +65,126 @@ public class SongOnlineAdapter extends RecyclerView.Adapter<SongOnlineAdapter.Ho
     }
 
     @Override
-    public SongOnlineAdapter.Holder onCreateViewHolder( ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
 
         if(viewType==0){
             View view = mInflater.inflate(R.layout.item_song_popular_container, parent, false);
             return new PopularHolder(view);
+        }else if(viewType==1){
+            View view = mInflater.inflate(R.layout.item_song_online, parent, false);
+            return new Holder(view);
+        }else{
+            View view = mInflater.inflate(R.layout.item_appads, parent, false);
+            return new AdHolder(view);
         }
 
-        View view = mInflater.inflate(R.layout.item_song_online, parent, false);
-        return new Holder(view);
+
 
     }
 
     @Override
-    public void onBindViewHolder(final SongOnlineAdapter.Holder holder, final int i) {
+    public int getItemViewType(int position) {
+        if(position==0){
+            return 0;
+        }else if(data.get(position) instanceof SongOnlineModel){
+            return  1;
 
-      if(i==0){
+        }else{
+            return 2;
+        }
+    }
 
-          PopularHolder popularHolder=(PopularHolder)holder;
-          SongPopularAdapter adapter=new SongPopularAdapter(c,dataPopular);
-          LinearLayoutManager lm = new LinearLayoutManager(c, LinearLayoutManager.HORIZONTAL, false);
-          popularHolder.recyclerView.setLayoutManager(lm);
-          popularHolder.recyclerView.setItemAnimator(new DefaultItemAnimator());
-          popularHolder.recyclerView.setAdapter(adapter);
-          adapter.notifyDataSetChanged();
+    @Override
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int i) {
 
+        if(i==0){
 
-      }else{
-          SongOnlineModel model=data.get(i);
-
-          holder.tv_title.setText(model.getTitle());
-          holder.tv_artist.setText(model.getArtist());
-          holder.tv_drama.setText(model.getDrama());
-          String imageUrl="https://www.calamuseducation.com/uploads/songs/image/"+model.getUrl()+".png";
-          setPhotoFromRealUrl(holder.iv_songImage,imageUrl);
-          int reactCount=Integer.parseInt(model.getLikeCount());
-          if(reactCount==0)holder.tv_reactCount.setText("");
-          else holder.tv_reactCount.setText(reactFormat(reactCount));
-          holder.iv_downloaded.setVisibility(View.GONE);
+            PopularHolder popularHolder=(PopularHolder)holder;
+            SongPopularAdapter adapter=new SongPopularAdapter(c,dataPopular);
+            LinearLayoutManager lm = new LinearLayoutManager(c, LinearLayoutManager.HORIZONTAL, false);
+            popularHolder.recyclerView.setLayoutManager(lm);
+            popularHolder.recyclerView.setItemAnimator(new DefaultItemAnimator());
+            popularHolder.recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
 
 
-          int downloads=Integer.parseInt(model.getDownloadCount());
-          holder.tv_downloadCount.setText(AppHandler.downloadFormat(downloads));
+        }else{
+            if(data.get(i) instanceof SongOnlineModel){
+                SongOnlineModel model=(SongOnlineModel) data.get(i);
+                Holder songHolder=(Holder)holder;
+                songHolder.tv_title.setText(model.getTitle());
+                songHolder.tv_artist.setText(model.getArtist());
+                songHolder.tv_drama.setText(model.getDrama());
+                String imageUrl="https://www.calamuseducation.com/uploads/songs/image/"+model.getUrl()+".png";
+                setPhotoFromRealUrl(songHolder.iv_songImage,imageUrl);
+                int reactCount=Integer.parseInt(model.getLikeCount());
+                if(reactCount==0)songHolder.tv_reactCount.setText("");
+                else songHolder.tv_reactCount.setText(reactFormat(reactCount));
+                songHolder.iv_downloaded.setVisibility(View.GONE);
 
-          holder.iv_react.setBackgroundResource(R.drawable.ic_normal_react);
-          if(model.getIsLike().equals("1")){
-              holder.iv_react.setBackgroundResource(R.drawable.ic_react_love);
-          }
 
-          holder.cardReact.setOnClickListener(view -> {
+                int downloads=Integer.parseInt(model.getDownloadCount());
+                songHolder.tv_downloadCount.setText(AppHandler.downloadFormat(downloads));
 
-              if(model.getIsLike().equals("1")){
-                  holder.iv_react.setBackgroundResource(R.drawable.ic_normal_react);
-                  int rectCount=Integer.parseInt(model.getLikeCount());
-                  rectCount--;
+                songHolder.iv_react.setBackgroundResource(R.drawable.ic_normal_react);
+                if(model.getIsLike().equals("1")){
+                    songHolder.iv_react.setBackgroundResource(R.drawable.ic_react_love);
+                }
 
-                  if(rectCount>0)holder.tv_reactCount.setText(reactFormat(rectCount));
-                  else holder.tv_reactCount.setText("");
+                songHolder.cardReact.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
 
-                  model.setIsLike("0");
-                  model.setLikeCount(rectCount+"");
+                        if(model.getIsLike().equals("1")){
+                            songHolder.iv_react.setBackgroundResource(R.drawable.ic_normal_react);
+                            int rectCount=Integer.parseInt(model.getLikeCount());
+                            rectCount--;
 
-              }else{
-                  holder.iv_react.setBackgroundResource(R.drawable.ic_react_love);
-                  int rectCount=Integer.parseInt(model.getLikeCount());
-                  rectCount++;
-                  holder.tv_reactCount.setText(reactFormat(rectCount));
-                  model.setIsLike("1");
-                  model.setLikeCount(rectCount+"");
-              }
+                            if(rectCount>0)songHolder.tv_reactCount.setText(reactFormat(rectCount));
+                            else songHolder.tv_reactCount.setText("");
 
-              LikeController.likeTheSong(currentUserId,model.getId());
+                            model.setIsLike("0");
+                            model.setLikeCount(rectCount+"");
 
-          });
+                        }else{
+                            songHolder.iv_react.setBackgroundResource(R.drawable.ic_react_love);
+                            int rectCount=Integer.parseInt(model.getLikeCount());
+                            rectCount++;
+                            songHolder.tv_reactCount.setText(reactFormat(rectCount));
+                            model.setIsLike("1");
+                            model.setLikeCount(rectCount+"");
+                        }
 
-      }
+                        LikeController.likeTheSong(currentUserId,model.getId());
+
+                    }
+                });
+
+            }else if(data.get(i) instanceof AdModel){
+                AdHolder adHolder=(AdHolder)holder;
+                AdModel model=(AdModel)data.get(i);
+                adHolder.tvAppName.setText(model.getAppName());
+                adHolder.tvAppDes.setText(model.getAppDes());
+                setPhotoFromRealUrl(adHolder.ivCover,model.getAppCover());
+                setPhotoFromRealUrl(adHolder.ivIcon,model.getAppIcon());
+
+                if(!model.getType().equals("")){
+                    adHolder.btAppInstall.setVisibility(View.VISIBLE);
+                    adHolder.btAppInstall.setText(model.getType());
+                }else {
+                    adHolder.btAppInstall.setVisibility(View.GONE);
+                }
+
+                adHolder.btAppInstall.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        c.startActivity(new Intent(Intent.ACTION_VIEW,
+                                Uri.parse(model.getLink())));
+                        myAdClick(model.getId());
+                    }
+                });
+            }
+        }
 
     }
 
@@ -152,27 +208,41 @@ public class SongOnlineAdapter extends RecyclerView.Adapter<SongOnlineAdapter.Ho
             tv_drama=v.findViewById(R.id.tv_drama);
             iv_downloaded=v.findViewById(R.id.iv_downloadCheck);
 
-            v.setOnClickListener(view -> {
-                SongOnlineModel model=data.get(getAbsoluteAdapterPosition());
-                Intent intent=new Intent(c, SongDetailActivity.class);
-                intent.putExtra("id",model.getId());
-                intent.putExtra("title",model.getTitle());
-                intent.putExtra("artist",model.getArtist());
-                intent.putExtra("likeCount",model.getLikeCount());
-                intent.putExtra("commentCount",model.getCommentCount());
-                intent.putExtra("downloadCount",model.getDownloadCount());
-                intent.putExtra("url",model.getUrl());
-                intent.putExtra("isLike",model.getIsLike().equals("1"));
-                intent.putExtra("userId",currentUserId);
-                c.startActivity(intent);
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    SongOnlineModel model=(SongOnlineModel) data.get(getAbsoluteAdapterPosition());
+                    Intent intent=new Intent(c, SongDetailActivity.class);
+                    intent.putExtra("id",model.getId());
+                    intent.putExtra("title",model.getTitle());
+                    intent.putExtra("artist",model.getArtist());
+                    intent.putExtra("likeCount",model.getLikeCount());
+                    intent.putExtra("commentCount",model.getCommentCount());
+                    intent.putExtra("downloadCount",model.getDownloadCount());
+                    intent.putExtra("url",model.getUrl());
+                    intent.putExtra("isLike",model.getIsLike().equals("1"));
+                    intent.putExtra("userId",currentUserId);
+                    c.startActivity(intent);
+                }
             });
         }
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return position;
+    public class AdHolder extends RecyclerView.ViewHolder{
+
+        ImageView ivCover,ivIcon;
+        TextView tvAppName,tvAppDes;
+        Button btAppInstall;
+        public AdHolder(View view){
+            super(view);
+            ivCover=view.findViewById(R.id.iv_appCover);
+            ivIcon=view.findViewById(R.id.iv_appIcon);
+            tvAppName=view.findViewById(R.id.tv_appName);
+            tvAppDes=view.findViewById(R.id.tv_appDes);
+            btAppInstall=view.findViewById(R.id.bt_appInstall);
+        }
     }
+
 
 
     public class PopularHolder extends Holder {

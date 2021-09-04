@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +25,7 @@ import com.calamus.easykorean.SearchingActivity;
 import com.calamus.easykorean.adapters.NewFeedAdapter;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
+import com.calamus.easykorean.models.AdModel;
 import com.calamus.easykorean.models.AnounceModel;
 import com.calamus.easykorean.models.NewfeedModel;
 import com.google.android.gms.ads.AdListener;
@@ -57,10 +59,8 @@ public class FragmentFour extends Fragment {
     LinearLayoutManager lm;
     Executor postExecutor;
     String userId,selection;
-    public static final int number_of_ads=1;
-    private static final String AD_UNIT_ID="ca-app-pub-2472405866346270/3806485083";
     AdLoader adLoader;
-    final List<UnifiedNativeAd> nativeAds=new ArrayList<>();
+
 
     @Nullable
     @Override
@@ -116,7 +116,6 @@ public class FragmentFour extends Fragment {
                     if(loading){
 
                         if((visibleItemCount+pastVisibleItems)>=totalItemCount-7){
-                            nativeAds.clear();
                             loading=false;
                             count+=10;
                             testFetch(count,false);
@@ -131,7 +130,6 @@ public class FragmentFour extends Fragment {
 
         swipe.setOnRefreshListener(() -> {
 
-            nativeAds.clear();
             postList.add(0,"kaung");
             count=0;
             loading=true;
@@ -193,8 +191,7 @@ public class FragmentFour extends Fragment {
 
             }
 
-            adapter.notifyDataSetChanged();
-            loadNativeAds();
+            LoadApp();
 
         }catch (Exception e){
             loading=false;
@@ -213,38 +210,6 @@ public class FragmentFour extends Fragment {
 
     }
 
-    private void loadNativeAds() {
-        AdLoader.Builder builder=new AdLoader.Builder(getActivity(),AD_UNIT_ID);
-        adLoader=builder.forUnifiedNativeAd(unifiedNativeAd -> {
-            nativeAds.add(unifiedNativeAd);
-
-            if(!adLoader.isLoading()){
-                insertAdsMenuItem();
-
-            }
-        }).withAdListener(new AdListener(){
-            @Override
-            public void onAdFailedToLoad(LoadAdError loadAdError) {
-                super.onAdFailedToLoad(loadAdError);
-
-                if(!adLoader.isLoading()){
-                    insertAdsMenuItem();
-
-                }
-            }
-        }).build();
-
-        adLoader.loadAds(new AdRequest.Builder().build(),number_of_ads);
-    }
-
-    private void insertAdsMenuItem() {
-        if(nativeAds.size()<0){
-            return;
-        }
-        postList.addAll(nativeAds);
-        adapter.notifyDataSetChanged();
-
-    }
 
     private void fetchAnounceLink(){
         new Thread(() -> {
@@ -280,6 +245,48 @@ public class FragmentFour extends Fragment {
                     });
                 }
             }).url(Routing.GET_ANNOUNCEMENT+"?major=korea&userId="+userId);
+            myHttp.runTask();
+        }).start();
+    }
+
+    private void LoadApp(){
+
+        new Thread(() -> {
+            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
+                @Override
+                public void onResponse(String response) {
+                    postExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                JSONObject jo=new JSONObject(response);
+                                String id=jo.getString("id");
+                                String name=jo.getString("name");
+                                String description=jo.getString("description");
+                                String url=jo.getString("url");
+                                String cover=jo.getString("cover");
+                                String icon=jo.getString("icon");
+                                String type=jo.getString("type");
+                                if(postList.size()>6&&postList.size()<15){
+                                    postList.add(4,new AdModel(id,name,description,url,cover,icon,type));
+                                }else{
+                                    postList.add(new AdModel(id,name,description,url,cover,icon,type));
+                                }
+
+                                adapter.notifyDataSetChanged();
+
+                            }catch (Exception e){
+                                Log.e("Add json: ",e.toString());
+                            }
+
+                        }
+                    });
+                }
+                @Override
+                public void onError(String msg) {
+                    Log.e("Add err: ", msg);
+                }
+            }).url(Routing.GET_APP_ADS+"/"+count);
             myHttp.runTask();
         }).start();
     }
