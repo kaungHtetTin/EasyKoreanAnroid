@@ -136,7 +136,7 @@ public class MyHttp
 
             FileInputStream inputStream = new FileInputStream(uploadFile);
             byte[] buffer = new byte[4096];
-            int bytesRead = -1;
+            int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1)
                 this.outputStream.write(buffer, 0, bytesRead);
 
@@ -186,7 +186,7 @@ public class MyHttp
                             url += "&" + key + "=" + value;
                         }
                     }
-                    catch (UnsupportedEncodingException e)
+                    catch (UnsupportedEncodingException ignored)
                     {}
                 }
             }
@@ -237,7 +237,7 @@ public class MyHttp
             {
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(this.httpConn.getInputStream()));
-                String line = null;
+                String line;
                 while ((line = reader.readLine()) != null)
                     result.append(line).append("\n");
 

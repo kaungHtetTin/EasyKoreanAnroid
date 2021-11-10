@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.load.engine.Resource;
 import com.calamus.easykorean.MyDiscussionActivity;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.app.AppHandler;
@@ -26,7 +24,6 @@ import com.calamus.easykorean.models.FriendModel;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
@@ -140,7 +137,7 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.Holder> {
                                         tv_addFri.setVisibility(View.GONE);
                                     }
 
-                                }catch (Exception e){}
+                                }catch (Exception ignored){}
                             }
                         });
                     }
@@ -150,8 +147,7 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.Holder> {
                     }
                 }).url(url)
                         .field("my_id",currentUserId)
-                        .field("other_id",userId)
-                        .field("major","korea");
+                        .field("other_id",userId);
                 myHttp.runTask();
             }).start();
         }

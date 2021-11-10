@@ -222,7 +222,7 @@ public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callb
             if(videoWidth>videoHeight)this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             else this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 
-        }catch (Exception e){}
+        }catch (Exception ignored){}
 
     }
 

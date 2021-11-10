@@ -56,7 +56,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
 
             AppHandler.setPhotoFromRealUrl(holder.iv,model.getThumbLink());
 
-        }catch (Exception e){
+        }catch (Exception ignored){
 
         }
 

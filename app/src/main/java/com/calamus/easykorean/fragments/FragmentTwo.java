@@ -74,9 +74,10 @@ public class FragmentTwo extends Fragment {
             JSONArray ja=new JSONArray(categoryJson);
             for(int i=0;i<ja.length();i++){
                 JSONObject jo=ja.getJSONObject(i);
-                String cate=jo.getString("cate");
+                String cate=jo.getString("category");
+                String cate_id=jo.getString("category_id");
                 String pic=jo.getString("pic");
-                categoryList.add(new CategoryModel(cate,"",pic,""));
+                categoryList.add(new CategoryModel(cate,cate_id,pic,""));
             }
             adapter.notifyDataSetChanged();
         } catch (JSONException e) {

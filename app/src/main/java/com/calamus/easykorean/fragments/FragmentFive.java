@@ -15,9 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -36,7 +36,10 @@ import com.calamus.easykorean.UpdateActivity;
 import com.calamus.easykorean.WebSiteActivity;
 import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.app.Routing;
+import com.calamus.easykorean.app.StudyTimeSetter;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
 import me.myatminsoe.mdetect.MDetect;
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
@@ -44,18 +47,18 @@ import static com.calamus.easykorean.app.AppHandler.setMyanmar;
 public class FragmentFive extends Fragment {
 
     private View v;
-    String imagePath;
+    String imagePath,studyTime;
     SharedPreferences sharedPreferences1;
     Long checkUpdate;
     final int callRequestCode = 123;
     RecyclerView menuRecycler;
 
-
     String[] title = {
-            "Chat with\n"+"classmates",
+            "Chat With\n"+"Classmates",
             "Account Setting",
-            "Like us\n"+"on facebook",
+            "Like Us\n"+"On facebook",
             "Pay For VIP",
+            "Set Your Study Time",
             "Downloaded Videos",
             "Saved Posts",
             "Check Update",
@@ -81,6 +84,7 @@ public class FragmentFive extends Fragment {
         isVip=sharedPreferences1.getBoolean("isVIP",false);
         imagePath=sharedPreferences1.getString("imageUrl",null);
         phone=sharedPreferences1.getString("phone",null);
+        studyTime=sharedPreferences1.getString("studyTime",null);
 
         menuRecycler=v.findViewById(R.id.menu_recycler);
         tv_header=v.findViewById(R.id.tv_header);
@@ -134,6 +138,7 @@ public class FragmentFive extends Fragment {
                 R.drawable.ic_baseline_settings_24,
                 R.drawable.ic_facebook,
                 R.drawable.ic_attach_money_black_24dp,
+                R.drawable.ic_alarm,
                 R.drawable.ic_downloaded_video,
                 R.drawable.ic_save,
                 R.drawable.ic_cloud_download_black_24dp,
@@ -174,6 +179,10 @@ public class FragmentFive extends Fragment {
                StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
                layoutParams.setFullSpan(true);
            }
+
+           if(studyTime!=null && i==4){
+               holder.tv.setText("Studying At "+studyTime+ " Daily");
+           }
         }
 
         public class Holder extends RecyclerView.ViewHolder {
@@ -184,7 +193,7 @@ public class FragmentFive extends Fragment {
                 super(view);
                 tv=view.findViewById(R.id.list_tv);
                 iv=view.findViewById(R.id.list_iv);
-                view.setOnClickListener(v -> setting(getAdapterPosition()));
+                view.setOnClickListener(v -> setting(getAbsoluteAdapterPosition(),tv));
 
             }
         }
@@ -195,7 +204,7 @@ public class FragmentFive extends Fragment {
         }
     }
 
-    public void setting(int position){
+    public void setting(int position,TextView tv){
         switch (position) {
             case 0:{
                 Intent intent=new Intent(getActivity(), ClassRoomActivity.class);
@@ -222,35 +231,37 @@ public class FragmentFive extends Fragment {
                 break;
             }
             case 4: {
-
-                Intent intent=new Intent(getActivity(), SavedVideoActivity.class);
-                startActivity(intent);
-
+                StudyTimeSetter studyTimeSetter=new StudyTimeSetter(requireActivity());
+                studyTimeSetter.showTimePicker();
                 break;
             }
             case 5:
-
+                Intent intent=new Intent(getActivity(), SavedVideoActivity.class);
+                startActivity(intent);
+                break;
+            case 6:
                 Intent i = new Intent(getActivity(), SavePostActivity.class);
                 startActivity(i);
                 break;
-            case 6:
-                Intent intent=new Intent(getActivity(), UpdateActivity.class);
-                startActivity(intent);
-                break;
             case 7:
+                Intent intent2=new Intent(getActivity(), UpdateActivity.class);
+                startActivity(intent2);
+
+                break;
+            case 8:
                 Intent shareingIntent = new Intent(Intent.ACTION_SEND);
                 shareingIntent.setType("text/plain");
                 String shareBody = "https://play.google.com/store/apps/details?id=" + requireActivity().getPackageName();
                 shareingIntent.putExtra(Intent.EXTRA_SUBJECT, "Try out this best Language App.");
                 shareingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(shareingIntent, "Share via"));
-
-                break;
-            case 8:
-                goPlayStore();
                 break;
             case 9:
 
+                goPlayStore();
+                break;
+
+            case 10:
                 if (isPermissionGranted()) {
                     callCenter("09979638384");
                 } else {
@@ -258,7 +269,7 @@ public class FragmentFive extends Fragment {
                 }
                 break;
 
-            case 10:
+            case 11:
                 signOut();
                 break;
         }
@@ -341,5 +352,6 @@ public class FragmentFive extends Fragment {
         startActivity(new Intent(Intent.ACTION_VIEW,
                 Uri.parse("https://play.google.com/store/apps/details?id="+ requireActivity().getPackageName())));
     }
+
 
 }

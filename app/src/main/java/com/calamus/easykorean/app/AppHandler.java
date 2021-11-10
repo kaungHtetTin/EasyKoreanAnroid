@@ -198,7 +198,7 @@ public class AppHandler {
     }
 
     public static String changeFont(String s){
-        String result="";
+        String result;
         if(MDetect.INSTANCE.isUnicode()){
             result=s;
         }else{
@@ -208,7 +208,7 @@ public class AppHandler {
     }
 
     public static void makeActiveNow(String userId){
-        DatabaseReference dbA = FirebaseDatabase.getInstance().getReference().child("korea").child("Active").child(userId);
+        DatabaseReference dbA = FirebaseDatabase.getInstance().getReference().child(Routing.MAJOR).child("Active").child(userId);
         dbA.child("active").setValue(true);
         dbA.child("time").setValue(System.currentTimeMillis());
         dbA.child("time").onDisconnect().setValue(System.currentTimeMillis());
@@ -216,7 +216,7 @@ public class AppHandler {
     }
 
     public static  void makeOffline(String userId){
-        DatabaseReference dbA = FirebaseDatabase.getInstance().getReference().child("korea").child("Active").child(userId);
+        DatabaseReference dbA = FirebaseDatabase.getInstance().getReference().child(Routing.MAJOR).child("Active").child(userId);
         dbA.child("active").setValue(false);
         dbA.child("time").setValue(System.currentTimeMillis());
     }

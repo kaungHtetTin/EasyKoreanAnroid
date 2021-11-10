@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -27,7 +28,6 @@ import com.calamus.easykorean.app.MyDialog;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.models.LessonModel;
-import com.calamus.easykorean.models.SongOnlineModel;
 import com.calamus.easykorean.service.DownloaderService;
 
 import org.jetbrains.annotations.NotNull;
@@ -84,9 +84,15 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.Holder> im
 
             LessonModel model = data.get(i);
             holder.tvTitle.setText(setMyanmar(model.getTitle()));
-            boolean alreadyLearnerd=share.getBoolean(model.getCate()+model.getTitle(),false);
 
-            if(alreadyLearnerd)holder.tvLearned.setVisibility(View.VISIBLE);
+            if(model.isLearned()){
+                holder.tvLearned.setText("Learned");
+                holder.tvLearned.setTextColor(Color.GRAY);
+            }
+            else  {
+                holder.tvLearned.setText("New");
+                holder.tvLearned.setTextColor(Color.RED);
+            }
 
             if(model.isVideo()){
                 holder.ibt_download.setVisibility(View.VISIBLE);
@@ -149,14 +155,15 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.Holder> im
 
             view.setOnClickListener(p1 -> {
                 LessonModel model = data.get(getAbsoluteAdapterPosition());
-
-                Bundle bundle = new Bundle();
                 boolean isMember=share.getBoolean(level,false);
 
                 if(fragmentId==1){
                     if(!model.isVip()||isMember){
 
-                        go(model,bundle);
+                        go(model);
+                        tvLearned.setText("Learned");
+                        tvLearned.setTextColor(Color.GRAY);
+                        model.setLearned(true);
 
                     }else{
                         String msg="This Lesson is only for VIP user.\n\nDo you want to contact the Calamus Education for VIP Registration";
@@ -165,7 +172,10 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.Holder> im
                 }else{
                     boolean isVip=share.getBoolean("isVIP",false);
                     if(!model.isVip()||isVip){
-                        go(model,bundle);
+                        go(model);
+                        tvLearned.setText("Learned");
+                        tvLearned.setTextColor(Color.GRAY);
+                        model.setLearned(true);
                     }else{
                         String msg="This Lesson is only for VIP user.\n\nDo you want to contact the Calamus Education for VIP Registration";
                         showVIPRegistrationDialog(msg);
@@ -204,7 +214,7 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.Holder> im
             }).start();
         }
 
-        private void go(LessonModel model,Bundle bundle){
+        private void go(LessonModel model){
             boolean alreadyLearnerd=share.getBoolean(model.getCate()+model.getTitle(),false);
             int eValue=share.getInt(eCode,0);
             if(!alreadyLearnerd){
@@ -214,14 +224,12 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.Holder> im
                 editor.apply();
             }
 
-            if(eCode.equals("z"))AppHandler.recordAClick(currentUserId,"Kdrama");
-            AppHandler.recordAClick(currentUserId,model.getCate());
-
             if(model.isVideo()){
 
                 final  Intent i3=new Intent(c, MyYouTubeVideoActivity.class);
                 i3.putExtra("videoId",model.getLink());
                 i3.putExtra("videoTitle",model.getTitle());
+                i3.putExtra("lessonId",model.getId());
                 i3.putExtra("time",model.getTime());
                 c.startActivity(i3);
 
@@ -230,7 +238,7 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.Holder> im
                 final Intent i = new Intent(c, DetailActivity.class);
                 i.putExtra("link",model.getLink());
                 i.putExtra("title",model.getTitle());
-                i.putExtras(bundle);
+                i.putExtra("lessonId",model.getId());
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 c.startActivity(i);
             }

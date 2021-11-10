@@ -89,7 +89,7 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.Holder> {
 
 
 
-        }catch (Exception e){
+        }catch (Exception ignored){
 
         }
     }
@@ -166,7 +166,7 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.Holder> {
                 }).url(url)
                         .field("my_id",currentUserId)
                         .field("other_id",userId)
-                        .field("major","korea");
+                        .field("major",Routing.MAJOR);
                 myHttp.runTask();
             }).start();
         }

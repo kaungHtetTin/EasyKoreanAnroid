@@ -201,7 +201,7 @@ public class UpdateActivity extends AppCompatActivity {
 
             adapter.notifyDataSetChanged();
 
-        }catch (Exception e){}
+        }catch (Exception ignored){}
     }
 
     public void goPlayStore(){

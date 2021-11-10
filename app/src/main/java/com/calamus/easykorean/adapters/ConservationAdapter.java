@@ -26,13 +26,6 @@ import com.calamus.easykorean.TeacherActivity;
 import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.models.ConservationModel;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -106,7 +99,7 @@ public class ConservationAdapter extends RecyclerView.Adapter<ConservationAdapte
 
 
 
-        }catch (Exception e){
+        }catch (Exception ignored){
 
         }
 

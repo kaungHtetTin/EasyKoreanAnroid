@@ -28,18 +28,17 @@ import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.models.AdModel;
 import com.calamus.easykorean.models.AnounceModel;
 import com.calamus.easykorean.models.NewfeedModel;
-import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.formats.UnifiedNativeAd;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+
 import me.myatminsoe.mdetect.MDetect;
 
 
@@ -50,17 +49,14 @@ public class FragmentFour extends Fragment {
     NewFeedAdapter adapter;
     ArrayList<Object> postList = new ArrayList<>();
     SharedPreferences share;
-
     int count=0;
     private boolean loading=true;
     int visibleItemCount,totalItemCount;
     public static int pastVisibleItems;
-
     LinearLayoutManager lm;
     Executor postExecutor;
-    String userId,selection;
-    AdLoader adLoader;
-
+    ExecutorService myExecutor;
+    String userId;
 
     @Nullable
     @Override
@@ -69,20 +65,18 @@ public class FragmentFour extends Fragment {
         setHasOptionsMenu(true);
         MDetect.INSTANCE.init(getActivity());
         share=getActivity().getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
+        userId=share.getString("phone",null);
         setupViews();
         postList.add(0,"kaung");
         postExecutor = ContextCompat.getMainExecutor(getActivity());
+        myExecutor= Executors.newFixedThreadPool(3);
         fetchAnounceLink();
         testFetch(count,false);
         return v;
 
     }
 
-    public FragmentFour(String selection,String userId) {
 
-        this.selection=selection;
-        this.userId=userId;
-    }
 
     @Override
     public void onResume() {
@@ -140,28 +134,31 @@ public class FragmentFour extends Fragment {
 
     private void testFetch(int count,boolean isRefresh){
 
-        new Thread(() -> {
-            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
-                @Override
-                public void onResponse(String response) {
-                    postExecutor.execute(() -> {
-                        if (isRefresh){
-                            postList.clear();
-                            postList.add(0,"kaung");
-                        }
-                        doAsResult(response);
+        myExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
+                    @Override
+                    public void onResponse(String response) {
+                        postExecutor.execute(() -> {
+                            if (isRefresh){
+                                postList.clear();
+                                postList.add(0,"kaung");
+                            }
+                            doAsResult(response);
 
-                    });
-                }
-                @Override
-                public void onError(String msg) {
-                    postExecutor.execute(() -> {
-                        // Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show();
-                    });
-                }
-            }).url(Routing.FETCH_POST+"?count="+count+"&userId="+userId+"&major=korea"+"&selection="+selection);
-            myHttp.runTask();
-        }).start();
+                        });
+                    }
+                    @Override
+                    public void onError(String msg) {
+                        postExecutor.execute(() -> {
+                            // Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show();
+                        });
+                    }
+                }).url(Routing.FETCH_POST+"/"+userId+"/"+count);
+                myHttp.runTask();
+            }
+        });
     }
 
     public void doAsResult(String response){
@@ -212,7 +209,7 @@ public class FragmentFour extends Fragment {
 
 
     private void fetchAnounceLink(){
-        new Thread(() -> {
+        myExecutor.execute(()->{
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
                 @Override
                 public void onResponse(String response) {
@@ -233,7 +230,7 @@ public class FragmentFour extends Fragment {
                             }
                             adapter.notifyDataSetChanged();
 
-                        }catch (Exception  e){
+                        }catch (Exception ignored){
 
                         }
                     });
@@ -244,14 +241,13 @@ public class FragmentFour extends Fragment {
                         //  Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show();
                     });
                 }
-            }).url(Routing.GET_ANNOUNCEMENT+"?major=korea&userId="+userId);
+            }).url(Routing.GET_ANNOUNCEMENT+"?user_id="+userId);
             myHttp.runTask();
-        }).start();
+        });
     }
 
     private void LoadApp(){
-
-        new Thread(() -> {
+        myExecutor.execute(()->{
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
                 @Override
                 public void onResponse(String response) {
@@ -288,7 +284,7 @@ public class FragmentFour extends Fragment {
                 }
             }).url(Routing.GET_APP_ADS+"/"+count);
             myHttp.runTask();
-        }).start();
+        });
     }
 
     public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater){
@@ -309,4 +305,9 @@ public class FragmentFour extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onDestroy() {
+        myExecutor.shutdown();
+        super.onDestroy();
+    }
 }

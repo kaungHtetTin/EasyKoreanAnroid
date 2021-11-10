@@ -8,17 +8,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.calamus.easykorean.R;
+import com.calamus.easykorean.models.VideoCategoryModel;
+
 import java.util.ArrayList;
 
 public class VideoCategoryAdapter extends RecyclerView.Adapter<VideoCategoryAdapter.Holder> {
 
     private final Activity c;
-    private final ArrayList<String> data;
+    private final ArrayList<VideoCategoryModel> data;
     private final LayoutInflater mInflater;
     @SuppressLint("SimpleDateFormat")
     private Callback callback;
 
-    public VideoCategoryAdapter(Activity c, ArrayList<String> data,Callback callback) {
+    public VideoCategoryAdapter(Activity c, ArrayList<VideoCategoryModel> data,Callback callback) {
         this.data = data;
         this.c = c;
         this.mInflater = LayoutInflater.from(c);
@@ -46,7 +48,7 @@ public class VideoCategoryAdapter extends RecyclerView.Adapter<VideoCategoryAdap
 
     @Override
     public void onBindViewHolder(final VideoCategoryAdapter.Holder holder, final int i) {
-        String category=data.get(i);
+        String category=data.get(i).getCategory();
         holder.tv.setText(category);
         holder.callback = callback;
 
@@ -63,7 +65,7 @@ public class VideoCategoryAdapter extends RecyclerView.Adapter<VideoCategoryAdap
             tv=view.findViewById(R.id.tv_category);
             view.setOnClickListener(v -> {
                 if (callback != null) {
-                    callback.onCategoryClick(data.get(getAbsoluteAdapterPosition()));
+                    callback.onCategoryClick(data.get(getAbsoluteAdapterPosition()).getId());
                 }
             });
         }

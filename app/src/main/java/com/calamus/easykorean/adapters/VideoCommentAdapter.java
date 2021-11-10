@@ -165,7 +165,7 @@ public class VideoCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                     if(!cModel.getWriterId().equals(currentUserId)){
                         NotificationController notificationController=new NotificationController(c);
-                        notificationController.sendNotification(userName+" reacted your comment.",cModel.getWriterToken(),"Easy Korean","1");
+                        notificationController.sendNotification(userName+" reacted your comment.",cModel.getWriterToken(),Routing.APP_NAME,"1");
                     }
 
                     cModel.setIsLiked("1");

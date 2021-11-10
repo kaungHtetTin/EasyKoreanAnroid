@@ -87,7 +87,7 @@ public class SongFragmentTwo extends Fragment {
                     }
                 }else{}
 
-            }catch(Exception e){}
+            }catch(Exception ignored){}
 
         }
     }

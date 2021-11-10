@@ -16,8 +16,7 @@ public class LikeController {
                 public void onError(String msg) {}
             }).url(Routing.LIKE_A_POST)
                     .field("user_id",user_id)
-                    .field("post_id",post_id)
-                    .field("time",""+System.currentTimeMillis());
+                    .field("post_id",post_id);
             myHttp.runTask();
         }).start();
     }
@@ -33,8 +32,7 @@ public class LikeController {
             }).url(Routing.LIKE_A_COMMENT)
                     .field("user_id",user_id)
                     .field("post_id",post_id)
-                    .field("comment_id",comment_id)
-                    .field("time",""+System.currentTimeMillis());
+                    .field("comment_id",comment_id);
             myHttp.runTask();
         }).start();
 
@@ -49,8 +47,7 @@ public class LikeController {
                 public void onError(String msg) {}
             }).url(Routing.LIKE_A_SONG)
                     .field("user_id",user_id)
-                    .field("post_id",post_id)
-                    .field("time",""+System.currentTimeMillis());
+                    .field("post_id",post_id);
             myHttp.runTask();
         }).start();
     }

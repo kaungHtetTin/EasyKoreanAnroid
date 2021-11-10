@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.SearchingActivity;
-import com.calamus.easykorean.TeacherActivity;
 import com.calamus.easykorean.adapters.ConservationAdapter;
 import com.calamus.easykorean.models.ConservationModel;
 import com.google.firebase.database.DataSnapshot;

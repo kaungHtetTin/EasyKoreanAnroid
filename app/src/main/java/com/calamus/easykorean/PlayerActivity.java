@@ -156,8 +156,8 @@ public class PlayerActivity extends AppCompatActivity implements
 
 
     private String formattedTime(int mCurrentPosition) {
-        String totalout="";
-        String totalNew="";
+        String totalout;
+        String totalNew;
         String seconds=String.valueOf(mCurrentPosition%60);
         String minutes=String.valueOf(mCurrentPosition/60);
         totalout=minutes+":"+seconds;

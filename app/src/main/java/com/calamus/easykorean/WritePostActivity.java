@@ -91,9 +91,6 @@ public class WritePostActivity extends AppCompatActivity implements PickiTCallba
     }
 
 
-
-
-
     private void setUpView(){
         iv_profile=findViewById(R.id.iv_profile);
         tv_post_writer=findViewById(R.id.tv_post_writer);
@@ -273,10 +270,9 @@ public class WritePostActivity extends AppCompatActivity implements PickiTCallba
                     });
                 }
             }).url(Routing.ADD_POST)
-                    .field("post_id",newPostId)
                     .field("learner_id",learner_id)
                     .field("body",body)
-                    .field("major","korea")
+                    .field("major",Routing.MAJOR)
                     .field("hasVideo","0");
             if(!userName.isEmpty())myHttp .file("myfile",imagePath);
             myHttp.runTask();

@@ -18,7 +18,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -43,9 +42,7 @@ import com.calamus.easykorean.controller.NotificationController;
 import com.calamus.easykorean.models.AdModel;
 import com.calamus.easykorean.models.AnounceModel;
 import com.calamus.easykorean.models.NewfeedModel;
-import com.google.android.gms.ads.formats.NativeAd;
-import com.google.android.gms.ads.formats.UnifiedNativeAd;
-import com.google.android.gms.ads.formats.UnifiedNativeAdView;
+
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
@@ -233,7 +230,7 @@ public  class NewFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                             if(!model.getUserId().equals(currentUserId)){
                                 NotificationController notificationController=new NotificationController(c);
-                                notificationController.sendNotification(userName+" reacted your post.",model.getUserToken(),"Easy Korean","1");
+                                notificationController.sendNotification(userName+" reacted your post.",model.getUserToken(),Routing.APP_NAME,"1");
                             }
                             model.setIsLike("1");
                             model.setPostLikes(rectCount+"");
@@ -378,7 +375,7 @@ public  class NewFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if(model.getIsVideo().equals("0")){
                 Intent intent=new Intent(c, CommentActivity.class);
                 intent.putExtra("postId",model.getPostId());
-                intent.putExtra("time","");//for comment seen
+                intent.putExtra("time",0+"");//for comment seen
                 c.startActivity(intent);
             }else{
 

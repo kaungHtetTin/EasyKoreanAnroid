@@ -156,6 +156,6 @@ public class LoginActivity extends AppCompatActivity {
                 tv_error.setText(response);
             }
 
-        }catch (Exception e){}
+        }catch (Exception ignored){}
     }
 }

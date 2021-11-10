@@ -3,7 +3,6 @@ package com.calamus.easykorean.controller;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 
@@ -47,12 +46,10 @@ public class NotificationController {
                 public void onResponse(String response) {}
                 @Override
                 public void onError(String msg) {}
-            }).url(Routing.SEND_NOTI)
-                    .field("title","New Comment")
+            }).url(Routing.PUSH_NOTIFICATION_TOPIC)
+                    .field("title","Hey Admin")
                     .field("message",message)
-                    .field("regId","")
-                    .field("push_type","topic")
-                    .field("topic","adminKorea");
+                    .field("to",Routing.ADMIN_TOPIC);
             myHttp.runTask();
         }).start();
     }

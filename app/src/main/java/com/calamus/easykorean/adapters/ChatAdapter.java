@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -152,7 +151,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Holder> {
             }
 
 
-        }catch (Exception e){
+        }catch (Exception ignored){
 
         }
 

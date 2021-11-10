@@ -110,7 +110,7 @@ public class NotiListActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onError(String msg) {}
-            }).url(Routing.FETCH_NOTIFICATION +"?user_id="+currentUserId);
+            }).url(Routing.FETCH_NOTIFICATION +"/"+currentUserId);
             myHttp.runTask();
         }).start();
 
@@ -139,7 +139,7 @@ public class NotiListActivity extends AppCompatActivity {
             }
             adapter.notifyDataSetChanged();
 
-        }catch (Exception e){
+        }catch (Exception ignored){
 
         }
     }

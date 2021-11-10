@@ -108,7 +108,7 @@ public class ChatThree extends Fragment {
                         }
                     });
                 }
-            }).url(Routing.GET_FRIENDS+currentUserId+"/korea");
+            }).url(Routing.GET_FRIENDS+"/"+currentUserId);
             myHttp.runTask();
         }).start();
     }

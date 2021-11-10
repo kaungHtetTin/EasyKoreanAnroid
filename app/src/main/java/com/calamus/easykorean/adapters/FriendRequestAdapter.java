@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -21,18 +20,14 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.calamus.easykorean.ChattingActivity;
 import com.calamus.easykorean.MyDiscussionActivity;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.models.FriendModel;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
@@ -196,8 +191,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<RecyclerView.View
                     }
                 }).url(url)
                         .field("my_id",currentUserId)
-                        .field("other_id",userId)
-                        .field("major","korea");
+                        .field("other_id",userId);
                 myHttp.runTask();
             }).start();
         }

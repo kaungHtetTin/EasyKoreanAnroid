@@ -21,7 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.SongListActivity;
-import com.calamus.easykorean.app.NotificationReceiver;
+import com.calamus.easykorean.recivers.NotificationReceiver;
 import com.calamus.easykorean.interfaces.ActionPlaying;
 import com.calamus.easykorean.models.SongModel;
 import java.util.ArrayList;
@@ -30,7 +30,6 @@ import static com.calamus.easykorean.ApplicationClass.ACTION_PLAY;
 import static com.calamus.easykorean.ApplicationClass.ACTON_PREVIOUS;
 import static com.calamus.easykorean.ApplicationClass.CHANNEL_ID_2;
 import static com.calamus.easykorean.app.AppHandler.getFileByte;
-import static com.calamus.easykorean.app.AppHandler.makeOffline;
 import static com.calamus.easykorean.fragments.SongFragmentTwo.songLocalLists;
 
 public class MusicService extends Service implements MediaPlayer.OnCompletionListener, AudioManager.OnAudioFocusChangeListener {
@@ -231,11 +230,11 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                 .setAction(ACTION_NEXT);
         PendingIntent nextPending=PendingIntent.getBroadcast(this,0,nextIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
-        byte[] picture=null;
+        byte[] picture;
         String tempName=musicFiles.get(position).getTitle();
         String songFileName=tempName.substring(0,tempName.length()-4);
         picture=getFileByte(songFileName+".png",getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath());
-        Bitmap thumb=null;
+        Bitmap thumb;
         if(picture!=null){
             thumb= BitmapFactory.decodeByteArray(picture,0,picture.length);
         }else{

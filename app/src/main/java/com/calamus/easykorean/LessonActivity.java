@@ -41,7 +41,7 @@ public class LessonActivity extends AppCompatActivity implements android.widget.
     ArrayList<LessonModel> lessonList = new ArrayList<>();
     public static final String POST_PARCEL = "post_parcel";
     public static int resID;
-    public static String picLink;
+    public static String picLink,currentUserId;
     public static String eCode,level;
     public static int fragmentId;
     boolean isVip;
@@ -60,6 +60,7 @@ public class LessonActivity extends AppCompatActivity implements android.widget.
         setContentView(R.layout.activity_lesson);
         sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         isVip=sharedPreferences.getBoolean("isVIP",false);
+        currentUserId=sharedPreferences.getString("phone","");
         postExecutor = ContextCompat.getMainExecutor(this);
         setupSearchView();
         setupViews();
@@ -193,7 +194,7 @@ public class LessonActivity extends AppCompatActivity implements android.widget.
                 public void onError(String msg) {
                     postExecutor.execute(() -> Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show());
                 }
-            }).url(Routing.FETCH_LESSONS +"?count="+count+"&major=korea"+"&cate="+category);
+            }).url(Routing.FETCH_LESSONS +"/"+category+"/"+currentUserId+"/"+count);
             myHttp.runTask();
         }).start();
     }
@@ -206,13 +207,15 @@ public class LessonActivity extends AppCompatActivity implements android.widget.
             JSONArray ja=new JSONArray(response);
             for(int i=0;i<ja.length();i++){
                 JSONObject jo=ja.getJSONObject(i);
+                String id=jo.getString("id");
                 String cate=jo.getString("cate");
                 String link=jo.getString("link");
                 String title=jo.getString("title");
                 boolean isVideo= jo.getString("isVideo").equals("1");
                 boolean isVip= jo.getString("isVip").equals("1");
+                boolean learned=jo.getString("learned").equals("1");
                 long time=Long.parseLong(jo.getString("date"));
-                lessonList.add(new LessonModel(cate,link,title,isVideo,isVip,time));
+                lessonList.add(new LessonModel(id,cate,link,title,isVideo,isVip,time,learned));
 
             }
 

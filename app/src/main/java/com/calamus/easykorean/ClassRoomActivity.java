@@ -29,6 +29,7 @@ public class ClassRoomActivity extends AppCompatActivity {
     ChatThree fragmentThree;
     BottomNavigationView bnv;
     private ViewPager viewPager;
+
     public static boolean isConservationFrag=true;
     boolean isVip;
     SharedPreferences sharedPreferences;

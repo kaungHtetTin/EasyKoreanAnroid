@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 public class SavedVideoAdapter extends RecyclerView.Adapter<SavedVideoAdapter.Holder> {
 
-    ArrayList<SavedVideoModel> dataLists=new ArrayList<>();
+    ArrayList<SavedVideoModel> dataLists;
     Activity c;
     private LayoutInflater mInflater;
 

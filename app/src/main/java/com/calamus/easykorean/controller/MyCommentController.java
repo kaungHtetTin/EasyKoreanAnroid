@@ -24,15 +24,13 @@ public class MyCommentController {
     }
 
     public void addCommentToHostinger(String postOwnerId, String writer_id, String body, String action, String CorR, String tokenPC,String commentImagePath){
-
-        String time=System.currentTimeMillis()+"";
         new Thread(() -> {
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.POST, new MyHttp.Response() {
                 @Override
                 public void onResponse(String response) {
                     if(!postOwnerId.equals(writer_id)){
                         NotificationController notificationController=new NotificationController(c);
-                        notificationController.sendNotification(currentUserName+CorR,tokenPC,"Easy Korean","1");
+                        notificationController.sendNotification(currentUserName+CorR,tokenPC,Routing.APP_NAME,"1");
                     }
 
                     Log.e("AddCommentRes: ", response);
@@ -46,8 +44,7 @@ public class MyCommentController {
                     .field("writer_id",writer_id)
                     .field("owner_id",postOwnerId)
                     .field("body",body)
-                    .field("action",action)
-                    .field("time",time);
+                    .field("action",action);
             if(!commentImagePath.equals(""))myHttp .file("myfile",commentImagePath);
             myHttp.runTask();
         }).start();

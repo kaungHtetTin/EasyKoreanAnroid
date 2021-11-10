@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import com.calamus.easykorean.adapters.LikeListAdapter;
 import com.calamus.easykorean.app.MyHttp;
+import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.models.LikeListModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -125,7 +126,7 @@ public class LikeListActivity extends AppCompatActivity {
                 public void onError(String msg) {
                     postExecutor.execute(() -> Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show());
                 }
-            }).url(fetch+"?count="+count+"&post_id="+contentId+"&major=ko_user_datas");
+            }).url(fetch+"/"+contentId+"/"+count);
             myHttp.runTask();
         }).start();
     }

@@ -134,7 +134,7 @@ public class SearchingActivity extends AppCompatActivity {
                         }
                     });
                 }
-            }).url(Routing.SEARCHING+"korea/"+searching);
+            }).url(Routing.SEARCHING+searching);
             myHttp.runTask();
         }).start();
 

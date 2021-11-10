@@ -165,7 +165,7 @@ public class MyDiscussionActivity extends AppCompatActivity {
                         //Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
                     });
                 }
-            }).url(Routing.FETCH_DISCUSSION +"?count="+count+"&userId="+userId+"&major=korea");
+            }).url(Routing.FETCH_A_USER_POST+"/"+userId+"/"+count);
             myHttp.runTask();
         }).start();
     }

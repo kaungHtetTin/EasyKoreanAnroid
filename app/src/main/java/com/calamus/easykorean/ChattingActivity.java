@@ -13,11 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.Person;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,9 +21,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Icon;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -47,7 +39,6 @@ import android.widget.Toast;
 
 import com.calamus.easykorean.adapters.ChatAdapter;
 import com.calamus.easykorean.app.MyHttp;
-import com.calamus.easykorean.app.NotificationUtils;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.controller.NotificationController;
 import com.calamus.easykorean.models.ChatModel;
@@ -67,10 +58,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.Executor;
@@ -140,8 +127,8 @@ public class ChattingActivity extends AppCompatActivity {
         chatImageRef= FirebaseStorage.getInstance().getReference().child("Chat Images");
         firebaseDatabase=FirebaseDatabase.getInstance();
 
-        db= firebaseDatabase.getReference().child("korea").child("ChatRoom");
-        dbc=firebaseDatabase.getReference().child("korea").child("Conservation");
+        db= firebaseDatabase.getReference().child(Routing.MAJOR).child("ChatRoom");
+        dbc=firebaseDatabase.getReference().child(Routing.MAJOR).child("Conservation");
 
         dbdir= Objects.requireNonNull(getFilesDir()).getPath()+"/databases/";
         dbPath=dbdir+dbName;
@@ -181,6 +168,7 @@ public class ChattingActivity extends AppCompatActivity {
         iv_msg=findViewById(R.id.iv_msg);
         iv_cancel=findViewById(R.id.iv_cancel);
         iv_insert_photo=findViewById(R.id.iv_insert_photo);
+
         lm = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(lm);
 
@@ -188,7 +176,7 @@ public class ChattingActivity extends AppCompatActivity {
         adapter = new ChatAdapter(this,ChatList);
 
         recyclerView.setAdapter(adapter);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
 
         ibtSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -700,7 +688,7 @@ public class ChattingActivity extends AppCompatActivity {
 
     //this method is invoked when sending a message with photo
     private void saveMessageOnFirebase(String msg,long time,String imageUrl) {
-        String msgNull="";
+        String msgNull;
         if(msg.equals(""))msgNull=myName+" sent a photo";
         else msgNull=msg;
         db.child(myId+FId).child(time+"").setValue(new ChatModel(myId,msg,time,1,imageUrl));
@@ -760,7 +748,7 @@ public class ChattingActivity extends AppCompatActivity {
             }).url(url)
                     .field("my_id",currentUserId)
                     .field("other_id",userId)
-                    .field("major","korea");
+                    .field("major",Routing.MAJOR);
             myHttp.runTask();
         }).start();
     }

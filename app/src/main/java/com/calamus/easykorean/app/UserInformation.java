@@ -9,6 +9,7 @@ and save the information in the local storage;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 import org.json.JSONArray;
@@ -76,11 +77,15 @@ public class UserInformation {
             }
             editor.apply();
 
+            editor.putString("enrollProgress",jsonObject.getString("enrollProgress"));
+            editor.apply();
+
             String courseJson=jsonObject.getString("vipCourses");
             JSONArray courseArr=new JSONArray(courseJson);
             for(int i=0;i<courseArr.length();i++){
                 JSONObject jo=courseArr.getJSONObject(i);
                 String course=jo.getString("course");
+                Log.e(i+" " ,course);
                 editor.putBoolean(course,true);
                 editor.apply();
             }

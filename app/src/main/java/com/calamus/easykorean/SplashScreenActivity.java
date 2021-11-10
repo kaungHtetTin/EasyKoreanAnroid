@@ -12,10 +12,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.calamus.easykorean.app.MyHttp;
-import com.calamus.easykorean.app.NotificationUtils;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.app.UserInformation;
 import com.google.firebase.database.DataSnapshot;
@@ -28,9 +26,10 @@ import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.messaging.FirebaseMessaging;
 import org.json.JSONObject;
 import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import static android.content.ContentValues.TAG;
-import static com.calamus.easykorean.ChattingActivity.isChatting;
-import static com.calamus.easykorean.ClassRoomActivity.isConservationFrag;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
@@ -45,13 +44,14 @@ public class SplashScreenActivity extends AppCompatActivity {
     String dbName2="conservation.db";
     public static ValueEventListener mListener=null;
     private DatabaseReference dbc;
+    ExecutorService myExecutor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         dbc= FirebaseDatabase.getInstance().getReference().child("korea").child("Conservation");
-
+        myExecutor= Executors.newFixedThreadPool(2);
         handleShareData();
         getMessagingToken(phone);
         createSQLiteDatabase();
@@ -120,7 +120,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             db.execSQL(query2);
 
         }else{
-            if (autoLogin&&mListener==null){
+            if (autoLogin&&mListener==null&&phone!=null){
                 fetchConservation(Long.parseLong(phone)+"");
             }
         }
@@ -150,44 +150,44 @@ public class SplashScreenActivity extends AppCompatActivity {
             Intent i=new Intent(SplashScreenActivity.this, MainActivity.class);
             i.putExtra("message","splash");
             startActivity(i);
-            finish();
-
-        }else {
+        }else{
+            editor.putBoolean("AlreadyLogin",false);
+            editor.apply();
             Intent intent=new Intent(SplashScreenActivity.this, LoginActivity.class);
             startActivity(intent);
-            finish();
         }
+        finish();
     }
 
     private void getForm(){
-        new Thread(() -> {
-            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
-                @Override
-                public void onResponse(String response) {
-                    try {
-                        JSONObject jo=new JSONObject(response);
-                        String firstForm=jo.getString("firstform");
-                        editor.putString("firstForm",firstForm);
-                        String secondForm=jo.getString("secondform");
-                        editor.putString("secondForm",secondForm);
-                        String functionForm=jo.getString("function");
-                        editor.putString("functionForm",functionForm);
-                        String videoForm=jo.getString("videoform");
-                        editor.putString("videoForm",videoForm);
-                        editor.apply();
+         myExecutor.execute(()->{
+             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
+                 @Override
+                 public void onResponse(String response) {
+                     try {
+                         JSONObject jo=new JSONObject(response);
+                         String firstForm=jo.getString("firstform");
+                         editor.putString("firstForm",firstForm);
+                         String secondForm=jo.getString("secondform");
+                         editor.putString("secondForm",secondForm);
+                         String functionForm=jo.getString("function");
+                         editor.putString("functionForm",functionForm);
+                         String videoForm=jo.getString("videoform");
+                         editor.putString("videoForm",videoForm);
+                         editor.apply();
 
-                    }catch (Exception e){}
+                     }catch (Exception ignored){}
 
-                }
-                @Override
-                public void onError(String msg) {}
-            }).url(Routing.GET_FORM);
-            myHttp.runTask();
-        }).start();
+                 }
+                 @Override
+                 public void onError(String msg) {}
+             }).url(Routing.GET_FORM);
+             myHttp.runTask();
+         });
     }
 
     private void getWordOfTheDay(String w){
-        new Thread(() -> {
+        myExecutor.execute(()->{
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
                 @Override
                 public void onResponse(String response) {
@@ -198,9 +198,8 @@ public class SplashScreenActivity extends AppCompatActivity {
                 public void onError(String msg) {}
             }).url(w);
             myHttp.runTask();
-        }).start();
+        });
     }
-
 
 
     //chatting methods
@@ -321,4 +320,5 @@ public class SplashScreenActivity extends AppCompatActivity {
         Intent sendMessage=new Intent("Conservation");
         LocalBroadcastManager.getInstance(this).sendBroadcast(sendMessage);
     }
+
 }

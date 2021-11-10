@@ -225,7 +225,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                 tv_error.setText(response);
             }
 
-        }catch (Exception e){}
+        }catch (Exception ignored){}
     }
 
 
@@ -324,7 +324,6 @@ public class ForgetPasswordActivity extends AppCompatActivity {
 
     private void searchMyAccount(String phone){
         loading.setVisibility(View.VISIBLE);
-
         new Thread(() -> {
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
                 @Override
@@ -374,7 +373,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                         tv_error.setText("An unexpected error! Connect to help center");
                     });
                 }
-            }).url(Routing.SEARCH_MY_ACCOUNT+phone+"/Easy Korean");
+            }).url(Routing.SEARCH_MY_ACCOUNT+phone+"/"+Routing.APP_NAME);
             myHttp.runTask();
         }).start();
     }

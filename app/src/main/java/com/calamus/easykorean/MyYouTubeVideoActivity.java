@@ -12,10 +12,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -44,9 +44,7 @@ import com.calamus.easykorean.controller.LikeController;
 import com.calamus.easykorean.controller.MyCommentController;
 import com.calamus.easykorean.controller.NotificationController;
 import com.calamus.easykorean.models.CommentModel;
-import com.calamus.easykorean.service.DownloaderService;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
@@ -108,7 +106,7 @@ public class MyYouTubeVideoActivity extends YouTubeBaseActivity implements Picki
 
         videoId = Objects.requireNonNull(getIntent().getExtras()).getString("videoId");
         videoTitle=getIntent().getExtras().getString("videoTitle");
-        timeCheck=getIntent().getExtras().getString("cmtTime","");
+        timeCheck=getIntent().getExtras().getString("cmtTime","0");
         pickiT = new PickiT(this, this, this);
         postExecutor=ContextCompat.getMainExecutor(this);
         notificationController=new NotificationController(this);
@@ -431,17 +429,17 @@ public class MyYouTubeVideoActivity extends YouTubeBaseActivity implements Picki
     private void fetchPost(String time){
 
         new Thread(() -> {
-            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.POST, new MyHttp.Response() {
+            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
                 @Override
                 public void onResponse(String response) {
                     postExecutor.execute(() -> doAsResult(response));
                 }
                 @Override
-                public void onError(String msg) {}
-            }).url(Routing.FETCH_COMMENT)
-                    .field("time",time)
-                    .field("post_id",a+"")
-                    .field("user_id",currentUserId);
+                public void onError(String msg) {
+
+                    Log.e("VideoCmt : ",msg);
+                }
+            }).url(Routing.FETCH_COMMENT+"/"+a+"/"+time+"/"+currentUserId); //a= postId
             myHttp.runTask();
         }).start();
     }

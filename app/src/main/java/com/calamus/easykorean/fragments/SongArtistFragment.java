@@ -106,7 +106,7 @@ public class SongArtistFragment extends Fragment {
                         // Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show();
                     });
                 }
-            }).url(Routing.GET_SONG_ARTIST +"?count="+i+"&major=korea");
+            }).url(Routing.GET_SONG_ARTIST +"/"+i);
             myHttp.runTask();
         }).start();
     }

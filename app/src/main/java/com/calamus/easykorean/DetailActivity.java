@@ -6,15 +6,23 @@ import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
+
+import com.calamus.easykorean.app.MyHttp;
+import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.app.XUtils;
+import com.calamus.easykorean.service.DownloaderService;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -26,8 +34,13 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Objects;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import me.myatminsoe.mdetect.MDetect;
 import me.myatminsoe.mdetect.Rabbit;
+
+import static java.lang.Thread.sleep;
 
 public class DetailActivity extends AppCompatActivity {
     WebView wv;
@@ -40,7 +53,8 @@ public class DetailActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     private InterstitialAd interstitialAd;
     Executor postExecutor;
-    String lessonResult;
+    ExecutorService myExecutor;
+    String lessonResult,userId,lessonId;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -50,9 +64,12 @@ public class DetailActivity extends AppCompatActivity {
 
         sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         isVip=sharedPreferences.getBoolean("isVIP",false);
+        userId=sharedPreferences.getString("phone","");
         postExecutor= ContextCompat.getMainExecutor(this);
+        myExecutor= Executors.newFixedThreadPool(3);
         link=getIntent().getExtras().getString("link");
         title=getIntent().getExtras().getString("title");
+        lessonId=getIntent().getExtras().getString("lessonId");
         wv = findViewById(R.id.detailWeb);
 
         wv.setWebViewClient(new WebViewClient());
@@ -67,32 +84,27 @@ public class DetailActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-
         MobileAds.initialize(this, initializationStatus -> {});
         AdView adView = findViewById(R.id.adview);
         if(!isVip){
             adView.setVisibility(View.VISIBLE);
             AdRequest request=new AdRequest.Builder().build();
             adView.loadAd(request);
-            Thread timer=new Thread(){
-                @Override
-                public void run() {
-                    super.run();
-                    try {
-                        sleep(15000);
-                        postExecutor.execute(() -> loadAds());
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+            myExecutor.execute(()->{
+                try {
+                    sleep(15000);
+                    postExecutor.execute(() -> loadAds());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            };
-
-            timer.start();
+            });
         }
+
+        recordStudyingOnLesson();
+
     }
 
 
-    
     public String setMyanmar(String s) {
         return Rabbit.uni2zg(s);
     }
@@ -111,7 +123,8 @@ public class DetailActivity extends AppCompatActivity {
         settings.setAppCacheEnabled(true);
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        new ContentFetcher().start();
+        extractLesson();
+
 
     }
 
@@ -131,11 +144,8 @@ public class DetailActivity extends AppCompatActivity {
     }
 
 
-    class ContentFetcher extends Thread
-    {
-        @Override
-        public void run() {
-            super.run();
+    private void extractLesson(){
+        myExecutor.execute(()->{
             lessonResult=XUtils.fetch(link);
             postExecutor.execute(new Runnable() {
                 @Override
@@ -145,7 +155,26 @@ public class DetailActivity extends AppCompatActivity {
                     swipe.setRefreshing(false);
                 }
             });
-        }
+        });
+    }
+
+    private void recordStudyingOnLesson(){
+        myExecutor.execute(()->{
+            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.POST, new MyHttp.Response() {
+                @Override
+                public void onResponse(String response) {
+                    Log.e("StudyRecSucc: ",response);
+                }
+                @Override
+                public void onError(String msg) {
+                    Log.e("StudyRecErr: ",msg);
+                }
+            }).url(Routing.STUDY_RECORD_A_LESSON)
+                    .field("userId",userId)
+                    .field("lessonId",lessonId);
+            myHttp.runTask();
+
+        });
 
     }
 
@@ -187,8 +216,10 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        myExecutor.shutdown();
         if (interstitialAd != null) {
             interstitialAd.show(DetailActivity.this);
+
         } else {
 
             super.onBackPressed();
@@ -200,6 +231,7 @@ public class DetailActivity extends AppCompatActivity {
     protected void onDestroy(){
           wv.destroy();
           wv=null;
+          myExecutor.shutdown();
         super.onDestroy();
 
     }

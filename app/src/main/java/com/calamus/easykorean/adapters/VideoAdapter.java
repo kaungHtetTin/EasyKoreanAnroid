@@ -2,7 +2,9 @@ package com.calamus.easykorean.adapters;
 
 import android.app.*;
 import android.content.*;
+import android.graphics.Color;
 import android.os.Environment;
+import android.util.Log;
 import android.view.*;
 import android.widget.*;
 
@@ -26,7 +28,6 @@ import java.util.concurrent.Executor;
 
 import me.myatminsoe.mdetect.MDetect;
 
-import static com.calamus.easykorean.LessonActivity.level;
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
 
 public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> implements Filterable {
@@ -68,8 +69,17 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> impl
         try {
 
             VideoModel model = data.get(i);
-            holder.tvTitle.setText(setMyanmar(model.getVideoTitle()));
-            holder.tvTime.setText(model.getCategory());
+            holder.tvTitle.setText(setMyanmar(model.getCategory()));
+
+
+            if(model.isLearned()){
+                holder.tv_watch.setText("Watched");
+                holder.tv_watch.setTextColor(Color.GRAY);
+            }
+            else {
+                holder.tv_watch.setText("New");
+                holder.tv_watch.setTextColor(Color.RED);
+            }
 
             Picasso.get()
                     .load("https://img.youtube.com/vi/"+model.getVideoId()+"/0.jpg")
@@ -90,14 +100,14 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> impl
                         }
                     });
 
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
     }
 
 
     public class Holder extends RecyclerView.ViewHolder {
-        TextView tvTime, tvTitle;
+        TextView tvTime, tvTitle,tv_watch;
         ImageView iv;
         ShimmerFrameLayout container;
         ImageView ibt_download;
@@ -108,6 +118,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> impl
             iv= view.findViewById(R.id.lessonItemIv1);
             container=view.findViewById(R.id.shimmer_view_container);
             ibt_download=view.findViewById(R.id.ib_download);
+            tv_watch=view.findViewById(R.id.tv_watch);
             tvTitle.setSelected(true);
 
             view.setOnClickListener(p1 -> {
@@ -118,6 +129,9 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> impl
                 i.putExtra("videoTitle",model.getVideoTitle());
                 i.putExtra("videoId",model.getVideoId());
                 i.putExtra("time",model.getTime());
+                model.setLearned(true);
+                tv_watch.setTextColor(Color.GRAY);
+                tv_watch.setText("Watched");
                 c.startActivity(i);
 
             });
@@ -127,11 +141,13 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> impl
                 public void onClick(View v) {
                     final VideoModel model = data.get(getAbsoluteAdapterPosition());
                     boolean isMember=sharedPreferences.getBoolean(model.getCategory(),false);
+                    Log.e("Category : ",model.getCategory());
+                   // Log.e("isMenber : ",isMember+"");
                     if(isVip||isMember){
                         Toast.makeText(c,"Preparation for download",Toast.LENGTH_SHORT).show();
                         downloadPreparation(model.getTime()+"",model.getVideoTitle());
                     }else{
-                        showVIPRegistrationDialog();
+                        //showVIPRegistrationDialog();
                     }
                 }
             });
@@ -228,7 +244,6 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> impl
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
             data.clear();
             data.addAll(f_data);
-
             notifyDataSetChanged();
         }
     }

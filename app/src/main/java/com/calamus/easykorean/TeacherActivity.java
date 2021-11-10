@@ -15,11 +15,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -59,7 +59,6 @@ import java.util.concurrent.Executor;
 import me.myatminsoe.mdetect.MDetect;
 
 import static com.calamus.easykorean.app.AppHandler.changeFont;
-import static com.calamus.easykorean.app.AppHandler.setMyanmar;
 
 public class TeacherActivity extends AppCompatActivity {
 
@@ -310,7 +309,7 @@ public class TeacherActivity extends AppCompatActivity {
 
     //this method is invoked when sending a message with photo
     private void saveMessageOnFirebase(String msg,long time,String imageUrl) {
-        String msgNull="";
+        String msgNull;
         if(msg.equals(""))msgNull=myName+" sent a photo";
         else msgNull=msg;
         db.child(myId).child(time+"").setValue(new ChatModel(myId,msg,time,1,imageUrl));
@@ -337,15 +336,15 @@ public class TeacherActivity extends AppCompatActivity {
         new Thread(() -> {
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.POST, new MyHttp.Response() {
                 @Override
-                public void onResponse(String response) {}
+                public void onResponse(String response) {
+
+                }
                 @Override
                 public void onError(String msg) {}
-            }).url(Routing.SEND_NOTI)
+            }).url(Routing.PUSH_NOTIFICATION_TOPIC)
                     .field("title",myName)
                     .field("message",team+" : "+message)
-                    .field("regId","")
-                    .field("push_type","topic")
-                    .field("topic","adminKorea");
+                    .field("to",Routing.ADMIN_TOPIC);
             myHttp.runTask();
         }).start();
     }

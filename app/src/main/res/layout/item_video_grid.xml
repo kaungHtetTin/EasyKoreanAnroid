@@ -76,9 +76,20 @@
                 android:textColor="@android:color/black"
                 android:id="@+id/lessonItemTv11"
                 android:layout_toEndOf="@id/card_videoThumb"
-                android:layout_alignParentEnd="true"
+                android:layout_toStartOf="@id/tv_watch"
                 android:layout_below="@id/lessonItemTv21"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+            <TextView
+                android:padding="7dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_watch"
+                android:textStyle="italic"
+                android:textSize="12sp"
+                android:layout_alignBottom="@id/card_videoThumb"
+                android:layout_alignParentEnd="true"/>
+
 
         </RelativeLayout>
     </com.facebook.shimmer.ShimmerFrameLayout>

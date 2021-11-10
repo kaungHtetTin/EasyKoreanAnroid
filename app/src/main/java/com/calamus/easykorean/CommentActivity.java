@@ -132,7 +132,7 @@ public class CommentActivity extends AppCompatActivity implements PickiTCallback
 
         fetchCommentFromHostinger(timeCheck,false);
 
-        swipe.setOnRefreshListener(() -> fetchCommentFromHostinger("",true));
+        swipe.setOnRefreshListener(() -> fetchCommentFromHostinger(0+"",true));
 
 
         iv_pickup.setOnClickListener(v -> {
@@ -252,7 +252,7 @@ public class CommentActivity extends AppCompatActivity implements PickiTCallback
 
     private void fetchCommentFromHostinger(String time ,boolean isRefresh){
         new Thread(() -> {
-            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.POST, new MyHttp.Response() {
+            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
                 @Override
                 public void onResponse(String response) {
                     postExecutor.execute(() -> {
@@ -262,10 +262,7 @@ public class CommentActivity extends AppCompatActivity implements PickiTCallback
                 }
                 @Override
                 public void onError(String msg) {}
-            }).url(Routing.FETCH_COMMENT)
-                    .field("time",time)
-                    .field("post_id",postId)
-                    .field("user_id",currentUserId);
+            }).url(Routing.FETCH_COMMENT+"/"+postId+"/"+time+"/"+currentUserId);
             myHttp.runTask();
         }).start();
     }
@@ -319,7 +316,7 @@ public class CommentActivity extends AppCompatActivity implements PickiTCallback
             }
             recycler.smoothScrollToPosition(moveTo);
 
-        }catch (Exception e){}
+        }catch (Exception ignored){}
     }
 
 

@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -183,6 +184,7 @@ public class GammingActivity extends AppCompatActivity {
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
                 @Override
                 public void onResponse(String response) {
+                    Log.e("GameWord : ", response);
                     postExecutor.execute(() -> {
 
                         doAsResult(response);
@@ -194,7 +196,7 @@ public class GammingActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onError(String msg) {
-                    postExecutor.execute(() -> Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show());
+                    Log.e("GameWord : Error ",msg);
 
                 }
             }).url(Routing.GET_GAME_WORD);
@@ -236,7 +238,8 @@ public class GammingActivity extends AppCompatActivity {
     private void doAsResult(String response){
         try {
 
-            JSONObject jo=new JSONObject(response);
+            JSONArray ja=new JSONArray(response);
+            JSONObject jo=ja.getJSONObject(0);
             String displayWord=jo.getString("display_word");
             String displayImageUrl=jo.getString("display_image");
             String displayAudio=jo.getString("display_audio");
@@ -251,7 +254,7 @@ public class GammingActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
             recyclerView.smoothScrollToPosition(recyclerViewItems.size()-1);
 
-        }catch (Exception e){}
+        }catch (Exception ignored){}
 
     }
 
@@ -353,7 +356,7 @@ public class GammingActivity extends AppCompatActivity {
                               String gameScore=jo.getString("game_score");
                               playerLists.add(new TopGamePlayerModel(name,imageUrl,gameScore));
                           }
-                      }catch (Exception e){}
+                      }catch (Exception ignored){}
 
                       playerAdapter.notifyDataSetChanged();
                     });

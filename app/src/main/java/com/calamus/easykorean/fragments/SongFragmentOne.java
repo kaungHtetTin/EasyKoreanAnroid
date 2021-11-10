@@ -125,10 +125,10 @@ public class SongFragmentOne extends Fragment {
                 @Override
                 public void onError(String msg) {
                     postExecutor.execute(() -> {
-                       // Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show();
+                       Log.e("SongFetch : ",msg);
                     });
                 }
-            }).url(Routing.GET_SONGS +"?count="+i+"&major=korea"+"&userId="+userId);
+            }).url(Routing.GET_SONGS +"/"+userId+"/"+i);
             myHttp.runTask();
         }).start();
     }
@@ -146,7 +146,7 @@ public class SongFragmentOne extends Fragment {
                         // Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show();
                     });
                 }
-            }).url(Routing.GET_POPULAR_SONG+"?major=korea&userId="+userId);
+            }).url(Routing.GET_POPULAR_SONG+"/"+userId);
             myHttp.runTask();
         }).start();
     }
@@ -234,7 +234,7 @@ public class SongFragmentOne extends Fragment {
                       //  Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show();
                     });
                 }
-            }).url(Routing.SEARCH_A_SONG+"?major=korea"+"&search="+search+"&userId="+userId);
+            }).url(Routing.SEARCH_A_SONG+"/"+search+"/"+userId);
             myHttp.runTask();
         }).start();
     }

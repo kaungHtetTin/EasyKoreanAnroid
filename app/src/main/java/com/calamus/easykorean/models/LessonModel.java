@@ -2,20 +2,28 @@ package com.calamus.easykorean.models;
 
 
 public class LessonModel  {
+    String id;
     String cate;
     String link;
     String title;
     boolean isVideo;
     boolean isVip;
     long time;
+    boolean learned;
 
-    public LessonModel(String cate, String link, String title, boolean isVideo, boolean isVip,long time) {
+    public LessonModel(String id,String cate, String link, String title, boolean isVideo, boolean isVip,long time,  boolean learned) {
         this.cate = cate;
+        this.id=id;
         this.link = link;
         this.title = title;
         this.isVideo = isVideo;
         this.isVip=isVip;
         this.time=time;
+        this.learned=learned;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getCate() {
@@ -46,10 +54,6 @@ public class LessonModel  {
         return isVideo;
     }
 
-    public void setVideo(boolean video) {
-        isVideo = video;
-    }
-
     public long getTime() {
         return time;
     }
@@ -64,5 +68,13 @@ public class LessonModel  {
 
     public void setVip(boolean vip) {
         isVip = vip;
+    }
+
+    public boolean isLearned() {
+        return learned;
+    }
+
+    public void setLearned(boolean learned) {
+        this.learned = learned;
     }
 }

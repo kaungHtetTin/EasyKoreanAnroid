@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.models.CategoryModel;
+import com.calamus.easykorean.models.CourseModel;
+
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -78,7 +80,7 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     categoryListing.add(new CategoryModel(cate,"",pic,""));
                 }
                 adapter.notifyDataSetChanged();
-            }catch (Exception e){}
+            }catch (Exception ignored){}
 
         }else {
             try {
@@ -88,39 +90,39 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 if(p%2==0) courseHolder.recyclerView.setAnimation(AnimationUtils.loadAnimation(c,R.anim.transit_left));
                 else courseHolder.recyclerView.setAnimation(AnimationUtils.loadAnimation(c,R.anim.transit_right));
 
-                CategoryModel categoryModel=(CategoryModel)data.get(p);
-                String level=categoryModel.getCate();
-                boolean isMember=sharedPreferences.getBoolean(level,false);
-                courseHolder.tv.setText(level);
+                CourseModel courseModel=(CourseModel) data.get(p);
+                String title=courseModel.getTitle();
+                boolean isMember=sharedPreferences.getBoolean(title,false);
+                courseHolder.tv.setText(title);
 
-                int eValue=sharedPreferences.getInt(categoryModel.geteCode(),0);
-                int result= (int) ((eValue/Float.parseFloat(categoryModel.getCode()))*100);
+                int enrollProgress=courseModel.getEnrollProgress();
+                courseHolder.pb_enroll.setProgress(enrollProgress);
+                courseHolder.tv_value.setText(enrollProgress+" %");
 
-                courseHolder.pb_enroll.setProgress(result);
-                courseHolder.tv_value.setText(result+" %");
-
-                if(result>=100)courseHolder.ivCerti.setBackgroundResource(R.drawable.certi_on);
+                if(enrollProgress==100)courseHolder.ivCerti.setBackgroundResource(R.drawable.certi_on);
                 else courseHolder.ivCerti.setBackgroundResource(R.drawable.certi_off);
 
 
                 if(isMember)courseHolder.ivMember.setBackgroundResource(R.drawable.bg_circle_green);
                 else courseHolder.ivMember.setBackgroundResource(R.drawable.bg_circle_white);
 
-                String courseJson=categoryModel.getPic();
+                if(p==1)courseHolder.ivMember.setBackgroundResource(R.drawable.bg_circle_green);
+
+                String subjectJson=courseModel.getSubject();
                 ArrayList<CategoryModel> categoryListing=new ArrayList<>();
 
-                CourseAdapter adapter=new CourseAdapter(c,categoryListing,level);
+                CourseAdapter adapter=new CourseAdapter(c,categoryListing,title);
                 LinearLayoutManager lm = new LinearLayoutManager(c, LinearLayoutManager.HORIZONTAL, false);
                 courseHolder.recyclerView.setLayoutManager(lm);
                 courseHolder.recyclerView.setItemAnimator(new DefaultItemAnimator());
                 courseHolder.recyclerView.setAdapter(adapter);
 
                 try{
-                    JSONArray ja2=new JSONArray(courseJson);
+                    JSONArray ja2=new JSONArray(subjectJson);
                     for(int i=0;i<ja2.length();i++) {
                         JSONObject jo = ja2.getJSONObject(i);
-                        String cate=jo.getString("cate");
-                        String code=jo.getString("code");
+                        String cate=jo.getString("category");
+                        String code=jo.getString("category_id");
                         String pic=jo.getString("pic");
                         String eCode=jo.getString("eCode");
                         categoryListing.add(new CategoryModel(cate,code,pic,eCode));

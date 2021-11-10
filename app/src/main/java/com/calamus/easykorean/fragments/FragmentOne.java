@@ -3,6 +3,7 @@ package com.calamus.easykorean.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.adapters.MainAdapter;
 import com.calamus.easykorean.models.CategoryModel;
+import com.calamus.easykorean.models.CourseModel;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -22,9 +25,9 @@ import java.util.ArrayList;
 public class FragmentOne extends Fragment {
     private View v;
 
-    private final ArrayList<Object> categoryList = new ArrayList<>();
+    private final ArrayList<Object> courseList = new ArrayList<>();
     SharedPreferences sharedPreferences;
-    String functionJson,firstFormJson;
+    String functionJson,firstFormJson,enrollJson;
     MainAdapter adapter;
 
 
@@ -34,9 +37,10 @@ public class FragmentOne extends Fragment {
         sharedPreferences=getActivity().getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         functionJson=sharedPreferences.getString("functionForm",null);
         firstFormJson=sharedPreferences.getString("firstForm",null);
+        enrollJson=sharedPreferences.getString("enrollProgress",null);
 
         setupViews();
-        categoryList.add(0,functionJson);
+        courseList.add(0,functionJson);
         setCourse();
 
         return v;
@@ -60,26 +64,43 @@ public class FragmentOne extends Fragment {
         recycler.setItemAnimator(new DefaultItemAnimator());
 
 
-        adapter = new MainAdapter(getActivity(), categoryList);
+        adapter = new MainAdapter(getActivity(), courseList);
         recycler.setAdapter(adapter);
 
     }
 
 
     private void setCourse(){
-
+        JSONArray progressArr=null;
         try {
             JSONArray ja=new JSONArray(firstFormJson);
+            if(enrollJson!=null){
+                Log.e("enrollJson: ",enrollJson);
+                progressArr=new JSONArray(enrollJson);
+            }
             for(int i=0;i<ja.length();i++){
                 JSONObject jo=ja.getJSONObject(i);
-                String level=jo.getString("level");
-                String enroll=jo.getString("enroll");
-                String sub=jo.getString("sub");
-                String eCode=jo.getString("eCode");
-                categoryList.add(new CategoryModel(level,enroll,sub,eCode));
+                String id=jo.getString("id");
+                String title=jo.getString("title");
+                String subject=jo.getString("sub");
+                int progress=0;
+                if(progressArr!=null){
+                    for(int j=0;j<progressArr.length();j++){
+                        JSONObject jo2=progressArr.getJSONObject(j);
+                        String course_id=jo2.getString("course_id");
+                        int learned=Integer.parseInt(jo2.getString("learned"));
+                        int total=Integer.parseInt(jo2.getString("total"));
+                        if(course_id.equals(id)){
+                            progress=(learned*100)/total;
+                        }
+                    }
+                }
+                courseList.add(new CourseModel(id,title,subject,progress));
             }
 
-        }catch (Exception e){}
+        }catch (Exception e){
+            Log.e("FisrtJson : ",e.toString());
+        }
     }
 
 }

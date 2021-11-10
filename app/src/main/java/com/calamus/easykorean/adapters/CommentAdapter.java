@@ -152,7 +152,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                         if(!model.getUserId().equals(currentUserId)){
                             NotificationController notificationController=new NotificationController(c);
-                            notificationController.sendNotification(userName+" reacted your post.",model.getUserToken(),"Easy Korean","1");
+                            notificationController.sendNotification(userName+" reacted your post.",model.getUserToken(),Routing.APP_NAME,"1");
                         }
 
                         model.setIsLike("1");
@@ -257,7 +257,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                         if(!cModel.getWriterId().equals(currentUserId)){
                             NotificationController notificationController=new NotificationController(c);
-                            notificationController.sendNotification(userName+" reacted your comment.",cModel.getWriterToken(),"Easy Korean","1");
+                            notificationController.sendNotification(userName+" reacted your comment.",cModel.getWriterToken(),Routing.APP_NAME,"1");
                         }
 
                         cModel.setIsLiked("1");

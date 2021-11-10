@@ -285,7 +285,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
                     });
                 }
-            }).url(Routing.GET_PROFILE+"?phone="+userPhone);
+            }).url(Routing.GET_PROFILE+"/"+userPhone);
             myHttp.runTask();
         }).start();
 

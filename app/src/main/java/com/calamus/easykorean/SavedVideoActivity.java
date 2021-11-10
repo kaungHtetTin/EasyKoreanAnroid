@@ -85,7 +85,7 @@ public class SavedVideoActivity extends AppCompatActivity {
                         }
                     });
                 }
-            }catch(Exception e){
+            }catch(Exception ignored){
 
             }
 

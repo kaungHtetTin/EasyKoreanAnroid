@@ -2,6 +2,7 @@ package com.calamus.easykorean;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -14,12 +15,16 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-import com.calamus.easykorean.app.AppHandler;
+
 import com.calamus.easykorean.app.Config;
 import com.calamus.easykorean.app.MyDialog;
+import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.NotificationUtils;
+import com.calamus.easykorean.app.RecommendationDialog;
+import com.calamus.easykorean.app.StudyTimeSetter;
 import com.calamus.easykorean.fragments.FragmentFive;
 import com.calamus.easykorean.fragments.FragmentFour;
 import com.calamus.easykorean.fragments.FragmentOne;
@@ -28,7 +33,14 @@ import com.calamus.easykorean.fragments.FragmentTwo;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
+
 import java.util.Objects;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.calamus.easykorean.app.AppHandler.makeActiveNow;
 import static com.calamus.easykorean.app.AppHandler.makeOffline;
@@ -44,9 +56,13 @@ public class MainActivity extends AppCompatActivity {
     FragmentFive fragmentFive;
     SharedPreferences share;
     public static boolean pagerPosition,isHome=true;
-    String currentUserId;
+    String currentUserId,studyTime;
     BroadcastReceiver mRegistrationBroadcastReceiver;
     RelativeLayout mainLayout;
+    ExecutorService myExecutor;
+    Executor postExecutor;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,11 +70,14 @@ public class MainActivity extends AppCompatActivity {
         mainLayout=findViewById(R.id.activity_main);
         share = getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         currentUserId=share.getString("phone",null);
+        studyTime=share.getString("studyTime",null);
+        myExecutor= Executors.newFixedThreadPool(1);
+        postExecutor= ContextCompat.getMainExecutor(this);
         FirebaseMessaging.getInstance().subscribeToTopic("koreaUsers");
-        FirebaseMessaging.getInstance().subscribeToTopic("easyKorea");
 
         setUpView();
         makeActiveNow(Long.parseLong(currentUserId)+"");
+        getRecommendation(currentUserId);
         String goSomeWhere= Objects.requireNonNull(getIntent().getExtras()).getString("message",null);
         switch (goSomeWhere) {
             case "splash":
@@ -110,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentOne =new FragmentOne();
         fragmentTwo=new FragmentTwo();
         fragmentThree=new FragmentThree();
-        fragmentFour=new FragmentFour("public",currentUserId);
+        fragmentFour=new FragmentFour();
         fragmentFive=new FragmentFive();
 
         viewPager=findViewById(R.id.view_pager);
@@ -194,7 +213,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
     }
 
     public class ViewPagerAdapter extends FragmentStatePagerAdapter {
@@ -214,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
                 case 2:
                     return new FragmentThree();
                 case 3:
-                    return new FragmentFour("public",currentUserId);
+                    return new FragmentFour();
                 case 4:
                     return new FragmentFive();
             }
@@ -284,6 +302,32 @@ public class MainActivity extends AppCompatActivity {
 
         // clear the notification area when the app is opened
         NotificationUtils.clearNotifications(getApplicationContext());
+    }
+
+    private void getRecommendation(String Id){
+        myExecutor.execute(()->{
+            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
+                @Override
+                public void onResponse(String response) {
+                    Log.e("recommend : ",response);
+                    postExecutor.execute(()->{
+                        try{
+                            JSONObject jo=new JSONObject(response);
+                            new RecommendationDialog(MainActivity.this,jo.getString("msg")).showDialog();
+                        }catch (Exception e){
+                            if(studyTime==null){
+                                 StudyTimeSetter studyTimeSetter=new StudyTimeSetter(MainActivity.this);
+                                 studyTimeSetter.showTimePicker();
+                            }
+                        }
+
+                    });
+                }
+                @Override
+                public void onError(String msg) {}
+            }).url("https://www.calamuseducation.com/calamus-guide/korea/calculate.php?userid="+Id);
+            myHttp.runTask();
+        });
     }
 
 }

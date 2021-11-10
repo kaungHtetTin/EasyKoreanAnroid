@@ -116,7 +116,7 @@ public class AnnouncementActivity extends AppCompatActivity {
                             }
                             adapter.notifyDataSetChanged();
 
-                        }catch (Exception  e){
+                        }catch (Exception ignored){
 
                         }
                     });
@@ -127,7 +127,7 @@ public class AnnouncementActivity extends AppCompatActivity {
 
                     });
                 }
-            }).url(Routing.GET_ANNOUNCEMENT +"?major=korea&userId="+userId);
+            }).url(Routing.GET_ANNOUNCEMENT+"?user_id="+userId);
             myHttp.runTask();
         }).start();
     }

@@ -4,6 +4,7 @@ package com.calamus.easykorean.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,11 +27,14 @@ import com.calamus.easykorean.adapters.VideoAdapter;
 import com.calamus.easykorean.adapters.VideoCategoryAdapter;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
+import com.calamus.easykorean.models.VideoCategoryModel;
 import com.calamus.easykorean.models.VideoModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
+
+import static com.calamus.easykorean.app.Routing.MAJOR;
 
 
 public class FragmentThree extends Fragment {
@@ -39,12 +43,12 @@ public class FragmentThree extends Fragment {
     private SwipeRefreshLayout swipe;
     private VideoAdapter adapter;
     private final ArrayList<VideoModel> lessonList = new ArrayList<>();
-    private final ArrayList<String>CategoryList=new ArrayList<>();
+    private final ArrayList<VideoCategoryModel>CategoryList=new ArrayList<>();
     private VideoCategoryAdapter categoryAdapter;
     MenuItem item;
     SharedPreferences sharedPreferences;
     String videoCategoryForm,firstCategory="";
-    String currentCategory;
+    String currentCategory,currentUserId;
 
     int count=0;
     private boolean loading=true;
@@ -59,6 +63,7 @@ public class FragmentThree extends Fragment {
 
         sharedPreferences=getActivity().getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         videoCategoryForm=sharedPreferences.getString("videoForm","");
+        currentUserId=sharedPreferences.getString("phone","");
 
         setUpView();
 
@@ -148,7 +153,7 @@ public class FragmentThree extends Fragment {
                 public void onError(String msg) {
                     postExecutor.execute(() -> Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show());
                 }
-            }).url(Routing.FETCH_VIDEO +"?count="+count+"&major=korea"+"&cate="+cate);
+            }).url(Routing.FETCH_VIDEO +"/"+cate+"/"+currentUserId+"/"+count);
             myHttp.runTask();
         }).start();
     }
@@ -164,9 +169,9 @@ public class FragmentThree extends Fragment {
                 String link=jo.getString("link");
                 String title=jo.getString("title");
                 String category=jo.getString("cate");
+                boolean learned=jo.getString("learned").equals("1");
                 long time=Long.parseLong(jo.getString("date"));
-                lessonList.add(new VideoModel(title,link,time,category));
-
+                lessonList.add(new VideoModel(title,link,time,category,learned));
             }
 
             adapter.notifyDataSetChanged();
@@ -185,16 +190,17 @@ public class FragmentThree extends Fragment {
 
             for(int i=0;i<ja.length();i++){
                 JSONObject jo=ja.getJSONObject(i);
-                String cate=jo.getString("cate");
-                CategoryList.add(cate);
+                String cate=jo.getString("category");
+                String cate_id=jo.getString("category_id");
+                CategoryList.add(new VideoCategoryModel(cate,cate_id));
 
             }
             categoryAdapter.notifyDataSetChanged();
-            firstCategory=ja.getJSONObject(0).getString("cate");
+            firstCategory=ja.getJSONObject(0).getString("category_id");
             currentCategory=firstCategory;
             fetchLesson(0,firstCategory,false);
 
-        }catch (Exception e){
+        }catch (Exception ignored){
 
         }
     }
@@ -253,7 +259,7 @@ public class FragmentThree extends Fragment {
                 public void onError(String msg) {
                     postExecutor.execute(() -> Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show());
                 }
-            }).url(Routing.FIND_A_VIDEO+"?major=korea"+"&searching="+search);
+            }).url(Routing.FIND_A_VIDEO+"/"+search);
             myHttp.runTask();
         }).start();
     }

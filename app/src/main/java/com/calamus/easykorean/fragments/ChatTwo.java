@@ -20,7 +20,6 @@ import com.calamus.easykorean.adapters.FriendRequestAdapter;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.models.FriendModel;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -141,7 +140,7 @@ public class ChatTwo extends Fragment {
                         }
                     });
                 }
-            }).url(Routing.GET_FRIEND_REQUEST+currentUserId+"/korea");
+            }).url(Routing.GET_FRIEND_REQUEST+"/"+currentUserId);
             myHttp.runTask();
         }).start();
     }

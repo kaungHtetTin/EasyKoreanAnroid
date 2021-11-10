@@ -10,8 +10,10 @@
         android:id="@+id/bt_editProfile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
+        android:layout_margin="5dp"
         android:gravity="start|center_vertical"
+        android:background="@drawable/bg_comment_enter_text"
+        android:paddingStart="10dp"
         android:drawableStart="@drawable/ic_baseline_account_circle_24"
         android:text=" Edit Profile"/>
 
@@ -21,8 +23,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="2dp"
         android:gravity="start|center_vertical"
+        android:background="@drawable/bg_comment_enter_text"
+        android:paddingStart="10dp"
         android:drawableStart="@drawable/ic_baseline_lock_24"
         android:text=" Password Reset"/>
-
 
 </LinearLayout>

@@ -2,7 +2,6 @@ package com.calamus.easykorean.app;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.webkit.JavascriptInterface;
 
 import com.calamus.easykorean.TeacherActivity;

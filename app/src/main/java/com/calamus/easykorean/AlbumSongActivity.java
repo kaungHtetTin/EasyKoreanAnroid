@@ -123,6 +123,7 @@ public class AlbumSongActivity extends AppCompatActivity {
     }
 
     private void fetchSong(int i, boolean isRefresh) {
+        Log.e("ArtistSongFetch : ","Starting");
         new Thread(() -> {
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
                 @Override
@@ -138,10 +139,10 @@ public class AlbumSongActivity extends AppCompatActivity {
                 @Override
                 public void onError(String msg) {
                     postExecutor.execute(() -> {
-                       //  Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+                       Log.e("ArtistSongErr : ",msg);
                     });
                 }
-            }).url(Routing.GET_SONG_BY_ARTIST+artist +"?count="+i+"&major=korea"+"&userId="+userId);
+            }).url(Routing.GET_SONG_BY_ARTIST+"/"+artist+"/"+userId+"/"+i);
             myHttp.runTask();
         }).start();
     }
@@ -159,7 +160,7 @@ public class AlbumSongActivity extends AppCompatActivity {
                         // Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show();
                     });
                 }
-            }).url(Routing.GET_POPULAR_SONG+"/"+artist+"?major=korea&userId="+userId);
+            }).url(Routing.GET_POPULAR_SONG+"/"+artist+"/"+userId);
             myHttp.runTask();
         }).start();
     }
@@ -185,7 +186,7 @@ public class AlbumSongActivity extends AppCompatActivity {
 
             adapter.notifyDataSetChanged();
         }catch (Exception e){
-
+            Log.e("ArtistSongJson : ",e.toString());
            // Toast.makeText(this,e.toString(),Toast.LENGTH_SHORT).show();
         }
     }

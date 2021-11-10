@@ -215,7 +215,7 @@ public class MainListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }else{
             Intent i = new Intent(c, LessonActivity.class);
             CategoryModel model=(CategoryModel)data.get(d);
-            i.putExtra("cate", model.getCate());
+            i.putExtra("cate", model.getCode());
             i.putExtra("picLink",model.getPic());
             i.putExtra("setCate",model.getCate());
             i.putExtra("eCode","hnin");

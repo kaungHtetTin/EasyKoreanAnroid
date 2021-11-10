@@ -250,7 +250,7 @@ public  class DiscussAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if(model.getHasVideo().equals("0")){
                 Intent intent=new Intent(c, CommentActivity.class);
                 intent.putExtra("postId",model.getPostId());
-                intent.putExtra("time","");//for comment seen
+                intent.putExtra("time",0);//for comment seen
                 c.startActivity(intent);
             }else{
                 goVideo(model);
@@ -389,7 +389,7 @@ public  class DiscussAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                         tv_limit.setText("You are in maximum Friend Limit");
                                     }
 
-                                }catch (Exception e){}
+                                }catch (Exception ignored){}
 
                             }
                         });
@@ -400,8 +400,7 @@ public  class DiscussAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                 }).url(url)
                         .field("my_id",currentUserId)
-                        .field("other_id",userId)
-                        .field("major","korea");
+                        .field("other_id",userId);
                 myHttp.runTask();
             }).start();
         }
@@ -496,14 +495,14 @@ public  class DiscussAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                     });
 
 
-                                }catch (Exception e){}
+                                }catch (Exception ignored){}
                             }
                         });
 
                     }
                     @Override
                     public void onError(String msg) {}
-                }).url(Routing.GET_PROFILE+"/"+currentUserId+"/"+otherId+"/korea");
+                }).url(Routing.GET_PROFILE+"/"+currentUserId+"/"+otherId);
 
                 myHttp.runTask();
             }).start();
