@@ -2,28 +2,41 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="#111111"
     android:layout_marginTop="2dp"
+    android:padding="4dp"
     android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/music_img"
-        android:layout_width="60dp"
-        android:src="@drawable/bg_music"
-        android:layout_height="60dp"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
         android:scaleType="centerCrop"
-        android:padding="5dp"/>
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_downloaded_song_file" />
 
     <TextView
         android:id="@+id/tv_songName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="File name"
-        android:layout_toEndOf="@id/music_img"
-        android:layout_centerVertical="true"
         android:layout_marginStart="10dp"
         android:layout_toStartOf="@id/iv_menuMore"
-        android:textColor="@color/white"/>
+        android:layout_toEndOf="@id/music_img"
+        android:fontFamily="@font/poppins_regular"
+        android:text="File name"
+        android:textSize="15sp"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/tv_artistName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Artist"
+        android:layout_alignStart="@id/tv_songName"
+        android:layout_below="@id/tv_songName"
+        android:textColor="@color/white"
+        android:fontFamily="@font/poppins_light"
+        android:textSize="12sp"
+        android:layout_toStartOf="@id/iv_menuMore"/>
 
     <ImageView
         android:id="@+id/iv_menuMore"

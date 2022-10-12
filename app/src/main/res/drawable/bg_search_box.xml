@@ -13,7 +13,7 @@
                     android:shape="rectangle">
 
                     <solid
-                        android:color="#F0F3F5"/>
+                        android:color="@color/colorHr"/>
 
                     <corners
                         android:radius="13dp"/>
@@ -27,7 +27,7 @@
                     android:shape="rectangle">
 
                     <solid
-                        android:color="#F0F3F5"/>
+                        android:color="@color/colorHr"/>
 
                     <corners
                         android:radius="13dp"/>

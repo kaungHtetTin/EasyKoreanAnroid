@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="5dp"
+    app:cardCornerRadius="15dp"
+    app:cardElevation="8dp"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:id="@+id/card">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/appBar"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:text=" Day 1"
+            android:textColor="@color/textPrimary"
+            android:textSize="12sp"
+            app:drawableStartCompat="@drawable/ic_baseline_calendar_today_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            android:layout_marginTop="5dp"
+            app:layout_constraintBottom_toTopOf="@+id/layoutBottomBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_day" />
+
+        <RelativeLayout
+            android:id="@+id/layoutBottomBar"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@color/colorThemeLight"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:id="@+id/tv_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:fontFamily="@font/poppins_medium"
+                android:textColor="@color/white"
+                android:textSize="11sp" />
+
+            <ImageView
+                android:id="@+id/iv_duration"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/ic_lesson_duration" />
+
+            <TextView
+                android:id="@+id/tv_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/iv_duration"
+                android:fontFamily="@font/poppins_medium"
+                android:text="35 min"
+                android:textColor="@color/white"
+                android:textSize="11sp" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/clickLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/recycler"
+            app:layout_constraintStart_toStartOf="@+id/recycler"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
+
+

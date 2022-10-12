@@ -8,14 +8,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -26,13 +24,9 @@ import com.calamus.easykorean.adapters.AppAdapter;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.models.AppModel;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.snackbar.Snackbar;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.Executor;
@@ -43,12 +37,13 @@ import static com.calamus.easykorean.app.AppHandler.setMyanmar;
 public class UpdateActivity extends AppCompatActivity {
     TextView tv,tv2;
     String available,link;
-    Button bt,bt2;
+    Button bt2;
+    ImageView iv_apkpure;
     ViewGroup main;
     ProgressBar pb_loading;
     final String checkOnline="Please check your internet connection";
     final String noUpdate="No update version is available now";
-    File storagePath;
+
     SharedPreferences sharedPreferences;
     boolean isVip;
     Executor postExecutor;
@@ -61,40 +56,41 @@ public class UpdateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update);
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
         MDetect.INSTANCE.init(this);
 
         sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         isVip=sharedPreferences.getBoolean("isVIP",false);
         postExecutor= ContextCompat.getMainExecutor(this);
         setUpView();
+        setUpCustomAppBar();
+        Objects.requireNonNull(getSupportActionBar()).hide();
         getUpdateDataFromHostinger();
 
-        MobileAds.initialize(this, initializationStatus -> {});
 
-        AdView adView = findViewById(R.id.adview);
-        if(!isVip){
-            adView.setVisibility(View.VISIBLE);
-            AdRequest request=new AdRequest.Builder().build();
-            adView.loadAd(request);
-        }
+    }
+
+    private void setUpCustomAppBar(){
+        TextView tv=findViewById(R.id.tv_appbar);
+        ImageView iv=findViewById(R.id.iv_back);
+        tv.setText("Update");
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void setUpView(){
         tv=findViewById(R.id.tv_update);
         tv2=findViewById(R.id.tv_status);
         bt2=findViewById(R.id.get_playStore);
-        bt=findViewById(R.id.get_cupid);
+        iv_apkpure=findViewById(R.id.get_apk_pure);
         main= findViewById(R.id.layout_update);
 
         pb_loading=findViewById(R.id.pb_loading);
         RecyclerView recycler = findViewById(R.id.recyclerProduct);
 
-
-
-        storagePath=new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Cupid/");
-        storagePath.mkdirs();
 
         if(!isOnline())tv.setText(checkOnline);
         bt2.setOnClickListener(v -> {
@@ -114,7 +110,7 @@ public class UpdateActivity extends AppCompatActivity {
             }
         });
 
-        bt.setOnClickListener(v -> {
+        iv_apkpure.setOnClickListener(v -> {
 
             if(isOnline()){
                 if(available!=null){
@@ -141,14 +137,6 @@ public class UpdateActivity extends AppCompatActivity {
         adapter = new AppAdapter(this, appList);
         recycler.setAdapter(adapter);
 
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void setSnackBar(String s){
@@ -208,7 +196,6 @@ public class UpdateActivity extends AppCompatActivity {
         startActivity(new Intent(Intent.ACTION_VIEW,
                 Uri.parse("https://play.google.com/store/apps/details?id="+getPackageName())));
     }
-
 
     private boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) Objects.requireNonNull(this).getSystemService(Context.CONNECTIVITY_SERVICE);

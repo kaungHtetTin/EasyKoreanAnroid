@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    android:padding="7dp"
-    app:cardBackgroundColor="@color/cardview_light_background"
-    app:cardCornerRadius="2dp"
-    app:cardElevation="1dp"
-    android:visibility="gone"
-    android:id="@+id/card_View">
+    android:id="@+id/announceContainer">
 
-    <RelativeLayout
+    <LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <WebView
             android:id="@+id/wv_anounce"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-    </RelativeLayout>
+    </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</RelativeLayout>
+

@@ -10,6 +10,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/appBar"
         android:padding="10dp">
 
         <ImageView
@@ -35,8 +36,10 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/iv_save"
             android:padding="7dp"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="13sp"
             android:layout_toStartOf="@id/bt_iv_more"
-            android:textColor="@android:color/black"/>
+            android:textColor="@color/colorBlack1"/>
 
         <TextView
             android:id="@+id/tv_postOwner"
@@ -46,6 +49,7 @@
             android:padding="7dp"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="5dp"
+            android:textColor="@color/colorConversationMsg"
             android:layout_below="@id/tv_body"/>
 
     </RelativeLayout>

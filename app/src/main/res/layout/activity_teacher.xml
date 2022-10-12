@@ -10,9 +10,9 @@
         android:layout_height="match_parent">
 
         <RelativeLayout
+            android:background="@color/appBar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#fff">
+            android:layout_height="match_parent">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:padding="2dp"
@@ -43,54 +43,47 @@
 
 
             <RelativeLayout
-                android:layout_alignParentBottom="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginEnd="2dp"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="7dp"
                 android:id="@+id/send_layout"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="10dp"
                 android:padding="7dp"
-                android:background="#fff">
+                android:background="@drawable/bg_chat_box_edit_text">
 
                 <ImageView
                     android:id="@+id/iv_insert_photo"
-                    android:src="@drawable/ic_baseline_photo_24"
-                    android:padding="3dp"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_margin="4dp" />
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:padding="10dp"
+                    android:layout_centerVertical="true"
                     android:layout_marginStart="5dp"
+                    android:background="@drawable/bg_circle_blue"
+                    android:src="@drawable/ic_sent_image" />
+
+                <ImageButton
+                    android:id="@+id/chat_send_bt"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
                     android:layout_marginEnd="5dp"
-                    android:background="@drawable/bg_comment_enter_text"
-                    android:gravity="center_vertical"
-                    android:layout_toEndOf="@id/iv_insert_photo">
+                    android:background="@drawable/bg_circle_white"
+                    android:src="@drawable/ic_sent_message" />
 
-                    <ImageButton
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_alignParentEnd="true"
-                        android:id="@+id/chat_send_bt"
-                        android:background="@drawable/ic_send_black_24dp"
-                        android:layout_margin="5dp"/>
+                <EditText
+                    android:id="@+id/et_chat_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:layout_toStartOf="@id/chat_send_bt"
+                    android:layout_toEndOf="@id/iv_insert_photo"
+                    android:background="@drawable/border_2"
+                    android:fontFamily="@font/poppins_regular"
+                    android:hint="Write a message"
+                    android:textColor="#4B93FF"
+                    android:textSize="15sp" />
 
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:hint="Write a message"
-                        android:background="@drawable/border_2"
-                        android:layout_marginStart="5dp"
-                        android:ems="10"
-                        android:layout_toStartOf="@id/chat_send_bt"
-                        android:textSize="16sp"
-                        android:id="@+id/et_chat_input"/>
-
-                </RelativeLayout>
             </RelativeLayout>
 
         </RelativeLayout>

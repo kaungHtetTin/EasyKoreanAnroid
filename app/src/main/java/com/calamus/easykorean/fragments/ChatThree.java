@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -15,13 +16,16 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.adapters.FriendAdapter;
-import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.models.FriendModel;
+import com.calamus.easykorean.app.MyHttp;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 
@@ -72,6 +76,8 @@ public class ChatThree extends Fragment {
 
     private void fetchData(){
         swipe.setRefreshing(true);
+        arrLists.add(0,new FriendModel()); // for search box;
+        arrLists.add(1,new FriendModel()); // for title
         new Thread(() -> {
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
                 @Override
@@ -88,7 +94,8 @@ public class ChatThree extends Fragment {
                                     String imageUrl=jo.getString("userImage");
                                     String phone=jo.getString("phone");
                                     String token=jo.getString("token");
-                                    arrLists.add(new FriendModel(phone,userName,imageUrl,token));
+                                    String friJson=jo.getString("friends");
+                                    arrLists.add(new FriendModel(phone,userName,imageUrl,token,friJson));
                                 }
                                 adapter.notifyDataSetChanged();
                             }catch (Exception e){
@@ -108,7 +115,7 @@ public class ChatThree extends Fragment {
                         }
                     });
                 }
-            }).url(Routing.GET_FRIENDS+"/"+currentUserId);
+            }).url(Routing.GET_FRIENDS+currentUserId);
             myHttp.runTask();
         }).start();
     }

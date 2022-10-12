@@ -2,8 +2,9 @@ package com.calamus.easykorean.models;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
+import java.io.File;
 
-public class SavedVideoModel {
+public class SavedVideoModel extends FileModel {
 
     private final Uri uri;
     private final String name;
@@ -11,7 +12,9 @@ public class SavedVideoModel {
     private final int size;
     private final Bitmap thumbnail;
 
-    public SavedVideoModel(Uri uri, String name, int duration, int size, Bitmap thumbnail) {
+
+    public SavedVideoModel(File file, int selectedState,Uri uri, String name, int duration, int size, Bitmap thumbnail) {
+        super(file, selectedState);
         this.uri = uri;
         this.name = name;
         this.duration = duration;

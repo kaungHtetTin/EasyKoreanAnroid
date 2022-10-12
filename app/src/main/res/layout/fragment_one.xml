@@ -1,14 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:background="@color/fragmentOneLayout"
+    android:layout_height="match_parent">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/app_bar_layout"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:fitsSystemWindows="true">
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/ctb"
+            android:layout_width="match_parent"
+            android:layout_height="115dp"
+            android:background="@color/primaryLayout"
+            android:fitsSystemWindows="true"
+            app:expandedTitleMarginStart="25dp"
+            app:expandedTitleMarginBottom="55dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+            <RelativeLayout
+                android:id="@+id/toolbarContent"
+                android:layout_width="match_parent"
+                android:background="@color/appBar"
+                android:paddingBottom="10dp"
+                android:layout_height="115dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_profile"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_alignBottom="@id/iv_menu"
+                    android:layout_marginEnd="7dp"
+                    android:layout_toStartOf="@id/iv_messenger"
+                    android:src="@drawable/ic_baseline_account_circle_24"
+                    android:transitionName="profile1" />
+
+                <ImageView
+                    android:id="@+id/iv_blueMark"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_alignEnd="@id/iv_profile"
+                    android:layout_alignBottom="@id/iv_profile"
+                    android:visibility="gone"
+                    android:background="@drawable/bg_circle"
+                    android:src="@drawable/ic_baseline_check_circle_24"
+                    android:contentDescription="TODO" />
+
+                <ImageView
+                    android:id="@+id/iv_messenger"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_alignBottom="@id/iv_menu"
+                    android:layout_marginEnd="5dp"
+                    android:layout_toStartOf="@id/iv_downloading"
+                    android:background="@drawable/ic_messenger_background"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_facebook_messenger" />
+
+                <ImageView
+                    android:id="@+id/noti_red_mark"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:visibility="gone"
+                    android:layout_alignEnd="@id/iv_messenger"
+                    android:layout_alignTop="@id/iv_messenger"
+                    android:src="@drawable/bg_noti_alart"
+                    android:contentDescription="TODO" />
+
+                <ImageView
+                    android:id="@+id/iv_downloading"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_toStartOf="@id/iv_menu"
+                    android:background="@drawable/ic_messenger_background"
+                    android:padding="6dp" />
+
+                <ImageView
+                    android:id="@+id/iv_menu"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="25dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/ic_menu" />
+
+                <TextView
+                    android:id="@+id/tv_course_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="25dp"
+                    android:elevation="5dp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:textColor="@color/colorBlack1"
+                    android:textSize="25sp" />
+
+            </RelativeLayout>
+
+            <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:contentInsetStart="0dp"
+                app:contentInsetStartWithNavigation="0dp"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:layout_collapseMode="pin">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp" />
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_frag_one"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:background="#00000000"/>
 
-</LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

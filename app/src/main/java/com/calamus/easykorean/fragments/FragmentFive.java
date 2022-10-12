@@ -1,357 +1,260 @@
 package com.calamus.easykorean.fragments;
 
-import android.Manifest;
+import static com.calamus.easykorean.SplashScreenActivity.MESSAGE_ARRIVE;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
-
+import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import com.calamus.easykorean.ClassRoomActivity;
-import com.calamus.easykorean.MyDiscussionActivity;
-import com.calamus.easykorean.PhotoActivity;
-import com.calamus.easykorean.R;
-import com.calamus.easykorean.SavePostActivity;
-import com.calamus.easykorean.SavedVideoActivity;
-import com.calamus.easykorean.SettingActivity;
-import com.calamus.easykorean.SplashScreenActivity;
-import com.calamus.easykorean.UpdateActivity;
-import com.calamus.easykorean.WebSiteActivity;
-import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.app.Routing;
-import com.calamus.easykorean.app.StudyTimeSetter;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
+import com.calamus.easykorean.models.EnrollModel;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.calamus.easykorean.ClassRoomActivity;
+import com.calamus.easykorean.R;
+import com.calamus.easykorean.adapters.MyLearningAdapter;
+import com.calamus.easykorean.dialogs.MenuDialog;
+import com.calamus.easykorean.models.CourseModel;
+import com.calamus.easykorean.models.FunctionModel;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import me.myatminsoe.mdetect.MDetect;
-import static com.calamus.easykorean.app.AppHandler.setMyanmar;
+import java.util.ArrayList;
+
 
 public class FragmentFive extends Fragment {
 
     private View v;
-    String imagePath,studyTime;
-    SharedPreferences sharedPreferences1;
-    Long checkUpdate;
-    final int callRequestCode = 123;
-    RecyclerView menuRecycler;
-
-    String[] title = {
-            "Chat With\n"+"Classmates",
-            "Account Setting",
-            "Like Us\n"+"On facebook",
-            "Pay For VIP",
-            "Set Your Study Time",
-            "Downloaded Videos",
-            "Saved Posts",
-            "Check Update",
-            "Share",
-            "Rate Us",
-            "Call Center",
-            "Sign Out"
-    };
-
-    String userName,phone;
-    TextView tv_header,tv_vip,tv_phone;
-    boolean isVip;
-    ImageView iv;
+    SharedPreferences sharedPreferences;
+    RecyclerView recyclerView;
+    ArrayList<Object> data =new ArrayList<>();
+    ArrayList<CourseModel> purchasedCourses=new ArrayList<>();
+    ArrayList<EnrollModel>  enrollCourse=new ArrayList<>();
+    MyLearningAdapter adapter;
+    String functionJson,enrollJson,mainCourse,vipCourses;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_five, container, false);
 
-        sharedPreferences1 = getActivity().getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         MDetect.INSTANCE.init(getActivity());
 
-        checkUpdate=sharedPreferences1.getLong("checkUpdate",1);
-        userName=sharedPreferences1.getString("Username",null);
-        isVip=sharedPreferences1.getBoolean("isVIP",false);
-        imagePath=sharedPreferences1.getString("imageUrl",null);
-        phone=sharedPreferences1.getString("phone",null);
-        studyTime=sharedPreferences1.getString("studyTime",null);
+        functionJson=sharedPreferences.getString("functions",null);
+        enrollJson=sharedPreferences.getString("enrollProgress",null);
+        mainCourse=sharedPreferences.getString("mainCourse",null);
+        vipCourses=sharedPreferences.getString("vipCourses",null);
 
-        menuRecycler=v.findViewById(R.id.menu_recycler);
-        tv_header=v.findViewById(R.id.tv_header);
-        tv_vip=v.findViewById(R.id.tv_vip);
-        iv=v.findViewById(R.id.iv_header);
-        tv_phone=v.findViewById(R.id.tv_phone);
-        tv_phone.setText(phone);
-        v.findViewById(R.id.layout_header).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(getActivity(), MyDiscussionActivity.class);
-                intent.putExtra("userId",phone);
-                intent.putExtra("userName","My Discussion");
-                startActivity(intent);
-            }
-        });
-
-        StaggeredGridLayoutManager gm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        setEnrollCourse();
+        setAppBar();
+        setUpView();
 
 
-        menuRecycler.setLayoutManager(gm);
-        menuRecycler.setItemAnimator(new DefaultItemAnimator());
-        MyAdapter adapter=new MyAdapter(title);
-        menuRecycler.setAdapter(adapter);
-
-        if(userName!=null)tv_header.setText(setMyanmar(userName));
-        if(isVip)tv_vip.setVisibility(View.VISIBLE);
-
-        if(imagePath!=null) AppHandler.setPhotoFromRealUrl(iv,imagePath);
-        iv.setOnClickListener(v -> {
-
-            Intent intent=new Intent(getActivity(), PhotoActivity.class);
-            intent.putExtra("image",imagePath);
-            intent.putExtra("des","");
-            startActivity(intent);
-
-
-        });
 
         return v;
     }
 
 
-
-    public class MyAdapter extends RecyclerView.Adapter<MyAdapter.Holder> {
-
-        private final String [] data;
-        private final LayoutInflater mInflater;
-        int[] resId = {
-                R.drawable.ic_chat,
-                R.drawable.ic_baseline_settings_24,
-                R.drawable.ic_facebook,
-                R.drawable.ic_attach_money_black_24dp,
-                R.drawable.ic_alarm,
-                R.drawable.ic_downloaded_video,
-                R.drawable.ic_save,
-                R.drawable.ic_cloud_download_black_24dp,
-                R.drawable.ic_share_black_24dp,
-                R.drawable.ic_rate_review_black_24dp,
-                R.drawable.ic_phone_green,
-                R.drawable.ic_logout
+    private void setUpView(){
+        recyclerView=v.findViewById(R.id.recyclerView);
+        GridLayoutManager gm = new GridLayoutManager(getActivity(), 3){
+            @Override
+            public boolean canScrollVertically() {
+                return true;
+            }
         };
 
-        public MyAdapter( String [] data) {
-            this.data = data;
-            this.mInflater = LayoutInflater.from(getActivity());
-        }
-
-        @Override
-        public int getItemCount() {
-            return data.length;
-        }
-
-        @NotNull
-        @Override
-        public MyAdapter.Holder onCreateViewHolder(@NotNull ViewGroup parent, int p2) {
-            View view;
-            if(p2>3){
-                view = mInflater.inflate(R.layout.list_drawer_linear, parent, false);
-            }else{
-                view = mInflater.inflate(R.layout.list_drawer, parent, false);
+        gm.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if(data.get(position) instanceof FunctionModel){
+                    return  1;
+                }
+                else{
+                    return 3;
+                }
             }
-            return new MyAdapter.Holder(view);
-        }
+        });
 
-        @Override
-        public void onBindViewHolder(@NotNull MyAdapter.Holder holder, final int i) {
-            holder.tv.setText(data[i]);
-            holder.iv.setBackgroundResource(resId[i]);
+        recyclerView.setLayoutManager(gm);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        adapter=new MyLearningAdapter(getActivity(),data);
+        recyclerView.setAdapter(adapter);
 
-           if(i>3){
-               StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
-               layoutParams.setFullSpan(true);
-           }
+        setFunction();
+        getPurchaseCourse();
 
-           if(studyTime!=null && i==4){
-               holder.tv.setText("Studying At "+studyTime+ " Daily");
-           }
-        }
-
-        public class Holder extends RecyclerView.ViewHolder {
-            TextView tv;
-            ImageView iv;
-
-            public Holder(View view) {
-                super(view);
-                tv=view.findViewById(R.id.list_tv);
-                iv=view.findViewById(R.id.list_iv);
-                view.setOnClickListener(v -> setting(getAbsoluteAdapterPosition(),tv));
-
-            }
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return position;
-        }
     }
 
-    public void setting(int position,TextView tv){
-        switch (position) {
-            case 0:{
+
+    private void setAppBar(){
+        RelativeLayout toolBarContent=v.findViewById(R.id.toolbarContent);
+        CollapsingToolbarLayout toolbarLayout=v.findViewById(R.id.ctb);
+        ImageView iv_messenger=v.findViewById(R.id.iv_messenger);
+        ImageView iv_menu=v.findViewById(R.id.iv_menu);
+
+        ImageView iv_noti_red_mark=v.findViewById(R.id.noti_red_mark);
+        if(MESSAGE_ARRIVE)iv_noti_red_mark.setVisibility(View.VISIBLE);
+        else iv_noti_red_mark.setVisibility(View.GONE);
+
+        toolbarLayout.setTitle(Routing.APP_NAME);
+        toolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
+        toolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
+
+        iv_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new MenuDialog(requireActivity()).initDialog();
+            }
+        });
+
+        iv_messenger.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 Intent intent=new Intent(getActivity(), ClassRoomActivity.class);
                 intent.putExtra("action","");
+                iv_noti_red_mark.setVisibility(View.GONE);
                 startActivity(intent);
-                break;
             }
+        });
 
-            case 1:{
-                Intent intent=new Intent(getActivity(), SettingActivity.class);
-                startActivity(intent);
-                break;
-            }
+        AppBarLayout mAppBarLayout =v.findViewById(R.id.app_bar_layout);
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
 
-            case 2:{
-                openFacebookPage("easykoreancalamus");
-                break;
-            }
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
 
-            case 3: {
-                Intent i = new Intent(getActivity(), WebSiteActivity.class);
-                i.putExtra("link", Routing.PAYMENT);
-                startActivity(i);
-                break;
-            }
-            case 4: {
-                StudyTimeSetter studyTimeSetter=new StudyTimeSetter(requireActivity());
-                studyTimeSetter.showTimePicker();
-                break;
-            }
-            case 5:
-                Intent intent=new Intent(getActivity(), SavedVideoActivity.class);
-                startActivity(intent);
-                break;
-            case 6:
-                Intent i = new Intent(getActivity(), SavePostActivity.class);
-                startActivity(i);
-                break;
-            case 7:
-                Intent intent2=new Intent(getActivity(), UpdateActivity.class);
-                startActivity(intent2);
+                Log.e("scrollRange ",verticalOffset+"");
 
-                break;
-            case 8:
-                Intent shareingIntent = new Intent(Intent.ACTION_SEND);
-                shareingIntent.setType("text/plain");
-                String shareBody = "https://play.google.com/store/apps/details?id=" + requireActivity().getPackageName();
-                shareingIntent.putExtra(Intent.EXTRA_SUBJECT, "Try out this best Language App.");
-                shareingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
-                startActivity(Intent.createChooser(shareingIntent, "Share via"));
-                break;
-            case 9:
-
-                goPlayStore();
-                break;
-
-            case 10:
-                if (isPermissionGranted()) {
-                    callCenter("09979638384");
-                } else {
-                    takePermission();
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                    toolBarContent.setVisibility(View.VISIBLE);
                 }
-                break;
+                if (verticalOffset<-64) {
+                    isShow = true;
+                    toolBarContent.setVisibility(View.GONE);
 
-            case 11:
-                signOut();
-                break;
-        }
+                } else if (isShow) {
+                    isShow = false;
+                    toolBarContent.setVisibility(View.VISIBLE);
+
+                }
+            }
+        });
+
     }
 
-    private boolean isPermissionGranted(){
-        return ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED;
+
+
+    private void setFunction(){
+        try{
+            JSONArray ja2=new JSONArray(functionJson);
+            for(int i=0;i<ja2.length();i++) {
+                JSONObject jo = ja2.getJSONObject(i);
+                String name=jo.getString("title");
+                String link=jo.getString("link_url");
+                String pic=jo.getString("image_url");
+                data.add(new FunctionModel(name,link,pic));
+            }
+            adapter.notifyDataSetChanged();
+        }catch (Exception ignored){}
     }
 
-    private void takePermission(){
-        ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CALL_PHONE}, callRequestCode);
-    }
-
-
-    private void openFacebookPage(String pageId) {
-        String pageUrl = "https://wwww.facebook.com/easykoreancalamus/";
-
+    private void getPurchaseCourse(){
+        JSONArray vipCourseArr=null;
         try {
-            ApplicationInfo applicationInfo = requireActivity().getPackageManager().getApplicationInfo("com.facebook.katana", 0);
+            JSONArray ja=new JSONArray(mainCourse);
+            if(vipCourses!=null){
+                Log.e("vipCourses: ",vipCourses);
+                vipCourseArr=new JSONArray(vipCourses);
+            }
+            for(int i=0;i<ja.length();i++){
+                JSONObject jo=ja.getJSONObject(i);
+                String id=jo.getString("course_id");
+                String title=jo.getString("title");
+                String cover_url=jo.getString("cover_url");
+                String description=jo.getString("description");
+                String colorCode=jo.getString("background_color");
+                boolean isVip=jo.getString("is_vip").equals("1");
+                int duration=jo.getInt("duration");
 
-            if (applicationInfo.enabled) {
-                int versionCode = getActivity().getPackageManager().getPackageInfo("com.facebook.katana", 0).versionCode;
-                String url;
-
-                if (versionCode >= 3002850) {
-                    url = "fb://facewebmodal/f?href=" + pageUrl;
-                } else {
-                    url = "fb://page/" + pageId;
+                if(vipCourseArr!=null){
+                    for(int j=0;j<vipCourseArr.length();j++){
+                        JSONObject jo2=vipCourseArr.getJSONObject(j);
+                        String course_id=jo2.getString("course_id");
+                        if(course_id.equals(id)){
+                            purchasedCourses.add(new CourseModel(id,title,description,cover_url,colorCode,getVIPCourseProgress(course_id),duration,isVip));
+                            break;
+                        }
+                    }
                 }
-
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-            } else {
-                throw new Exception("Facebook is disabled");
             }
-        } catch (Exception e) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(pageUrl)));
+
+            setCourse();
+
+        }catch (Exception e){
+            Log.e("CourseFetchErr ",e.toString());
         }
     }
 
-    private boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = Objects.requireNonNull(cm).getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
+    private void setCourse() {
+        if(purchasedCourses.size()==0){
+            data.add("No Purchased Course");
+        }else if(purchasedCourses.size()==1){
+            data.add("Purchased Course");
+        }else{
+            data.add("Purchased Courses");
+        }
+        data.addAll(purchasedCourses);
+
+        adapter.notifyDataSetChanged();
     }
 
 
-    private void signOut() {
 
-        SharedPreferences.Editor editor1 = sharedPreferences1.edit();
-        editor1.clear();
-        editor1.apply();
-        Intent intent = new Intent(getActivity(), SplashScreenActivity.class);
-        startActivity(intent);
-        requireActivity().finish();
-    }
-
-
-    private void callCenter(String ph) {
-        ph = ph.replace("#", "%23");
-        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ph));
-        startActivity(intent);
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == callRequestCode) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                callCenter("09979638384");
-            } else {
-                takePermission();
+    private void setEnrollCourse(){
+        if(enrollJson!=null){
+            try {
+                JSONArray progressArr=new JSONArray(enrollJson);
+                for(int i=0;i<progressArr.length();i++){
+                    JSONObject jo2=progressArr.getJSONObject(i);
+                    String course_id=jo2.getString("course_id");
+                    int learned=Integer.parseInt(jo2.getString("learned"));
+                    int total=Integer.parseInt(jo2.getString("total"));
+                    enrollCourse.add(new EnrollModel(course_id,learned,total));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
     }
 
 
+    private int getVIPCourseProgress(String course_id){
+        int result=0;
+        for(int i=0;i<enrollCourse.size();i++){
+            EnrollModel model=enrollCourse.get(i);
+            if(model.getCourse_id().equals(course_id)){
+                result=(model.getLearned()*100)/model.getTotal();
+                break;
+            }
+        }
 
-    public void goPlayStore(){
-        startActivity(new Intent(Intent.ACTION_VIEW,
-                Uri.parse("https://play.google.com/store/apps/details?id="+ requireActivity().getPackageName())));
+        return result;
     }
-
 
 }

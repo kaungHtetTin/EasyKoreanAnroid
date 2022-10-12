@@ -28,7 +28,7 @@ public class SongArtistFragment extends Fragment {
     private SongArtistAdapter adapter;
     private final ArrayList<SongArtistModel> songArtistLists = new ArrayList<>();
 
-    int count=0;
+    int page=1;
     private boolean loading=true;
     int visibleItemCount,totalItemCount;
     public static int pastVisibleItems;
@@ -55,11 +55,11 @@ public class SongArtistFragment extends Fragment {
         adapter = new SongArtistAdapter(getActivity(),songArtistLists);
         recyclerView.setAdapter(adapter);
         postExecutor = ContextCompat.getMainExecutor(getActivity());
-        fetchArtistList(0,false);
+        fetchArtistList(1,false);
         swipe.setOnRefreshListener(() -> {
-            count=0;
+            page=1;
             loading=true;
-            fetchArtistList(0,true);
+            fetchArtistList(1,true);
         });
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -75,8 +75,8 @@ public class SongArtistFragment extends Fragment {
 
                         if((visibleItemCount+pastVisibleItems)>=totalItemCount-7){
                             loading=false;
-                            count+=50;
-                            fetchArtistList(count,false);
+                            page++;
+                            fetchArtistList(page,false);
                         }
                     }
 
@@ -106,7 +106,7 @@ public class SongArtistFragment extends Fragment {
                         // Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show();
                     });
                 }
-            }).url(Routing.GET_SONG_ARTIST +"/"+i);
+            }).url(Routing.GET_SONG_ARTIST +"?page="+i);
             myHttp.runTask();
         }).start();
     }
@@ -115,7 +115,8 @@ public class SongArtistFragment extends Fragment {
         swipe.setRefreshing(false);
         try {
             loading=true;
-            JSONArray ja=new JSONArray(response);
+            JSONObject joArt=new JSONObject(response);
+            JSONArray ja=joArt.getJSONArray("artists");
             for(int i=0;i<ja.length();i++){
                 JSONObject jo=ja.getJSONObject(i);
                 String artist=jo.getString("artist");

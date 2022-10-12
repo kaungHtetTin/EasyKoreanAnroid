@@ -1,13 +1,15 @@
 package com.calamus.easykorean;
 
-import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.SearchView;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,42 +18,57 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import com.calamus.easykorean.adapters.LessonAdapter;
-import com.calamus.easykorean.app.MyHttp;
-import com.calamus.easykorean.app.Routing;
-import com.calamus.easykorean.models.LessonModel;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdOptions;
+import com.google.android.material.snackbar.Snackbar;
+import com.calamus.easykorean.adapters.LessonAdapter;
+import com.calamus.easykorean.app.Routing;
+import com.calamus.easykorean.models.LessonModel;
+import com.calamus.easykorean.app.MyHttp;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 
-public class LessonActivity extends AppCompatActivity implements android.widget.SearchView.OnQueryTextListener
+import static com.calamus.easykorean.app.AppHandler.AD_UNIT_ID;
+
+public class LessonActivity extends AppCompatActivity
 {
     RecyclerView recycler;
+    LinearLayout shimmerLayout;
     public SwipeRefreshLayout swipe;
-    android.widget.SearchView searchView;
-    SearchManager searchManager;
-    MenuItem menuItemSearch;
+    TextView tv_title;
+    ViewGroup main;
+
     public static String category;
     LessonAdapter adapter;
-    ArrayList<LessonModel> lessonList = new ArrayList<>();
-    public static final String POST_PARCEL = "post_parcel";
-    public static int resID;
-    public static String picLink,currentUserId;
-    public static String eCode,level;
+    ArrayList<Object> lessonList = new ArrayList<>();
+    public static String course_id;
     public static int fragmentId;
     boolean isVip;
     SharedPreferences sharedPreferences;
     Executor postExecutor;
 
-    int count=0;
+    int page=1;
     private boolean loading=true;
     int visibleItemCount,totalItemCount;
     public static int pastVisibleItems;
+    String currentUserId;
+
+    boolean isDayPlan;
+    String day;
+    String appBarTitle;
+    String category_title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -60,22 +77,30 @@ public class LessonActivity extends AppCompatActivity implements android.widget.
         setContentView(R.layout.activity_lesson);
         sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         isVip=sharedPreferences.getBoolean("isVIP",false);
-        currentUserId=sharedPreferences.getString("phone","");
+        currentUserId=sharedPreferences.getString("phone",null);
         postExecutor = ContextCompat.getMainExecutor(this);
-        setupSearchView();
+        Objects.requireNonNull(getSupportActionBar()).hide();
+
+
+
+        category = Objects.requireNonNull(getIntent().getExtras()).getString("category_id", "");
+        appBarTitle=getIntent().getExtras().getString("course_title");
+        category_title=getIntent().getExtras().getString("category_title");
+        course_id=getIntent().getExtras().getString("level");
+        fragmentId=getIntent().getExtras().getInt("fragment");
+        isDayPlan=getIntent().getExtras().getBoolean("isDayPlan",false);
+        day=getIntent().getExtras().getString("day",0+"");
+
+        setUpCustomAppBar();
         setupViews();
 
-        category = Objects.requireNonNull(getIntent().getExtras()).getString("cate", "");
-        picLink=getIntent().getExtras().getString("picLink");
-        eCode=getIntent().getExtras().getString("eCode");
-        String cate=getIntent().getExtras().getString("setCate");
-        level=getIntent().getExtras().getString("level");
-        fragmentId=getIntent().getExtras().getInt("fragment");
-        setTitle(cate);
+        if(isDayPlan)fetchLessonByDayPlan();
+        else fetchLesson(1,false);
 
-        fetchLesson(0,false);
-
-        MobileAds.initialize(this, initializationStatus -> {});
+        MobileAds.initialize(this,new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {}
+        });
 
         AdView adView = findViewById(R.id.adview);
         if(!isVip){
@@ -83,38 +108,55 @@ public class LessonActivity extends AppCompatActivity implements android.widget.
             AdRequest request=new AdRequest.Builder().build();
             adView.loadAd(request);
         }
-
-
     }
 
 
-    private void setupSearchView()
-    {
-        searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = new SearchView(Objects.requireNonNull(getSupportActionBar()).getThemedContext());
-        searchView.setQueryHint("Search");
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-        searchView.setOnQueryTextListener(this);
-    }
 
     private void setupViews()
     {
+        tv_title=findViewById(R.id.tv_info_header);
         recycler = findViewById(R.id.recycler);
-        swipe=findViewById(R.id.swipe_1);
-        swipe.setRefreshing(true);
+        swipe=findViewById(R.id.swipe);
+        main=findViewById(R.id.main);
+        shimmerLayout=findViewById(R.id.shimmer_layout);
+        swipe.setRefreshing(false);
+
+        recycler.setVisibility(View.GONE);
+        shimmerLayout.setVisibility(View.VISIBLE);
+
+        tv_title.setText(category_title);
+
         LinearLayoutManager lm = new LinearLayoutManager(this);
         recycler.setLayoutManager(lm);
-        //recycler.addItemDecoration(new SpacingItemDecoration(2, XUtils.toPx(this, 2), true));
         recycler.setItemAnimator(new DefaultItemAnimator());
-        adapter = new LessonAdapter(this, lessonList);
+        adapter = new LessonAdapter(this, lessonList, new LessonAdapter.CallBack() {
+            @Override
+            public void onDownloadClick() {
+                setSnackBar("Start Downloading");
+            }
+        });
         recycler.setAdapter(adapter);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        swipe.setOnRefreshListener(() -> {
 
-            count=0;
-            loading=true;
-            fetchLesson(0,true);
+
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh()
+            {
+
+                recycler.setVisibility(View.GONE);
+                shimmerLayout.setVisibility(View.VISIBLE);
+                swipe.setRefreshing(false);
+
+                if(isDayPlan){
+                    fetchLessonByDayPlan();
+                }else{
+                    page=1;
+                    loading=true;
+                    fetchLesson(1,true);
+                }
+
+
+            }
         });
 
 
@@ -123,6 +165,7 @@ public class LessonActivity extends AppCompatActivity implements android.widget.
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 pastVisibleItems=lm.findFirstVisibleItemPosition();
+
                 if(dy>0){
                     visibleItemCount=lm.getChildCount();
                     totalItemCount=lm.getItemCount();
@@ -132,8 +175,8 @@ public class LessonActivity extends AppCompatActivity implements android.widget.
                         if((visibleItemCount+pastVisibleItems)>=totalItemCount-7){
 
                             loading=false;
-                            count+=30;
-                            fetchLesson(count,false);
+                            page++;
+                            if(!isDayPlan)fetchLesson(page,false);
 
                         }
                     }
@@ -145,38 +188,26 @@ public class LessonActivity extends AppCompatActivity implements android.widget.
 
     }
 
-    @Override
-    public boolean onQueryTextSubmit(String query)
-    {
-        menuItemSearch.collapseActionView();
-        if (query != null)
-        {
-            adapter.getFilter().filter(query);
-        }
-        return true;
+    private void setUpCustomAppBar(){
+
+        TextView tv=findViewById(R.id.tv_appbar);
+        ImageView iv=findViewById(R.id.iv_back);
+        tv.setText(appBarTitle);
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
     }
 
-    @Override
-    public boolean onQueryTextChange(String newText)
-    {
-        adapter.getFilter().filter(newText);
-
-        return true;
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        menuItemSearch = menu.add("Search");
-        menuItemSearch.setVisible(true);
-        menuItemSearch.setActionView(searchView);
-        menuItemSearch.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-        menuItemSearch.setIcon(R.drawable.ic_search);
-        assert searchManager != null;
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false);
-        return super.onCreateOptionsMenu(menu);
+    private void setSnackBar(String s){
+        final Snackbar sb=Snackbar.make(main,s,Snackbar.LENGTH_INDEFINITE);
+        sb.setAction("View", v -> startActivity(new Intent(LessonActivity.this,
+                        DownloadingListActivity.class)))
+                .setActionTextColor(Color.WHITE)
+                .show();
     }
 
 
@@ -185,8 +216,41 @@ public class LessonActivity extends AppCompatActivity implements android.widget.
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
                 @Override
                 public void onResponse(String response) {
+                    postExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (isRefresh)lessonList.clear();
+                            try {
+                                JSONObject jo=new JSONObject(response);
+                                String lessons=jo.getString("lessons");
+                                doAsResult(lessons);
+                            }catch (Exception e){}
+
+                        }
+                    });
+                }
+                @Override
+                public void onError(String msg) {
+                    postExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }).url(Routing.FETCH_LESSONS+"?category="+category+"&userId="+currentUserId+"&page="+count);
+            myHttp.runTask();
+        }).start();
+    }
+
+
+    private void fetchLessonByDayPlan(){
+        new Thread(() -> {
+            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
+                @Override
+                public void onResponse(String response) {
                     postExecutor.execute(() -> {
-                        if (isRefresh)lessonList.clear();
+                        lessonList.clear();
                         doAsResult(response);
                     });
                 }
@@ -194,56 +258,87 @@ public class LessonActivity extends AppCompatActivity implements android.widget.
                 public void onError(String msg) {
                     postExecutor.execute(() -> Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show());
                 }
-            }).url(Routing.FETCH_LESSONS +"/"+category+"/"+currentUserId+"/"+count);
+            }).url(Routing.GET_LESSONS_BY_DAY_PLAN+"course_id="+course_id+"&day="+day+"&userId="+currentUserId);
             myHttp.runTask();
         }).start();
     }
 
 
     private void doAsResult(String response){
-        swipe.setRefreshing(false);
+        adapter.setLessonJSON(response);
         try {
-            loading=true;
+            recycler.setVisibility(View.VISIBLE);
+            shimmerLayout.setVisibility(View.GONE);
+
             JSONArray ja=new JSONArray(response);
             for(int i=0;i<ja.length();i++){
                 JSONObject jo=ja.getJSONObject(i);
                 String id=jo.getString("id");
-                String cate=jo.getString("cate");
                 String link=jo.getString("link");
                 String title=jo.getString("title");
+                String title_mini=jo.getString("title_mini");
+                String image_url=jo.getString("image_url");
+                String thumbnail=jo.getString("thumbnail");
                 boolean isVideo= jo.getString("isVideo").equals("1");
                 boolean isVip= jo.getString("isVip").equals("1");
                 boolean learned=jo.getString("learned").equals("1");
-                long time=Long.parseLong(jo.getString("date"));
-                lessonList.add(new LessonModel(id,cate,link,title,isVideo,isVip,time,learned));
+                long time=jo.getLong("date");
+                int duration=jo.getInt("duration");
+
+                lessonList.add(new LessonModel(id,link,title,title_mini,isVideo,isVip,time,learned,
+                        image_url,thumbnail,duration,appBarTitle));
 
             }
 
-            adapter.notifyDataSetChanged();
+            if(!isVip&&page<2){
+                loadNativeAds();
+            }else {
+                adapter.notifyDataSetChanged();
+            }
 
+            adapter.notifyDataSetChanged();
+            loading=true;
 
         }catch (Exception e){
             loading=false;
-            swipe.setRefreshing(false);
             Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item)
-    {
+    private void loadNativeAds() {
 
-        if (item.getItemId() == android.R.id.home) {
-            finish();
+        AdLoader adLoader = new AdLoader.Builder(this, AD_UNIT_ID)
+                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                    @Override
+                    public void onNativeAdLoaded(@NotNull NativeAd nativeAd) {
 
-        }
-        return super.onOptionsItemSelected(item);
+                        if(lessonList.size()>6){
+                            lessonList.add(4,nativeAd);
+                        }else {
+                            lessonList.add(nativeAd);
+                        }
+                        adapter.notifyDataSetChanged();
+
+
+                    }
+                })
+                .withAdListener(new AdListener() {
+                    @Override
+                    public void onAdFailedToLoad(LoadAdError adError) {
+                        adapter.notifyDataSetChanged();
+                    }
+                })
+                .withNativeAdOptions(new NativeAdOptions.Builder()
+                        // Methods in the NativeAdOptions.Builder class can be
+                        // used here to specify individual options settings.
+                        .build())
+
+                .build();
+
+
+        adLoader.loadAd(new AdRequest.Builder().build());
+
     }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
 }
 

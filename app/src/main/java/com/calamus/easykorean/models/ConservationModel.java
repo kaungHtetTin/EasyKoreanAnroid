@@ -2,16 +2,24 @@ package com.calamus.easykorean.models;
 
 
 public class ConservationModel {
-    final String userId;
-    final String userName;
-    final String imageUrl;
+    String userId;
+    String userName;
+    String imageUrl;
     String message;
-    final String time;
-    final String senderId;
-    final String token;
+    String time;
+    String senderId;
+    String token;
     int seen;
 
-    public ConservationModel(String userId,String userName, String imageUrl, String message, String time,String senderId,String token,int seen) {
+    String title;
+
+    public ConservationModel(){}
+
+    public ConservationModel(String title) {
+        this.title = title;
+    }
+
+    public ConservationModel(String userId, String userName, String imageUrl, String message, String time, String senderId, String token, int seen) {
         this.userName = userName;
         this.imageUrl = imageUrl;
         this.message = message;
@@ -21,6 +29,10 @@ public class ConservationModel {
         this.token=token;
         this.seen=seen;
 
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public void setMessage(String message) {

@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="80dp"
-    android:layout_height="80dp"
-    android:layout_margin="1dp"
-    app:cardCornerRadius="2dp"
-    android:padding="10dp"
-    app:cardElevation="5dp"
-    android:foreground="?android:attr/selectableItemBackground">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/functionContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="15dp"
+    android:layout_marginBottom="15dp">
 
-        <ImageView
-            android:id="@+id/mainItemIv"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:contentDescription="TODO" />
+    <ImageView
+        android:id="@+id/iv_book"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:contentDescription="TODO"
+        android:layout_centerHorizontal="true"/>
 
-</androidx.cardview.widget.CardView>
+    <TextView
+        android:id="@+id/tv_functionName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_book"
+        android:layout_marginTop="7dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:gravity="center"
+        android:text="function name"
+        android:textColor="@color/colorBlack1"
+        android:textSize="14sp" />
+
+</RelativeLayout>
+

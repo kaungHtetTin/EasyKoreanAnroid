@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MyAdActivity">
+
+    <com.vk.sdk.WebView
+        android:id="@+id/wv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <TextView
+        android:id="@+id/tv_skip"
+        android:text="Skip 5"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:fontFamily="@font/poppins_regular"
+        android:layout_alignParentEnd="true"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:padding="5dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/bg_ad_skip"
+       />
+
+</RelativeLayout>

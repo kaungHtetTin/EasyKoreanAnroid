@@ -14,23 +14,30 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import com.calamus.easykorean.adapters.SongOnlineAdapter;
-import com.calamus.easykorean.app.MyHttp;
-import com.calamus.easykorean.app.Routing;
-import com.calamus.easykorean.models.AdModel;
-import com.calamus.easykorean.models.SongOnlineModel;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.calamus.easykorean.adapters.SongOnlineAdapter;
+import com.calamus.easykorean.app.Routing;
+import com.calamus.easykorean.models.AdModel;
+import com.calamus.easykorean.models.SongOnlineModel;
+import com.calamus.easykorean.app.MyHttp;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.concurrent.Executor;
 
 public class AlbumSongActivity extends AppCompatActivity {
 
+    ImageView iv_back;
+    TextView tv_appbar;
     RecyclerView recyclerView;
     private SwipeRefreshLayout swipe;
     private SongOnlineAdapter adapter;
@@ -38,7 +45,7 @@ public class AlbumSongActivity extends AppCompatActivity {
     private final ArrayList<SongOnlineModel> songOnlineLists_Pop = new ArrayList<>();
     SharedPreferences sharedPreferences;
 
-    int count=0;
+    int page=1;
     private boolean loading=true;
     int visibleItemCount,totalItemCount;
     public static int pastVisibleItems;
@@ -56,13 +63,14 @@ public class AlbumSongActivity extends AppCompatActivity {
         userId=sharedPreferences.getString("phone","0");
         artist=getIntent().getStringExtra("artist");
         isVip=sharedPreferences.getBoolean("isVIP",false);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().hide();
 
         setUpView();
-        setTitle(artist);
 
-        MobileAds.initialize(this, initializationStatus -> {});
+        MobileAds.initialize(this,new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {}
+        });
 
         AdView adView = findViewById(R.id.adview);
         if(!isVip){
@@ -76,7 +84,10 @@ public class AlbumSongActivity extends AppCompatActivity {
     private void setUpView() {
         swipe=findViewById(R.id.swipeSong);
         recyclerView=findViewById(R.id.recyclerSongOne);
+        iv_back=findViewById(R.id.iv_back);
+        tv_appbar=findViewById(R.id.tv_appbar);
 
+        tv_appbar.setText(artist);
         swipe.setRefreshing(true);
 
         LinearLayoutManager lm = new LinearLayoutManager(this);
@@ -88,13 +99,24 @@ public class AlbumSongActivity extends AppCompatActivity {
         songOnlineLists.clear();
         songOnlineLists.add(0,new SongOnlineModel());
         fetchPopularSong();
-        fetchSong(0,false);
+        fetchSong(1,false);
 
-        swipe.setOnRefreshListener(() -> {
-            count=0;
-            loading=true;
-            localSongs=getLocalSongs();
-            fetchSong(0,true);
+        iv_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh()
+            {
+                page=1;
+                loading=true;
+                localSongs=getLocalSongs();
+                fetchSong(1,true);
+            }
         });
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -110,8 +132,8 @@ public class AlbumSongActivity extends AppCompatActivity {
 
                         if((visibleItemCount+pastVisibleItems)>=totalItemCount-7){
                             loading=false;
-                            count+=10;
-                            fetchSong(count,false);
+                            page++;
+                            fetchSong(page,false);
                         }
                     }
 
@@ -123,26 +145,31 @@ public class AlbumSongActivity extends AppCompatActivity {
     }
 
     private void fetchSong(int i, boolean isRefresh) {
-        Log.e("ArtistSongFetch : ","Starting");
         new Thread(() -> {
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
                 @Override
                 public void onResponse(String response) {
-                    postExecutor.execute(() -> {
-                        if (isRefresh){
-                            songOnlineLists.clear();
-                            songOnlineLists.add(0,new SongOnlineModel());
+                    postExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (isRefresh){
+                                songOnlineLists.clear();
+                                songOnlineLists.add(0,new SongOnlineModel());
+                            }
+                            doAsResult(response);
                         }
-                        doAsResult(response);
                     });
                 }
                 @Override
                 public void onError(String msg) {
-                    postExecutor.execute(() -> {
-                       Log.e("ArtistSongErr : ",msg);
+                    postExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            //  Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+                        }
                     });
                 }
-            }).url(Routing.GET_SONG_BY_ARTIST+"/"+artist+"/"+userId+"/"+i);
+            }).url(Routing.GET_SONG_BY_ARTIST+"?artist="+artist+"&userId="+userId+"&page="+i);
             myHttp.runTask();
         }).start();
     }
@@ -152,15 +179,23 @@ public class AlbumSongActivity extends AppCompatActivity {
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
                 @Override
                 public void onResponse(String response) {
-                    postExecutor.execute(() -> doAsResultPop(response));
+                    postExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            doAsResultPop(response);
+                        }
+                    });
                 }
                 @Override
                 public void onError(String msg) {
-                    postExecutor.execute(() -> {
-                        // Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show();
+                    postExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show();
+                        }
                     });
                 }
-            }).url(Routing.GET_POPULAR_SONG+"/"+artist+"/"+userId);
+            }).url(Routing.GET_POPULAR_SONG_BY_ARTIST+"?artist="+artist+"&userId="+userId);
             myHttp.runTask();
         }).start();
     }
@@ -186,8 +221,8 @@ public class AlbumSongActivity extends AppCompatActivity {
 
             adapter.notifyDataSetChanged();
         }catch (Exception e){
-            Log.e("ArtistSongJson : ",e.toString());
-           // Toast.makeText(this,e.toString(),Toast.LENGTH_SHORT).show();
+
+            // Toast.makeText(this,e.toString(),Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -196,7 +231,8 @@ public class AlbumSongActivity extends AppCompatActivity {
         swipe.setRefreshing(false);
         try {
             loading=true;
-            JSONArray ja=new JSONArray(response);
+            JSONObject joSongs=new JSONObject(response);
+            JSONArray ja=joSongs.getJSONArray("songs");
             for(int i=0;i<ja.length();i++){
                 JSONObject jo=ja.getJSONObject(i);
                 String songId=jo.getString("song_id");
@@ -216,7 +252,7 @@ public class AlbumSongActivity extends AppCompatActivity {
         }catch (Exception e){
             loading=false;
             swipe.setRefreshing(false);
-             // Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
+            // Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -225,21 +261,6 @@ public class AlbumSongActivity extends AppCompatActivity {
         File directory = getExternalFilesDir(Environment.DIRECTORY_MUSIC);
         File[] songFiles =directory.listFiles();
         return songFiles;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-
     }
 
     private void LoadApp(){
@@ -279,8 +300,9 @@ public class AlbumSongActivity extends AppCompatActivity {
                 public void onError(String msg) {
                     Log.e("Add err: ", msg);
                 }
-            }).url(Routing.GET_APP_ADS+"/"+count);
+            }).url(Routing.GET_APP_ADS+"/"+page);
             myHttp.runTask();
         }).start();
     }
+
 }

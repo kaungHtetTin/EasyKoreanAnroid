@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ripple
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?android:colorControlHighlight">
+    <item>
+        <selector
+            android:enterFadeDuration="@android:integer/config_shortAnimTime"
+            android:exitFadeDuration="@android:integer/config_shortAnimTime">
+            <item
+                android:state_focused="false">
+                <shape
+                    android:shape="rectangle">
+
+                    <solid
+                        android:color="#646566"/>
+
+                    <corners
+                        android:radius="13dp"/>
+                </shape>
+            </item>
+
+
+            <item
+                android:state_focused="true">
+                <shape
+                    android:shape="rectangle">
+
+                    <solid
+                        android:color="#60313132"/>
+
+                    <stroke
+                        android:width="1dp"
+                        android:color="@color/colorAccent"/>
+                    <corners
+                        android:radius="13dp"/>
+                </shape>
+            </item>
+        </selector>
+
+    </item>
+
+</ripple>

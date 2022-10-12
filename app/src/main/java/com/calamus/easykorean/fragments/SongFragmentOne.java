@@ -5,12 +5,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -19,11 +16,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.calamus.easykorean.R;
-import com.calamus.easykorean.SongListActivity;
 import com.calamus.easykorean.adapters.SongOnlineAdapter;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
-import com.calamus.easykorean.models.AdModel;
 import com.calamus.easykorean.models.SongOnlineModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -39,14 +34,13 @@ public class SongFragmentOne extends Fragment {
     private final ArrayList<SongOnlineModel> songOnlineLists_Pop = new ArrayList<>();
     SharedPreferences sharedPreferences;
 
-    int count=0;
+    int page=1;
     private boolean loading=true;
     int visibleItemCount,totalItemCount;
     public static int pastVisibleItems;
     Executor postExecutor;
 
     String userId;
-    MenuItem item;
     RecyclerView recyclerView;
 
     @Override
@@ -56,7 +50,6 @@ public class SongFragmentOne extends Fragment {
         sharedPreferences=getActivity().getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         userId=sharedPreferences.getString("phone","0");
         setUpView();
-        setHasOptionsMenu(true);
 
         return v;
     }
@@ -76,12 +69,12 @@ public class SongFragmentOne extends Fragment {
         songOnlineLists.clear();
         songOnlineLists.add(0,new SongOnlineModel());
         fetchPopularSong();
-        fetchSong(0,false);
+        fetchSong(1,false);
 
         swipe.setOnRefreshListener(() -> {
-            count=0;
+            page=1;
             loading=true;
-            fetchSong(0,true);
+            fetchSong(1,true);
         });
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -97,8 +90,8 @@ public class SongFragmentOne extends Fragment {
 
                         if((visibleItemCount+pastVisibleItems)>=totalItemCount-7){
                             loading=false;
-                            count+=10;
-                            fetchSong(count,false);
+                            page++;
+                            fetchSong(page,false);
                         }
                     }
 
@@ -128,7 +121,7 @@ public class SongFragmentOne extends Fragment {
                        Log.e("SongFetch : ",msg);
                     });
                 }
-            }).url(Routing.GET_SONGS +"/"+userId+"/"+i);
+            }).url(Routing.GET_SONGS +"?userId="+userId+"&page="+i);
             myHttp.runTask();
         }).start();
     }
@@ -146,7 +139,7 @@ public class SongFragmentOne extends Fragment {
                         // Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show();
                     });
                 }
-            }).url(Routing.GET_POPULAR_SONG+"/"+userId);
+            }).url(Routing.GET_POPULAR_SONG+"?userId="+userId);
             myHttp.runTask();
         }).start();
     }
@@ -177,45 +170,6 @@ public class SongFragmentOne extends Fragment {
         }
     }
 
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
-        super.onCreateOptionsMenu(menu,inflater);
-        menu.clear();
-        inflater.inflate(R.menu.too_memu_song,menu);
-
-        item =menu.findItem(R.id.action_search_song);
-        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW|MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
-        SearchView searchView=new SearchView(((SongListActivity) requireActivity()).getSupportActionBar().getThemedContext());
-        item.setActionView(searchView);
-        searchView.setQueryHint("Search");
-
-        searchView.setIconifiedByDefault(false);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                item.collapseActionView();
-                if (query != null)
-                {
-                    //adapter.getFilter().filter(query);
-                    loading=false;
-                    swipe.setRefreshing(true);
-                    searchASong(query);
-
-                }
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                //  adapter.getFilter().filter(newText);
-                loading=false;
-                swipe.setRefreshing(true);
-                searchASong(newText);
-                return true;
-            }
-        });
-    }
-
     private void searchASong(String search){
 
         new Thread(() -> {
@@ -234,7 +188,7 @@ public class SongFragmentOne extends Fragment {
                       //  Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show();
                     });
                 }
-            }).url(Routing.SEARCH_A_SONG+"/"+search+"/"+userId);
+            }).url(Routing.SEARCH_A_SONG+"?search="+search+"&userId="+userId);
             myHttp.runTask();
         }).start();
     }
@@ -244,7 +198,8 @@ public class SongFragmentOne extends Fragment {
         swipe.setRefreshing(false);
         try {
             loading=true;
-            JSONArray ja=new JSONArray(response);
+            JSONObject joSongs=new JSONObject(response);
+            JSONArray ja=joSongs.getJSONArray("songs");
             for(int i=0;i<ja.length();i++){
                 JSONObject jo=ja.getJSONObject(i);
                 String songId=jo.getString("song_id");
@@ -259,55 +214,11 @@ public class SongFragmentOne extends Fragment {
                 songOnlineLists.add(new SongOnlineModel(songId,title,artist,reactCount,commentCount,downloadCount,url,isLiked,drama));
             }
 
-            LoadApp();
-
         }catch (Exception e){
             loading=false;
             swipe.setRefreshing(false);
             //  Toast.makeText(getActivity(),e.toString(),Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void LoadApp(){
-
-        new Thread(() -> {
-            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
-                @Override
-                public void onResponse(String response) {
-                    postExecutor.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                JSONObject jo=new JSONObject(response);
-                                String id=jo.getString("id");
-                                String name=jo.getString("name");
-                                String description=jo.getString("description");
-                                String url=jo.getString("url");
-                                String cover=jo.getString("cover");
-                                String icon=jo.getString("icon");
-                                String type=jo.getString("type");
-                                if(songOnlineLists.size()>6&&songOnlineLists.size()<12){
-                                    songOnlineLists.add(4,new AdModel(id,name,description,url,cover,icon,type));
-                                }else{
-                                    songOnlineLists.add(new AdModel(id,name,description,url,cover,icon,type));
-                                }
-
-                                adapter.notifyDataSetChanged();
-
-                            }catch (Exception e){
-                                Log.e("Add json: ",e.toString());
-                            }
-
-                        }
-                    });
-                }
-                @Override
-                public void onError(String msg) {
-                    Log.e("Add err: ", msg);
-                }
-            }).url(Routing.GET_APP_ADS+"/"+count);
-            myHttp.runTask();
-        }).start();
     }
 
 }

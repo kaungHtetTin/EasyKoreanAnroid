@@ -67,6 +67,10 @@ public class UserInformation {
             String gameScore=user.getString("gameScore");
             String userName=user.getString("name");
             String version=jsonObject.getString("version");
+            String music=jsonObject.getString("music");
+            String inappads=jsonObject.getString("inappads");
+            editor.putString("inappads",inappads);
+            editor.putString("music",music);
             editor.putString("Username", userName);
             editor.putString("userEmail",email);
             editor.putString("version",version);
@@ -75,23 +79,21 @@ public class UserInformation {
             if(!imageUrl.equals("")){
                 editor.putString("imageUrl",imageUrl);
             }
-            editor.apply();
-
             editor.putString("enrollProgress",jsonObject.getString("enrollProgress"));
-            editor.apply();
-
             String courseJson=jsonObject.getString("vipCourses");
             JSONArray courseArr=new JSONArray(courseJson);
             for(int i=0;i<courseArr.length();i++){
                 JSONObject jo=courseArr.getJSONObject(i);
-                String course=jo.getString("course");
+                String course=jo.getString("course_id");
                 Log.e(i+" " ,course);
-                editor.putBoolean(course,true);
+                editor.putBoolean("course"+course,true);
                 editor.apply();
             }
 
+            editor.putString("vipCourses",courseJson);
+            editor.apply();
         }catch (Exception e){
-             Toast.makeText(c,e.toString(),Toast.LENGTH_SHORT).show();
+            Toast.makeText(c,e.toString(),Toast.LENGTH_SHORT).show();
         }
     }
 

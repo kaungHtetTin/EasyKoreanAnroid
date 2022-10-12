@@ -76,7 +76,7 @@
                 android:textSize="17sp"
                 android:textStyle="bold"
                 android:layout_gravity="center"
-                android:textColor="@android:color/black"/>
+                android:textColor="@color/textPrimary"/>
 
         </androidx.cardview.widget.CardView>
 
@@ -84,7 +84,7 @@
             android:id="@+id/tv_ansA"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
+            android:textColor="@color/textPrimary"
             android:textStyle="bold"
             android:text="A"
             android:layout_marginBottom="10dp"
@@ -94,7 +94,7 @@
             android:id="@+id/tv_ansB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
+            android:textColor="@color/textPrimary"
             android:textStyle="bold"
             android:text="B"
             android:layout_marginBottom="10dp"/>
@@ -103,7 +103,7 @@
             android:id="@+id/tv_ansC"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
+            android:textColor="@color/textPrimary"
             android:textStyle="bold"
             android:text="B"
             android:layout_marginBottom="10dp"/>

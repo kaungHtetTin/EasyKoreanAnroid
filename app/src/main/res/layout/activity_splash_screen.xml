@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@color/appBar"
     android:gravity="center_horizontal">
 
     <com.facebook.shimmer.ShimmerFrameLayout
@@ -12,34 +12,23 @@
         android:layout_height="wrap_content">
         <ImageView
             android:layout_gravity="center"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:background="@drawable/bg_circle"
             android:src="@drawable/ic_feather"
             android:contentDescription="TODO" />
     </com.facebook.shimmer.ShimmerFrameLayout>
 
     <TextView
-
         android:layout_width="wrap_content"
-        android:gravity="center"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:textColor="@android:color/black"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="10dp"
-        android:layout_above="@id/tv_fheom"/>
-
-    <TextView
-        android:id="@+id/tv_fheom"
-        android:layout_width="wrap_content"
-        android:gravity="center"
-        android:layout_height="wrap_content"
-        android:text="@string/for_higher_education_of_myanmar"
-        android:textColor="@android:color/black"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:fontFamily="@font/poppins_regular"
+        android:text="@string/for_higher_education_of_myanmar"
+        android:textColor="@color/textPrimary" />
 
 </RelativeLayout>

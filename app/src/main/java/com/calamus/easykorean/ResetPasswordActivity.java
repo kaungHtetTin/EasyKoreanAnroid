@@ -1,13 +1,13 @@
 package com.calamus.easykorean;
 
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -16,10 +16,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
+import com.calamus.easykorean.app.MyHttp;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.Objects;
 import java.util.concurrent.Executor;
 
@@ -46,19 +48,34 @@ public class ResetPasswordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reset_password);
         sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         phone=sharedPreferences.getString("phone","00");
-        setTitle("Reset Password");
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+
         setUpView();
+        Objects.requireNonNull(getSupportActionBar()).hide();
+        setUpCustomAppBar();
         animOut= AnimationUtils.loadAnimation(this, android.R.anim.fade_out);
         animIn= AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
         postExecutor= ContextCompat.getMainExecutor(this);
 
     }
 
+    private void setUpCustomAppBar(){
+
+        TextView tv=findViewById(R.id.tv_appbar);
+        ImageView iv=findViewById(R.id.iv_back);
+        tv.setText("Reset Password");
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+    }
+
+
 
     private void setUpView(){
-        tv_title=findViewById(R.id.tv_title);
+        tv_title=findViewById(R.id.tv_info_title);
         tv_info=findViewById(R.id.tv_info);
         tv_error=findViewById(R.id.tv_error);
         loading=findViewById(R.id.pb_loading);
@@ -112,7 +129,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
     private void resetPassword(String newPassword){
         loading.setVisibility(View.VISIBLE);
         new Thread(() -> {
-            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
+            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.POST, new MyHttp.Response() {
                 @Override
                 public void onResponse(String response) {
                     postExecutor.execute(() -> {
@@ -144,7 +161,10 @@ public class ResetPasswordActivity extends AppCompatActivity {
                         tv_error.setText("An unexpected error! Connect to help center");
                     });
                 }
-            }).url(Routing.RESET_PASSWORD_BY_USER+phone+"/"+currentPassword+"/"+newPassword);
+            }).url(Routing.RESET_PASSWORD_BY_USER)
+                    .field("phone",phone)
+                    .field("currentPassword",currentPassword)
+                    .field("newPassword",newPassword);
             myHttp.runTask();
         }).start();
     }
@@ -195,16 +215,8 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
                     });
                 }
-            }).url(Routing.CHECK_CURRENT_PASSWORD+phone+"/"+pw);
+            }).url(Routing.CHECK_CURRENT_PASSWORD+"?phone="+phone+"&password="+pw);
             myHttp.runTask();
         }).start();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

@@ -7,8 +7,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="The Most Popular Songs"
-        android:textColor="@color/white"
-        android:textStyle="bold"
+        android:textColor="#44CB6D"
+        android:fontFamily="@font/poppins_medium"
         android:textSize="14sp"/>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -17,5 +17,13 @@
         android:layout_height="wrap_content"
         android:clipToPadding="false"
         android:scrollbars="vertical" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="My Music"
+        android:textColor="#44CB6D"
+        android:fontFamily="@font/poppins_medium"
+        android:textSize="14sp"/>
 
 </LinearLayout>

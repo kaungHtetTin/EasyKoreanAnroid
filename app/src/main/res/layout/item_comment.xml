@@ -1,69 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:id="@+id/bubble_layout_part"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="7dp"
-    android:background="@android:color/white"
-    android:layout_marginBottom="5dp"
-    android:id="@+id/bubble_layout_part">
+    android:background="@color/appBar"
+    android:layout_marginStart="6dp"
+    android:layout_marginEnd="6dp"
+    android:orientation="vertical"
+    android:padding="7dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/iv_small_profile"
-        android:src="@drawable/ic_baseline_account_circle_24"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
         android:padding="3dp"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_margin="4dp"/>
+        android:src="@drawable/ic_baseline_account_circle_24" />
 
     <ImageView
         android:id="@+id/iv_blueMark"
         android:layout_width="15dp"
         android:layout_height="15dp"
-        android:layout_alignBottom="@id/iv_small_profile"
         android:layout_alignEnd="@id/iv_small_profile"
-        android:src="@drawable/ic_baseline_check_circle_24"
-        android:contentDescription="TODO" />
-
+        android:layout_alignBottom="@id/iv_small_profile"
+        android:contentDescription="TODO"
+        android:background="@drawable/bg_circle_white"
+        android:src="@drawable/ic_baseline_check_circle_24" />
 
     <LinearLayout
 
         android:id="@+id/bubble_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:layout_toStartOf="@id/tv_react"
+        android:layout_toEndOf="@id/iv_small_profile"
         android:orientation="vertical"
-        android:layout_toRightOf="@id/iv_small_profile"
-        android:background="@drawable/other_msg">
+        android:padding="5dp">
 
-    <TextView
-        android:id="@+id/tv_cmt1"
-        android:text="Kaung Htet Tin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
-        android:textStyle="bold"
-        android:layout_marginBottom="5dp"/>
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:fontFamily="@font/poppins_regular"
+            android:text="Kaung Htet Tin"
+            android:textColor="#8E8E8E"
+            android:textSize="11sp" />
 
-    <TextView
+        <TextView
 
-        android:id="@+id/tv_cmt2"
-        android:textColor="@android:color/black"
-        android:text="This video is so cool"
-        android:layout_width="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:linksClickable="true"
-        android:autoLink="all"
-        android:textSize="14sp"
-        android:layout_height="wrap_content" />
+            android:id="@+id/tv_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:autoLink="all"
+            android:fontFamily="@font/poppins_medium"
+            android:linksClickable="true"
+            android:text="This video is so cool"
+            android:textColor="@color/textPrimary"
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/tv_readmore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:fontFamily="@font/poppins_semibold"
             android:text="Read more.."
-            android:layout_gravity="end"/>
+            android:textColor="#8E8E8E"
+            android:textSize="11sp" />
 
 
         <ImageView
@@ -71,56 +79,52 @@
             android:layout_width="190dp"
             android:layout_height="210dp"
             android:background="@drawable/rounded_outline"
-            android:scaleType="centerCrop"
-            android:contentDescription="TODO"/>
+            android:scaleType="centerCrop" />
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/iv_reply"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_below="@id/bubble_layout"
-        android:layout_toEndOf="@id/tv_cmt3"
-        android:layout_marginStart="15dp"
-        android:src="@drawable/ic_baseline_reply_24"/>
-
-    <ImageView
-        android:id="@+id/iv_react"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:background="@drawable/ic_normal_react"
-        android:layout_toEndOf="@id/iv_reply"
-        android:layout_marginStart="15dp"
-        android:layout_below="@id/bubble_layout"/>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_reactCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="15dp"
-        app:cardCornerRadius="7dp"
-        app:cardElevation="4dp"
-        android:background="@android:color/white"
-        android:layout_toEndOf="@id/iv_react"
-        android:layout_below="@id/iv_react"
-        android:layout_marginTop="-15dp"
-        android:visibility="gone"
-        android:layout_marginBottom="5dp">
-        <TextView
-            android:id="@+id/tv_reactCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
-    </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/tv_cmt3"
-        android:textSize="12sp"
-        android:layout_marginBottom="5dp"
+        android:id="@+id/tv_react"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        android:drawableTop="@drawable/ic_comment_normal_react"
+        android:fontFamily="@font/poppins_medium"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="1"
+        android:textColor="#FF5157"
+        android:textSize="11sp" />
+
+    <TextView
+        android:id="@+id/tv_reply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/bubble_layout"
+        android:layout_gravity="end"
+        android:layout_marginStart="15dp"
+        android:layout_toEndOf="@id/tv_time"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Reply"
+        android:textColor="#8E8E8E"
+        android:textSize="11sp" />
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/bubble_layout"
         android:layout_alignStart="@id/bubble_layout"
-        android:layout_marginStart="10dp"
-        android:layout_below="@id/bubble_layout"/>
+        android:layout_marginBottom="5dp"
+        android:textColor="#8E8E8E"
+        android:textSize="11sp"
+        android:layout_marginStart="5dp"
+        android:fontFamily="@font/poppins_regular"
+        />
+
 </RelativeLayout>

@@ -1,18 +1,19 @@
 package com.calamus.easykorean;
 
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.content.Context;
+
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.calamus.easykorean.adapters.SaveAdapter;
 import com.calamus.easykorean.models.SaveModel;
 import com.google.android.gms.ads.AdRequest;
@@ -38,13 +39,9 @@ public class SavePostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save_post);
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
-        sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
-        isVip=sharedPreferences.getBoolean("isVIP",false);
-
         setUpView();
+        setUpCustomAppBar();
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         MobileAds.initialize(this, initializationStatus -> {});
 
@@ -55,6 +52,20 @@ public class SavePostActivity extends AppCompatActivity {
             adView.loadAd(request);
 
         }
+
+    }
+
+    private void setUpCustomAppBar(){
+
+        TextView tv=findViewById(R.id.tv_appbar);
+        ImageView iv=findViewById(R.id.iv_back);
+        tv.setText("Saved");
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
     }
 
@@ -73,14 +84,6 @@ public class SavePostActivity extends AppCompatActivity {
         fetchFromDatabase();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     public void fetchFromDatabase(){
         saveList.clear();

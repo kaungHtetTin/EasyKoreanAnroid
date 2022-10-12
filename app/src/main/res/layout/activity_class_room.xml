@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
-    android:orientation="vertical"
     android:layout_width="match_parent"
+    android:background="@color/appBar"
     android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/mybar"
+        layout="@layout/my_action_bar_classroom" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/adview"
-        android:layout_alignParentTop="true">
+        android:layout_below="@id/mybar">
 
     </FrameLayout>
 
@@ -20,8 +22,8 @@
         android:id="@+id/view_pager_chat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_above="@id/adview"/>
+        android:layout_above="@id/adview"
+        android:layout_below="@id/mybar" />
 
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
@@ -37,13 +39,22 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bot_nav_view_chat"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        app:menu="@menu/bottom_chat_menu"
-        app:itemIconSize="24dp"
-        app:itemIconTint="@drawable/bg_bottom_nav"/>
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="17sp"
+        android:animateLayoutChanges="true"
+        android:background="@drawable/bg_bottom_nav_chatting"
+        app:elevation="0dp"
+        app:itemIconSize="20dp"
+        app:itemIconTint="@drawable/bottom_item_color_chatting"
+        app:itemTextAppearanceActive="@style/BottomNavigationViewTextChattingStyle"
+        app:itemTextAppearanceInactive="@style/BottomNavigationViewTextStyleInActive"
+        app:menu="@menu/bottom_chat_menu" />
+
 
 </RelativeLayout>
 

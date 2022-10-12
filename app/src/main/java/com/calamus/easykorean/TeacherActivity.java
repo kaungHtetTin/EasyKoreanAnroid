@@ -1,7 +1,9 @@
 package com.calamus.easykorean;
 
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -19,19 +21,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.calamus.easykorean.adapters.ChatAdapter;
-import com.calamus.easykorean.app.MyHttp;
-import com.calamus.easykorean.app.Routing;
-import com.calamus.easykorean.models.ChatModel;
-import com.calamus.easykorean.models.ConservationModel;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
@@ -51,13 +49,19 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.calamus.easykorean.adapters.ChatAdapter;
+import com.calamus.easykorean.app.AppHandler;
+import com.calamus.easykorean.app.Routing;
+import com.calamus.easykorean.models.ChatModel;
+import com.calamus.easykorean.models.ConservationModel;
+import com.calamus.easykorean.app.MyHttp;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.concurrent.Executor;
 
 import me.myatminsoe.mdetect.MDetect;
 
+import static com.calamus.easykorean.ChattingActivity.fImage;
 import static com.calamus.easykorean.app.AppHandler.changeFont;
 
 public class TeacherActivity extends AppCompatActivity {
@@ -70,7 +74,7 @@ public class TeacherActivity extends AppCompatActivity {
 
     String myId;
     SharedPreferences sharedPreferences;
-    private DatabaseReference db,dbc;
+    private DatabaseReference db,dbc,dbn;
     SwipeRefreshLayout swipe;
 
     String myImage,myName,my_token;
@@ -94,10 +98,6 @@ public class TeacherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher);
 
-
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
         sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         myId=Long.parseLong(sharedPreferences.getString("phone",null))+"";
         myImage=sharedPreferences.getString("imageUrl",null);
@@ -108,18 +108,26 @@ public class TeacherActivity extends AppCompatActivity {
         team=getIntent().getExtras().getString("team");
 
 
-        ChattingActivity.fImage=getIntent().getExtras().getString("imageUrl");
+        fImage=getIntent().getExtras().getString("imageUrl");
         MDetect.INSTANCE.init(this);
         chatImageRef= FirebaseStorage.getInstance().getReference().child("Chat Images");
-        db= FirebaseDatabase.getInstance().getReference().child("korea").child(team).child("ChatRoom");
-        dbc=FirebaseDatabase.getInstance().getReference().child("korea").child(team).child("Conservation");
+        db= FirebaseDatabase.getInstance().getReference().child(Routing.MAJOR).child(team).child("ChatRoom");
+        dbc=FirebaseDatabase.getInstance().getReference().child(Routing.MAJOR).child(team).child("Conservation");
+        dbn=FirebaseDatabase.getInstance().getReference().child(Routing.MAJOR).child("notification");
 
         dbc.child(myId).child("seen").setValue(0);
 
-        setUpView();
+        if(team.equals("Developer")){
+            dbn.child(myId).child("developer_message").removeValue();
+            SplashScreenActivity.DEVELOPER_MESSAGE=false;
+        }else{
+            dbn.child(myId).child("teacher_message").removeValue();
+            SplashScreenActivity.TEACHER_MESSAGE=false;
+        }
 
-        setTitle((Html.fromHtml("<small><font>" +team+ "</font></small>")));
-        Objects.requireNonNull(getSupportActionBar()).setSubtitle((Html.fromHtml("<small><font color=\"#00ff00\">" +"Active now"+ "</font></small>")));
+
+        setUpView();
+        setUpActionBar();
 
         fetchMessage();
         postExecutor = ContextCompat.getMainExecutor(this);
@@ -141,12 +149,49 @@ public class TeacherActivity extends AppCompatActivity {
 
             timer.start();
         }
+
     }
 
     @Override
     protected void onDestroy() {
         isChatting="";
         super.onDestroy();
+    }
+
+    private void setUpActionBar(){
+        TextView tv_name,tv_status;
+        ImageView iv_profile,iv_back,iv_more;
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+
+        LayoutInflater inflator = (LayoutInflater) this .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflator.inflate(R.layout.my_action_bar_chat, null);
+
+        tv_name=v.findViewById(R.id.tv_username);
+        tv_status=v.findViewById(R.id.tv_status);
+        iv_back=v.findViewById(R.id.iv_back);
+        iv_profile=v.findViewById(R.id.iv_profile);
+        iv_more=v.findViewById(R.id.iv_menuMore);
+
+        tv_name.setText(team);
+
+        tv_status.setText(Html.fromHtml("<small><font color=\"#00ff00\">" +"Active now"+ "</font></small>"));
+
+        iv_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                finish();
+            }
+        });
+
+        iv_more.setVisibility(View.INVISIBLE);
+
+
+        AppHandler.setPhotoFromRealUrl(iv_profile,fImage);
+
+        actionBar.setCustomView(v);
+
     }
 
     private void setUpView(){
@@ -230,7 +275,7 @@ public class TeacherActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try{
-                        ChatList.clear();
+                    ChatList.clear();
 
                     for (DataSnapshot dss: snapshot.getChildren()){
                         String senderId=(String)dss.child("senderId").getValue();
@@ -244,9 +289,9 @@ public class TeacherActivity extends AppCompatActivity {
 
 
                     }
-                        adapter.notifyItemInserted(ChatList.size());
-                        recyclerView.smoothScrollToPosition(ChatList.size());
-                        swipe.setRefreshing(false);
+                    adapter.notifyItemInserted(ChatList.size());
+                    recyclerView.smoothScrollToPosition(ChatList.size());
+                    swipe.setRefreshing(false);
 
                 }catch (Exception e){
                     swipe.setRefreshing(false);
@@ -309,7 +354,7 @@ public class TeacherActivity extends AppCompatActivity {
 
     //this method is invoked when sending a message with photo
     private void saveMessageOnFirebase(String msg,long time,String imageUrl) {
-        String msgNull;
+        String msgNull="";
         if(msg.equals(""))msgNull=myName+" sent a photo";
         else msgNull=msg;
         db.child(myId).child(time+"").setValue(new ChatModel(myId,msg,time,1,imageUrl));
@@ -336,9 +381,7 @@ public class TeacherActivity extends AppCompatActivity {
         new Thread(() -> {
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.POST, new MyHttp.Response() {
                 @Override
-                public void onResponse(String response) {
-
-                }
+                public void onResponse(String response) {}
                 @Override
                 public void onError(String msg) {}
             }).url(Routing.PUSH_NOTIFICATION_TOPIC)
@@ -423,7 +466,6 @@ public class TeacherActivity extends AppCompatActivity {
                 interstitialAd = null;
                 // Proceed to the next level.
                 finish();
-
             }
         };
 
@@ -444,6 +486,5 @@ public class TeacherActivity extends AppCompatActivity {
                     }
                 });
     }
-
 
 }

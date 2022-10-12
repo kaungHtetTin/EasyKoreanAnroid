@@ -13,8 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 import com.calamus.easykorean.CommentActivity;
-import com.calamus.easykorean.MyYouTubeVideoActivity;
 import com.calamus.easykorean.R;
+import com.calamus.easykorean.VimeoPlayerActivity;
 import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.app.SQLiteHandler;
 import com.calamus.easykorean.models.SaveModel;
@@ -107,7 +107,7 @@ public class SaveAdapter extends RecyclerView.Adapter<SaveAdapter.Holder> {
         if(model.getIsVideo().equals("1")){
             String videoId=model.getPost_image().substring(model.getPost_image().indexOf("vi/")+3);
             videoId=videoId.substring(0,videoId.length()-6);
-            Intent intent=new Intent(c, MyYouTubeVideoActivity.class);
+            Intent intent=new Intent(c, VimeoPlayerActivity.class);
             intent.putExtra("videoTitle","");
             intent.putExtra("videoId",videoId);
             intent.putExtra("time",Long.parseLong(model.getPost_id()));
@@ -116,7 +116,7 @@ public class SaveAdapter extends RecyclerView.Adapter<SaveAdapter.Holder> {
         }else {
             Intent intent=new Intent(c, CommentActivity.class);
             intent.putExtra("postId",model.getPost_id());
-            intent.putExtra("time","");//for comment seen
+            intent.putExtra("time",0+"");//for comment seen
             c.startActivity(intent);
         }
     }

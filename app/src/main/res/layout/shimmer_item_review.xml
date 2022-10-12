@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.facebook.shimmer.ShimmerFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:padding="7dp"
+        android:background="@color/white"
+        android:id="@+id/card_View">
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_profile"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_baseline_account_circle_24"/>
+
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/iv_profile"
+            android:layout_marginStart="10dp"
+            android:layout_toStartOf="@id/rating_bar"
+            android:layout_toEndOf="@id/iv_profile"
+            android:layout_margin="3dp"
+            android:background="@drawable/bg_shimmer_content"/>
+
+        <TextView
+            android:id="@+id/tv_review"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_username"
+            android:layout_toEndOf="@id/iv_profile"
+            android:layout_margin="3dp"
+            android:background="@drawable/bg_shimmer_content"/>
+
+
+        <RatingBar
+            android:id="@+id/rating_bar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/tv_username"
+            android:layout_alignParentEnd="true"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:stepSize="0.1" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_review"
+            android:layout_alignStart="@id/tv_review"
+            android:fontFamily="@font/poppins_regular"
+            android:background="@drawable/bg_shimmer_content"/>
+
+
+
+    </RelativeLayout>
+
+
+</com.facebook.shimmer.ShimmerFrameLayout>

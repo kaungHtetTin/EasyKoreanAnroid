@@ -11,6 +11,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.calamus.easykorean.adapters.LikeListAdapter;
 import com.calamus.easykorean.app.MyHttp;
@@ -29,7 +32,7 @@ public class LikeListActivity extends AppCompatActivity {
     String contentId;
     Executor postExecutor;
 
-    int count=0;
+    int page=1;
     private boolean loading=true;
     int visibleItemCount,totalItemCount;
     public static int pastVisibleItems;
@@ -46,16 +49,31 @@ public class LikeListActivity extends AppCompatActivity {
         postExecutor= ContextCompat.getMainExecutor(this);
 
         sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
-        setTitle("Reacts");
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+
+
 
         contentId=getIntent().getExtras().getString("contentId","");
         fetch=getIntent().getExtras().getString("fetch","");
 
         setUpView();
+        setUpCustomAppBar();
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
-        fetchLike(count,false);
+        fetchLike(page,false);
+
+    }
+
+    private void setUpCustomAppBar(){
+
+        TextView tv=findViewById(R.id.tv_appbar);
+        ImageView iv=findViewById(R.id.iv_back);
+        tv.setText("Reacts");
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
     }
 
@@ -68,6 +86,8 @@ public class LikeListActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         adapter=new LikeListAdapter(this,likeList);
         recyclerView.setAdapter(adapter);
+
+        swipe.setRefreshing(true);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -82,8 +102,8 @@ public class LikeListActivity extends AppCompatActivity {
 
                         if((visibleItemCount+pastVisibleItems)>=totalItemCount-7){
                             loading=false;
-                            count+=50;
-                            fetchLike(count,false);
+                            page++;
+                            fetchLike(page,false);
                         }
                     }
 
@@ -94,9 +114,9 @@ public class LikeListActivity extends AppCompatActivity {
 
         swipe.setOnRefreshListener(() -> {
 
-            count=0;
+            page=1;
             loading=true;
-            fetchLike(0,true);
+            fetchLike(1,true);
         });
 
     }
@@ -126,7 +146,7 @@ public class LikeListActivity extends AppCompatActivity {
                 public void onError(String msg) {
                     postExecutor.execute(() -> Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show());
                 }
-            }).url(fetch+"/"+contentId+"/"+count);
+            }).url(fetch+"?mCode="+ Routing.MAJOR_CODE+"&contentId="+contentId+"&page="+count);
             myHttp.runTask();
         }).start();
     }
@@ -136,7 +156,8 @@ public class LikeListActivity extends AppCompatActivity {
         swipe.setRefreshing(false);
         try {
             loading=true;
-            JSONArray ja=new JSONArray(response);
+            JSONObject joLikes=new JSONObject(response);
+            JSONArray ja=joLikes.getJSONArray("likes");
             for(int i=0;i<ja.length();i++){
                 JSONObject jo=ja.getJSONObject(i);
                 String userId=jo.getString("userId");

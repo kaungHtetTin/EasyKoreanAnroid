@@ -153,8 +153,6 @@ public class PlayerActivity extends AppCompatActivity implements
     }
 
 
-
-
     private String formattedTime(int mCurrentPosition) {
         String totalout;
         String totalNew;
@@ -333,11 +331,13 @@ public class PlayerActivity extends AppCompatActivity implements
             musicService.pause();
             musicService.showNotification(R.drawable.ic_baseline_play_arrow_24,"Play");
             MusicService.userPause=true;
+            musicService.stopForeground();
         }else{
             iv_playPause.setImageResource(R.drawable.ic_baseline_pause_24);
             musicService.start();
             musicService.showNotification(R.drawable.ic_baseline_pause_24,"Pause");
             MusicService.userPause=false;
+            musicService.startForeground();
         }
         seekBar.setMax(musicService.getDuration()/1000);
         PlayerActivity.this.runOnUiThread(new Runnable() {
@@ -351,6 +351,7 @@ public class PlayerActivity extends AppCompatActivity implements
             }
         });
         musicService.onCompleted();
+
     }
 
 

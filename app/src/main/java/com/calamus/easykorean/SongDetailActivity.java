@@ -7,52 +7,56 @@ import androidx.core.content.ContextCompat;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
-import android.view.MenuItem;
+import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-import com.calamus.easykorean.app.AppHandler;
-import com.calamus.easykorean.app.Downloader;
-import com.calamus.easykorean.app.MyHttp;
-import com.calamus.easykorean.app.Routing;
-import com.calamus.easykorean.controller.LikeController;
-import com.calamus.easykorean.interfaces.DownloadComplete;
-import com.calamus.easykorean.service.DownloaderService;
-import com.calamus.easykorean.service.MusicService;
+
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.material.snackbar.Snackbar;
+import com.calamus.easykorean.app.AppHandler;
+import com.calamus.easykorean.app.Downloader;
+import com.calamus.easykorean.app.Routing;
+import com.calamus.easykorean.controller.LikeController;
+import com.calamus.easykorean.interfaces.DownloadComplete;
+import com.calamus.easykorean.service.DownloaderService;
+import com.calamus.easykorean.service.MusicService;
+import com.calamus.easykorean.app.MyHttp;
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.concurrent.Executor;
 import static com.calamus.easykorean.app.AppHandler.reactFormat;
 import static com.calamus.easykorean.app.AppHandler.setPhotoFromRealUrl;
+
 
 public class SongDetailActivity extends AppCompatActivity implements DownloadComplete {
 
     String id,title,artist,likeCount,downloadCount,url,lyricUrl,audioUrl,imageUrl,currentUserId;
 
-    ImageView iv_songImage,iv_react,iv_downloaded,iv_isPlaying;
+    ImageView iv_songImage,iv_react,iv_downloaded,iv_isPlaying,iv_back;
     TextView tv_title,tv_artist,tv_reactCount,tv_downloadCount,tv_lyrics;
-    CardView cardReact;
-    Button bt_download,bt_play;
+    CardView card_play,card_download;
     ProgressBar pb;
     boolean isLike;
     int rectCount;
+    ViewGroup main;
 
     Animation animOut;
     Animation animIn;
@@ -60,9 +64,7 @@ public class SongDetailActivity extends AppCompatActivity implements DownloadCom
     Executor postExecutor;
     boolean isVip,alreadyDownloaded;
     SharedPreferences sharedPreferences;
-
     MediaPlayer mediaPlayer;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,107 +91,147 @@ public class SongDetailActivity extends AppCompatActivity implements DownloadCom
 
         postExecutor= ContextCompat.getMainExecutor(this);
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().hide();
 
-        MobileAds.initialize(this, initializationStatus -> {});
+        MobileAds.initialize(this,new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {}
+        });
 
 
         setUpView();
 
         AdView adView = findViewById(R.id.adview);
-        getSongLyrics();
-        setMediaPlayer();
-
         if(!isVip){
             adView.setVisibility(View.VISIBLE);
             AdRequest request=new AdRequest.Builder().build();
             adView.loadAd(request);
             loadAds();
         }
+
+        getSongLyrics();
+        setMediaPlayer();
     }
 
     private void setUpView(){
         iv_songImage=findViewById(R.id.songImage);
         iv_react=findViewById(R.id.iv_react);
-        tv_title=findViewById(R.id.tv_title);
-        tv_artist=findViewById(R.id.tv_artist);
-        tv_reactCount=findViewById(R.id.tv_reactCount);
+        iv_back=findViewById(R.id.iv_back);
+        tv_title=findViewById(R.id.tv_info_header);
+        tv_artist=findViewById(R.id.tv_description);
+        tv_reactCount=findViewById(R.id.tv_react);
         tv_downloadCount=findViewById(R.id.tv_downloadCount);
-        cardReact=findViewById(R.id.card_react);
-        bt_download=findViewById(R.id.bt_download);
-        bt_play=findViewById(R.id.bt_play);
         iv_downloaded=findViewById(R.id.iv_downloadCheck);
         iv_isPlaying=findViewById(R.id.iv_isPlaying);
         tv_lyrics=findViewById(R.id.tv_lyrics);
+        main=findViewById(R.id.main);
         pb=findViewById(R.id.pb_download);
+        card_play=findViewById(R.id.card_play);
+        card_download=findViewById(R.id.card_download);
+
+        tv_artist.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+        tv_artist.setMarqueeRepeatLimit(-1);
+        tv_artist.setSingleLine(true);
+        tv_artist.setSelected(true);
 
         tv_title.setText(title);
         tv_artist.setText(artist);
+        iv_songImage.setClipToOutline(true);
         setPhotoFromRealUrl(iv_songImage,imageUrl);
+
+
+        iv_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mediaPlayer.stop();
+                mediaPlayer.release();
+                mediaPlayer=null;
+                if (interstitialAd != null) {
+                    interstitialAd.show(SongDetailActivity.this);
+                } else {
+                    // Proceed to the next level.
+                    finish();
+
+                }
+            }
+        });
 
         if(rectCount==0)tv_reactCount.setText("");
         else tv_reactCount.setText(reactFormat(rectCount));
+        iv_downloaded.setVisibility(View.GONE);
+
 
 
         int downloads=Integer.parseInt(downloadCount);
         tv_downloadCount.setText(AppHandler.downloadFormat(downloads));
 
-        iv_react.setBackgroundResource(R.drawable.ic_normal_react);
+        iv_react.setBackgroundResource(R.drawable.ic_song_normal_react);
         if(isLike){
             iv_react.setBackgroundResource(R.drawable.ic_react_love);
         }
 
 
-        cardReact.setOnClickListener(view -> {
+        iv_react.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-            if(isLike){
-                iv_react.setBackgroundResource(R.drawable.ic_normal_react);
-                rectCount--;
-                if(rectCount>0)tv_reactCount.setText(reactFormat(rectCount));
-                else tv_reactCount.setText("");
-                isLike=false;
+                if(isLike){
+                    iv_react.setBackgroundResource(R.drawable.ic_song_normal_react);
+                    rectCount--;
+                    if(rectCount>0)tv_reactCount.setText(reactFormat(rectCount));
+                    else tv_reactCount.setText("");
+                    isLike=false;
 
-            }else{
-                iv_react.setBackgroundResource(R.drawable.ic_react_love);
-                rectCount++;
-                tv_reactCount.setText(reactFormat(rectCount));
-                isLike=true;
+                }else{
+                    iv_react.setBackgroundResource(R.drawable.ic_react_love);
+                    rectCount++;
+                    tv_reactCount.setText(reactFormat(rectCount));
+                    isLike=true;
+                }
+
+                LikeController.likeTheSong(currentUserId,id);
             }
-
-            LikeController.likeTheSong(currentUserId,id);
         });
 
 
         File image= new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath(),url+".png");
+
         File lyric=new File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath(),url+".txt");
 
-        bt_download.setOnClickListener(new View.OnClickListener() {
+        card_download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                increaseDownloadCount(id);
 
+                increaseDownloadCount(id);
                 new Downloader(imageUrl,image).start();
                 new Downloader(lyricUrl,lyric).start();
 
-                Toast.makeText(getApplicationContext(),"Start downloading",Toast.LENGTH_SHORT).show();
                 Intent intent=new Intent(SongDetailActivity.this, DownloaderService.class);
                 intent.putExtra("dir",getExternalFilesDir(Environment.DIRECTORY_MUSIC).getPath());
                 intent.putExtra("filename",url+".mp3");
                 intent.putExtra("downloadUrl",audioUrl);
+                intent.putExtra("intentMessage","downloadSong");
                 startService(intent);
+                setSnackBar("Start Downloading");
             }
         });
     }
 
+    private void setSnackBar(String s){
+        final Snackbar sb=Snackbar.make(main,s,Snackbar.LENGTH_INDEFINITE);
+        sb.setAction("View", v -> startActivity(new Intent(SongDetailActivity.this,
+                        DownloadingListActivity.class)))
+                .setActionTextColor(Color.WHITE)
+                .show();
+    }
 
     private void setMediaPlayer(){
         mediaPlayer=new MediaPlayer();
         mediaPlayer.setAudioAttributes(
                 new AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .setUsage(AudioAttributes.USAGE_MEDIA)
-                .build()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
         );
         try {
             mediaPlayer.setDataSource(audioUrl);
@@ -199,27 +241,33 @@ public class SongDetailActivity extends AppCompatActivity implements DownloadCom
             e.printStackTrace();
         }
 
-        bt_play.setOnClickListener(view -> {
-            Intent intent=new Intent(SongDetailActivity.this, MusicService.class);
-            stopService(intent);
-            mediaPlayer.start();
-            iv_downloaded.setAnimation(animOut);
-            iv_downloaded.setVisibility(View.GONE);
-            iv_isPlaying.setVisibility(View.VISIBLE);
-            iv_isPlaying.setAnimation(animIn);
+        card_play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(SongDetailActivity.this, MusicService.class);
+                stopService(intent);
+                mediaPlayer.start();
+                iv_downloaded.setAnimation(animOut);
+                iv_downloaded.setVisibility(View.GONE);
+                iv_isPlaying.setVisibility(View.VISIBLE);
+                iv_isPlaying.setAnimation(animIn);
+            }
         });
     }
 
     @Override
     public void actionOnDownloadComplete() {
-        postExecutor.execute(() -> {
-            pb.setAnimation(animOut);
-            pb.setVisibility(View.GONE);
-            iv_isPlaying.setAnimation(animOut);
-            iv_isPlaying.setVisibility(View.GONE);
-            iv_downloaded.setVisibility(View.VISIBLE);
-            iv_downloaded.setAnimation(animIn);
+        postExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                pb.setAnimation(animOut);
+                pb.setVisibility(View.GONE);
+                iv_isPlaying.setAnimation(animOut);
+                iv_isPlaying.setVisibility(View.GONE);
+                iv_downloaded.setVisibility(View.VISIBLE);
+                iv_downloaded.setAnimation(animIn);
 
+            }
         });
     }
 
@@ -236,23 +284,6 @@ public class SongDetailActivity extends AppCompatActivity implements DownloadCom
         }).start();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer=null;
-            if (interstitialAd != null) {
-                interstitialAd.show(SongDetailActivity.this);
-            } else {
-                // Proceed to the next level.
-                finish();
-
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 
     private void loadAds(){
 
@@ -260,6 +291,7 @@ public class SongDetailActivity extends AppCompatActivity implements DownloadCom
             @Override
             public void onAdDismissedFullScreenContent() {
                 interstitialAd = null;
+                // Proceed to the next level.
                 finish();
             }
         };
@@ -300,11 +332,21 @@ public class SongDetailActivity extends AppCompatActivity implements DownloadCom
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
                 @Override
                 public void onResponse(String response) {
-                    postExecutor.execute(() -> tv_lyrics.setText(response));
+                    postExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            tv_lyrics.setText(response);
+                        }
+                    });
                 }
                 @Override
                 public void onError(String msg) {
-                    postExecutor.execute(() -> tv_lyrics.setText("Please check your internet connection!"));
+                    postExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            tv_lyrics.setText(msg);
+                        }
+                    });
                 }
             }).url(Routing.GET_SONG_LYRICS+url);
             myHttp.runTask();

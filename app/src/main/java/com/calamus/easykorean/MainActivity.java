@@ -15,16 +15,12 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 import com.calamus.easykorean.app.Config;
 import com.calamus.easykorean.app.MyDialog;
-import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.NotificationUtils;
-import com.calamus.easykorean.app.RecommendationDialog;
-import com.calamus.easykorean.app.StudyTimeSetter;
+import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.fragments.FragmentFive;
 import com.calamus.easykorean.fragments.FragmentFour;
 import com.calamus.easykorean.fragments.FragmentOne;
@@ -33,15 +29,10 @@ import com.calamus.easykorean.fragments.FragmentTwo;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.gson.JsonObject;
-
-import org.json.JSONObject;
-
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import static com.calamus.easykorean.app.AppHandler.makeActiveNow;
 import static com.calamus.easykorean.app.AppHandler.makeOffline;
 
@@ -56,12 +47,12 @@ public class MainActivity extends AppCompatActivity {
     FragmentFive fragmentFive;
     SharedPreferences share;
     public static boolean pagerPosition,isHome=true;
-    String currentUserId,studyTime;
+    String currentUserId,studyTime,inAppAds;
     BroadcastReceiver mRegistrationBroadcastReceiver;
     RelativeLayout mainLayout;
     ExecutorService myExecutor;
     Executor postExecutor;
-
+    boolean isVip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,19 +62,25 @@ public class MainActivity extends AppCompatActivity {
         share = getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         currentUserId=share.getString("phone",null);
         studyTime=share.getString("studyTime",null);
+        inAppAds=share.getString("inappads",null);
+        isVip=share.getBoolean("isVIP",false);
         myExecutor= Executors.newFixedThreadPool(1);
         postExecutor= ContextCompat.getMainExecutor(this);
-        FirebaseMessaging.getInstance().subscribeToTopic("koreaUsers");
+        FirebaseMessaging.getInstance().subscribeToTopic(Routing.subscribeToTopic);
 
+        mainLayout.setBackgroundResource(R.color.fragmentOneLayout);
+
+        Objects.requireNonNull(getSupportActionBar()).hide();
         setUpView();
         makeActiveNow(Long.parseLong(currentUserId)+"");
-        getRecommendation(currentUserId);
+        //getRecommendation(currentUserId);
+
+
         String goSomeWhere= Objects.requireNonNull(getIntent().getExtras()).getString("message",null);
         switch (goSomeWhere) {
             case "splash":
                 String version = share.getString("version", "");
-                if (!version.equals("2.19")) confirmUpdate(); //check the version in generaldata.php
-
+                if (!version.equals("3.2.3")) confirmUpdate(); //check the version in generaldata.php
                 break;
             case "login":
                 Toast.makeText(this, "Welcome!", Toast.LENGTH_SHORT).show();
@@ -94,12 +91,18 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
 
-            default: {
+            case "downloadVideo" :
+            case "downloadSong" :
+            case "downloadingLists":
+                startActivity(new Intent(MainActivity.this,DownloadingListActivity.class));
+                break;
+
+            default:
                 Intent intent1 = new Intent(MainActivity.this, ClassRoomActivity.class);
-                intent1.putExtra("action",goSomeWhere);
+                intent1.putExtra("action", goSomeWhere);
                 startActivity(intent1);
                 break;
-            }
+
         }
 
         // new push notification is received
@@ -123,6 +126,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+
+        bnv.setItemIconTintList(null);
+
+        if(inAppAds!=null){
+            if(inAppAds.equals("on")){
+                if(!goSomeWhere.equals("login")&&!isVip){
+                    startActivity(new Intent(MainActivity.this,MyAdActivity.class));
+                }
+            }
+        }
     }
 
     private void setUpView(){
@@ -145,38 +158,35 @@ public class MainActivity extends AppCompatActivity {
                 switch (position){
                     case 0:
                         bnv.getMenu().findItem(R.id.frag_one).setChecked(true);
-                        Objects.requireNonNull(getSupportActionBar()).setTitle("Lessons");
+                        mainLayout.setBackgroundResource(R.color.fragmentOneLayout);
                         pagerPosition=true;
                         isHome=true;
                         break;
                     case 1:
                         bnv.getMenu().findItem(R.id.frag_two).setChecked(true);
-                        Objects.requireNonNull(getSupportActionBar()).setTitle("Notes");
                         pagerPosition=true;
                         isHome=false;
-
+                        mainLayout.setBackgroundResource(R.color.appBar);
                         break;
+
                     case 2:
                         bnv.getMenu().findItem(R.id.frag_three).setChecked(true);
-                        Objects.requireNonNull(getSupportActionBar()).setTitle("Videos");
                         pagerPosition=true;
                         isHome=false;
-
+                        mainLayout.setBackgroundResource(R.color.appBar);
                         break;
 
                     case 3:
                         bnv.getMenu().findItem(R.id.frag_four).setChecked(true);
-                        Objects.requireNonNull(getSupportActionBar()).setTitle("Calamus");
+                        mainLayout.setBackgroundResource(R.color.appBar);
                         pagerPosition=false;
                         isHome=false;
-
                         break;
                     case 4:
                         bnv.getMenu().findItem(R.id.frag_five).setChecked(true);
-                        Objects.requireNonNull(getSupportActionBar()).setTitle("Menu");
                         pagerPosition=true;
                         isHome=false;
-
+                        mainLayout.setBackgroundResource(R.color.appBar);
                 }
 
             }
@@ -297,37 +307,39 @@ public class MainActivity extends AppCompatActivity {
 
         // register new push message receiver
         // by doing this, the activity will be notified each time a new message arrives
-          LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
          new IntentFilter("MessageArrived"));
 
         // clear the notification area when the app is opened
         NotificationUtils.clearNotifications(getApplicationContext());
     }
 
-    private void getRecommendation(String Id){
-        myExecutor.execute(()->{
-            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
-                @Override
-                public void onResponse(String response) {
-                    Log.e("recommend : ",response);
-                    postExecutor.execute(()->{
-                        try{
-                            JSONObject jo=new JSONObject(response);
-                            new RecommendationDialog(MainActivity.this,jo.getString("msg")).showDialog();
-                        }catch (Exception e){
-                            if(studyTime==null){
-                                 StudyTimeSetter studyTimeSetter=new StudyTimeSetter(MainActivity.this);
-                                 studyTimeSetter.showTimePicker();
-                            }
-                        }
+//    private void getRecommendation(String Id){
+//        myExecutor.execute(()->{
+//            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
+//                @Override
+//                public void onResponse(String response) {
+//                    Log.e("recommend : ",response);
+//                    postExecutor.execute(()->{
+//                        try{
+//                            JSONObject jo=new JSONObject(response);
+//                            new RecommendationDialog(MainActivity.this,jo.getString("msg")).showDialog();
+//                        }catch (Exception e){
+//                            if(studyTime==null){
+//                                 StudyTimeSetter studyTimeSetter=new StudyTimeSetter(MainActivity.this);
+//                                 studyTimeSetter.showTimePicker();
+//                            }
+//                        }
+//
+//                    });
+//                }
+//                @Override
+//                public void onError(String msg) {}
+//            }).url("https://www.calamuseducation.com/calamus-guide/korea/calculate.php?userid="+Id);
+//            myHttp.runTask();
+//        });
+//    }
 
-                    });
-                }
-                @Override
-                public void onError(String msg) {}
-            }).url("https://www.calamuseducation.com/calamus-guide/korea/calculate.php?userid="+Id);
-            myHttp.runTask();
-        });
-    }
+
 
 }

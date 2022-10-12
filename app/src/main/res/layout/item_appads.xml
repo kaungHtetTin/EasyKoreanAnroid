@@ -1,83 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    android:layout_marginTop="4dp"
-    android:padding="7dp"
-    app:cardBackgroundColor="@color/cardview_light_background"
-    app:cardCornerRadius="2dp"
-    app:cardElevation="1dp"
-    android:id="@+id/card_View">
+    android:layout_marginStart="6dp"
+    android:layout_marginEnd="6dp"
+    android:layout_marginBottom="10dp">
+
+    <ImageView
+        android:id="@+id/iv_appCover"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:scaleType="centerCrop" />
+    <TextView
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:textColor="#fff"
+        android:textSize="12sp"
+        android:text="Ad"
+        android:gravity="center"
+        android:padding="2dp"
+        android:background="#ffcc66"/>
+
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-
-        <ImageView
-            android:id="@+id/iv_appCover"
-            android:layout_width="match_parent"
-            android:scaleType="centerCrop"
-            android:layout_height="180dp" />
-        <TextView
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
-            android:textColor="#fff"
-            android:textSize="12sp"
-            android:text="Ad"
-            android:gravity="center"
-            android:padding="2dp"
-            android:background="#ffcc66"/>
+        android:layout_height="80dp"
+        android:background="#1B2730"
+        android:layout_below="@id/iv_appCover">
 
         <ImageView
 
             android:id="@+id/iv_appIcon"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_margin="4dp"
-            android:layout_below="@id/iv_appCover"/>
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dp" />
 
         <TextView
             android:id="@+id/tv_appName"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/black"
-            android:textStyle="bold"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/poppins_medium"
+            android:layout_toStartOf="@id/tv_action"
             android:layout_alignTop="@id/iv_appIcon"
             android:layout_toEndOf="@id/iv_appIcon"/>
 
         <TextView
             android:id="@+id/tv_appDes"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/iv_appIcon"
             android:layout_below="@id/tv_appName"
-            android:textColor="@color/black"/>
-
-        <ImageView
-            android:src="@drawable/ic_feather"
-            android:id="@+id/iv_googlePlay"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_margin="4dp"
-            android:background="@drawable/bg_circle_light_blue"
-            android:layout_below="@id/tv_appDes"
             android:layout_toEndOf="@id/iv_appIcon"
-            android:layout_marginStart="4dp"/>
+            android:layout_toStartOf="@id/tv_action"
+            android:fontFamily="@font/poppins_light"
+            android:textColor="#44CB6D"
+            android:textSize="11sp" />
 
-        <Button
-            android:id="@+id/bt_appInstall"
-            android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:layout_below="@id/iv_appIcon"
-            android:layout_margin="15dp"
-            android:background="@drawable/bg_button"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:textColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/tv_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:layout_margin="5dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:textColor="#4B93FF"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"/>
+
     </RelativeLayout>
 
-</androidx.cardview.widget.CardView>
+
+</RelativeLayout>
+

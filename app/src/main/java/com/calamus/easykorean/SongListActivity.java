@@ -10,23 +10,27 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
-import com.calamus.easykorean.fragments.SongArtistFragment;
-import com.calamus.easykorean.fragments.SongFragmentOne;
-import com.calamus.easykorean.fragments.SongFragmentTwo;
+import android.widget.ImageView;
+
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.tabs.TabLayout;
+import com.calamus.easykorean.fragments.SongArtistFragment;
+import com.calamus.easykorean.fragments.SongFragmentOne;
+import com.calamus.easykorean.fragments.SongFragmentTwo;
+
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class SongListActivity extends AppCompatActivity {
 
 
     boolean isVip;
     SharedPreferences sharedPreferences;
+    ImageView iv_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +38,16 @@ public class SongListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_song_list);
         sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         isVip=sharedPreferences.getBoolean("isVIP",false);
-        initViewPager();
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
 
-        MobileAds.initialize(this, initializationStatus -> {});
+        getSupportActionBar().hide();
+
+        initViewPager();
+
+
+        MobileAds.initialize(this,new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {}
+        });
 
         AdView adView = findViewById(R.id.adview);
         if(!isVip){
@@ -47,11 +56,20 @@ public class SongListActivity extends AppCompatActivity {
             adView.loadAd(request);
         }
 
+        iv_back=findViewById(R.id.iv_back);
+        iv_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
     }
 
     private void initViewPager(){
         ViewPager viewPager=findViewById(R.id.viewpager);
         TabLayout tabLayout=findViewById(R.id.tab_layout);
+
         ViewPageAdapter viewPageAdapter=new ViewPageAdapter(getSupportFragmentManager());
         viewPageAdapter.addFragments(new SongFragmentOne(),"Songs");
         viewPageAdapter.addFragments(new SongArtistFragment(),"Artists");
@@ -95,11 +113,5 @@ public class SongListActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-        }
-        return super.onOptionsItemSelected(item);
-    }
+
 }

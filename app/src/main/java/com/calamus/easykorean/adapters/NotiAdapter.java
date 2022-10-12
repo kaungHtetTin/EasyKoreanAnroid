@@ -1,9 +1,8 @@
 package com.calamus.easykorean.adapters;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.res.Configuration;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,26 +12,39 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.calamus.easykorean.CommentActivity;
-import com.calamus.easykorean.MyYouTubeVideoActivity;
 import com.calamus.easykorean.R;
+import com.calamus.easykorean.VimeoPlayerActivity;
 import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.models.NotiModel;
 import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.myatminsoe.mdetect.MDetect;
 
+
 public class NotiAdapter extends RecyclerView.Adapter<NotiAdapter.Holder> {
 
-    private final Activity c;
-    private final ArrayList<NotiModel> data;
-    private final LayoutInflater mInflater;
-    @SuppressLint("SimpleDateFormat")
+    private Activity c;
+    private ArrayList<NotiModel> data;
+    private LayoutInflater mInflater;
+    String colorName,colorMsg;
 
     public NotiAdapter(Activity c, ArrayList<NotiModel> data) {
         this.data = data;
         this.c = c;
         this.mInflater = LayoutInflater.from(c);
         MDetect.INSTANCE.init(c);
+
+        int nightModeFlags =
+                c.getResources().getConfiguration().uiMode &
+                        Configuration.UI_MODE_NIGHT_MASK;
+        if(nightModeFlags==Configuration.UI_MODE_NIGHT_YES)   {
+            colorName="#ffffff";
+            colorMsg="#aaaaaa";
+        }
+        else{
+            colorName="#333333";
+            colorMsg="#777777";
+        }
     }
 
     @Override
@@ -52,8 +64,9 @@ public class NotiAdapter extends RecyclerView.Adapter<NotiAdapter.Holder> {
     @Override
     public void onBindViewHolder(final NotiAdapter.Holder holder, final int i) {
 
+
         final NotiModel model=data.get(i);
-        String name=getColoredSpanned(AppHandler.setMyanmar(model.getWriterName()),"#000000");
+        String name=getColoredSpanned(AppHandler.setMyanmar(model.getWriterName()), colorName);
         String subContent;
         if(model.getPostBody().length()>26){
             subContent=model.getPostBody().substring(0,25);
@@ -61,30 +74,27 @@ public class NotiAdapter extends RecyclerView.Adapter<NotiAdapter.Holder> {
             subContent=model.getPostBody();
         }
 
-        String content=getColoredSpanned(model.getAction()+"\n"+subContent,"#777777");
+        String content=getColoredSpanned(model.getAction()+"\n"+subContent, colorMsg);
         holder.tv_noti.setText(Html.fromHtml(name+" "+content));
 
         long time=Long.parseLong(model.getTime());
         holder.tv_time.setText(AppHandler.formatTime(time));
 
+
         if(model.getSeen().equals("1")){
-            holder.rLayout.setBackgroundColor(Color.WHITE);
-        }else if(model.getSeen().equals("2")){
-            holder.rLayout.setBackgroundColor(Color.parseColor("#FDF7E5"));
-        }else {
-            holder.rLayout.setBackgroundColor(Color.parseColor("#E7F3FF"));
+            holder.rLayout.setBackgroundResource(R.color.appBar);
+        }else{
+            holder.rLayout.setBackgroundResource(R.drawable.bg_notification);
         }
 
-        if(model.getColor().equals("2")){
-            holder.rLayout.setBackgroundColor(Color.parseColor("#FDF7E5"));
-        }
 
         if(!model.getWriterImage().equals(""))AppHandler.setPhotoFromRealUrl(holder.iv,model.getWriterImage());
         holder.iv_blueMark.setVisibility(View.GONE);
         if(model.getIsVip().equals("1"))holder.iv_blueMark.setVisibility(View.VISIBLE);
 
-        holder.iv_notiIcon.setBackgroundResource(AppHandler.setNotificationIcon(Integer.parseInt(model.getColor())));
+        holder.iv_notiIcon.setImageResource(AppHandler.setNotificationIcon(Integer.parseInt(model.getColor())));
     }
+
 
     public class Holder extends RecyclerView.ViewHolder {
 
@@ -98,37 +108,40 @@ public class NotiAdapter extends RecyclerView.Adapter<NotiAdapter.Holder> {
             iv=view.findViewById(R.id.iv_noti);
             tv_noti=view.findViewById(R.id.tv_orderNoti);
             tv_time=view.findViewById(R.id.tv_notiTime);
-            rLayout=view.findViewById(R.id.orderNoti_layout);
+            rLayout=view.findViewById(R.id.tv_notification_content);
             iv_blueMark=view.findViewById(R.id.iv_blueMark);
             iv_notiIcon=view.findViewById(R.id.iv_notiAction);
-            view.setOnClickListener(v -> {
-                final NotiModel model=data.get(getAbsoluteAdapterPosition());
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final NotiModel model=data.get(getAbsoluteAdapterPosition());
 
-                if(model.getHas_video().equals("1")){
-                    rLayout.setBackgroundColor(Color.WHITE);
-                    String videoId=model.getPostImage().substring(model.getPostImage().indexOf("vi/")+3);
-                    videoId=videoId.substring(0,videoId.length()-6);
-                    Intent intent=new Intent(c, MyYouTubeVideoActivity.class);
-                    intent.putExtra("videoTitle","");
-                    intent.putExtra("videoId",videoId);
-                    intent.putExtra("time",Long.parseLong(model.getPostId()));
-                    intent.putExtra("cmtTime",model.getTime());
-                    c.startActivity(intent);
+                    if(model.getHas_video().equals("1")){
+                        rLayout.setBackgroundResource(R.drawable.bg_notification);
+                        String videoId=model.getPostImage().substring(model.getPostImage().indexOf("vi/")+3);
+                        videoId=videoId.substring(0,videoId.length()-6);
+                        Intent intent=new Intent(c, VimeoPlayerActivity.class);
+                        intent.putExtra("videoId",videoId);
+                        intent.putExtra("time",Long.parseLong(model.getPostId()));
+                        intent.putExtra("cmtTime",model.getComment_id());
+                        c.startActivity(intent);
 
-                }else {
-                    rLayout.setBackgroundColor(Color.WHITE);
-                    Intent intent=new Intent(c, CommentActivity.class);
-                    intent.putExtra("postId",model.getPostId());
-                    intent.putExtra("time",model.getTime());
-                    c.startActivity(intent);
+                    }else {
+                        rLayout.setBackgroundResource(R.drawable.bg_notification);
+                        Intent intent=new Intent(c, CommentActivity.class);
+                        intent.putExtra("postId",model.getPostId());
+                        intent.putExtra("time",model.getTime());
+                        c.startActivity(intent);
+                    }
+
                 }
-
             });
 
 
         }
 
     }
+
 
     @Override
     public int getItemViewType(int position) {

@@ -1,130 +1,247 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GammingActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.google.android.gms.ads.AdView
-        xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/adview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-2472405866346270/2510952382"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone"/>
+    <ImageView
+        android:id="@+id/iv_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="#010A30"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerPlayer"
+    <ImageView
+        android:id="@+id/iv_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="15dp"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@id/adview"/>
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#00FFFFFF"
-        android:layout_above="@id/button_layout"
-        android:layout_below="@id/adview"/>
-
-    <TextView
-        android:id="@+id/tv_highest_score"
-        android:layout_width="50dp"
-        android:text="1000"
-        android:layout_height="50dp"
-        android:padding="7dp"
-        android:textStyle="bold"
-        android:textSize="15sp"
-        android:textColor="@android:color/black"
-        android:background="@drawable/bg_circle_green"
-        android:layout_alignParentEnd="true"
-        android:layout_above="@id/tv_current_score"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="15dp"
-        android:elevation="5dp"
-        android:gravity="center"/>
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_back_white" />
 
     <TextView
         android:id="@+id/tv_current_score"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_current_score"
+        android:elevation="4dp"
+        android:gravity="center"
         android:padding="7dp"
-        android:textColor="@android:color/black"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:layout_alignParentEnd="true"
-        android:layout_above="@id/button_layout"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="15dp"
-        android:elevation="5dp"
-        android:background="@drawable/bg_circle_yellow"
-        android:gravity="center"/>
+        android:text="0"
+        android:textColor="#FF5157"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/button_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="30dp"
-        android:paddingBottom="10dp"
-        android:background="@drawable/bg_game_button_layout"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="0dp"
+        android:layout_height="320dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/bg_game_word"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_current_score">
 
-        android:layout_alignParentBottom="true">
+        <ImageView
+            android:id="@+id/iv_displayImage"
+            android:layout_width="0dp"
+            android:layout_height="180dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/bt_a"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:text="a"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:background="@drawable/bg_button"
-            android:layout_margin="5dp"
-            android:layout_height="wrap_content"/>
+            android:id="@+id/buttonC"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_game_answer_button"
+            android:fontFamily="@font/poppins_medium"
+            android:paddingTop="4dp"
+            android:text="C"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline8" />
 
         <Button
-            android:id="@+id/bt_b"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:text="b"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:background="@drawable/bg_button"
-            android:layout_margin="5dp"
-            android:layout_height="wrap_content"/>
+            android:id="@+id/buttonB"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/bg_game_answer_button"
+            android:fontFamily="@font/poppins_medium"
+            android:paddingTop="4dp"
+            android:text="B"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/buttonC"
+            app:layout_constraintTop_toTopOf="@+id/guideline8" />
 
         <Button
-            android:id="@+id/bt_c"
-            android:layout_weight="1"
+            android:id="@+id/buttonA"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/bg_game_answer_button"
+            android:fontFamily="@font/poppins_medium"
+            android:paddingTop="4dp"
+            android:text="A"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/buttonB"
+            app:layout_constraintTop_toTopOf="@+id/guideline8" />
+
+        <TextView
+            android:id="@+id/tv_ansB"
             android:layout_width="0dp"
-            android:text="c"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:background="@drawable/bg_button"
-            android:layout_margin="5dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="5dp"
+            android:fontFamily="@font/poppins_medium"
+            android:textColor="#403F3F"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/buttonA"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline8" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/tv_ansA"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:fontFamily="@font/poppins_medium"
+            android:textColor="#403F3F"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toTopOf="@+id/tv_ansB"
+            app:layout_constraintEnd_toEndOf="@+id/tv_ansB"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline8" />
 
-    <ProgressBar
-        android:id="@+id/pb_loading"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/bg_loading_black"
-        android:padding="5dp"
-        android:visibility="gone"
-        android:theme="@style/loading"/>
+        <TextView
+            android:id="@+id/tv_ansC"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_medium"
+            android:textColor="#403F3F"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tv_ansB"
+            app:layout_constraintStart_toStartOf="@+id/tv_ansB"
+            app:layout_constraintTop_toBottomOf="@+id/tv_ansB" />
 
-</RelativeLayout>
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="210dp" />
+
+        <TextView
+            android:id="@+id/tv_displayText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_semibold"
+            android:gravity="center"
+            android:padding="10dp"
+            android:textColor="#403F3F"
+            android:textSize="22sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/guideline8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_displayAudio"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/guideline8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_speak" />
+
+        <ProgressBar
+            android:id="@+id/pb_loadWord"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/guideline8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:fillViewport="true"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/poppins_medium"
+                android:text="Your Highest Score"
+                android:textColor="#FFE168"
+                android:textSize="18sp" />
+
+            <include layout="@layout/item_highest_score" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/poppins_medium"
+                android:text="Top 5 students with highest score"
+                android:textColor="#FFE168"
+                android:textSize="18sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

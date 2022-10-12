@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,16 +31,19 @@ public class WebSiteActivity extends AppCompatActivity {
 
     WebView wv;
     SwipeRefreshLayout swipe;
+
     private boolean isRedirected;
     String Current_url,address,check;
     private InterstitialAd interstitialAd;
-    boolean isVip;
+    boolean isVip,isTimeToShowAds=true;
     SharedPreferences sharedPreferences;
     Executor postExecutor;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_site);
+        setUpCustomAppBar();
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         isVip=sharedPreferences.getBoolean("isVIP",false);
@@ -62,9 +67,6 @@ public class WebSiteActivity extends AppCompatActivity {
         check=Current_url;
 
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
         startWebView(wv,Current_url);
 
         swipe.setOnRefreshListener(() -> startWebView(wv,Current_url));
@@ -82,8 +84,13 @@ public class WebSiteActivity extends AppCompatActivity {
                 public void run() {
                     super.run();
                     try {
-                        sleep(15000);
-                        postExecutor.execute(() -> loadAds());
+                        sleep(10000);
+                        postExecutor.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (isTimeToShowAds) loadAds();
+                            }
+                        });
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -92,6 +99,28 @@ public class WebSiteActivity extends AppCompatActivity {
             timer.start();
         }
 
+    }
+
+    private void setUpCustomAppBar(){
+        TextView tv=findViewById(R.id.tv_appbar);
+        ImageView iv=findViewById(R.id.iv_back);
+        tv.setText("Easy Korean");
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (wv.canGoBack()&& !check.equals(address)) {
+                    wv.goBack();
+                } else {
+                    isTimeToShowAds=false;
+                    if (interstitialAd != null) {
+                        interstitialAd.show(WebSiteActivity.this);
+                    } else {
+                        // Proceed to the next level.
+                        finish();
+                    }
+                }
+            }
+        });
     }
 
     private void startWebView(WebView wv, String url){
@@ -131,30 +160,16 @@ public class WebSiteActivity extends AppCompatActivity {
         swipe.setRefreshing(false);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item)
-    {
 
-        if (item.getItemId() == android.R.id.home) {
-            if (wv.canGoBack()&& !check.equals(address)) {
-                wv.goBack();
-            } else {
-                if (interstitialAd != null) {
-                    interstitialAd.show(WebSiteActivity.this);
-                } else {
-                    // Proceed to the next level.
-                    finish();
-                }
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public void onBackPressed() {
+
         if(wv.canGoBack() && !check.equals(address)){
             wv.goBack();
+
         }else {
+            isTimeToShowAds=false;
             if (interstitialAd != null) {
                 interstitialAd.show(WebSiteActivity.this);
             } else {

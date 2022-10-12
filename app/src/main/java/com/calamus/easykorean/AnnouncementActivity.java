@@ -1,18 +1,20 @@
 package com.calamus.easykorean;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
-
+import android.widget.ImageView;
+import android.widget.TextView;
 import com.calamus.easykorean.adapters.AnnouncementAdapter;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
@@ -20,11 +22,9 @@ import com.calamus.easykorean.models.AnounceModel;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.concurrent.Executor;
 
 public class AnnouncementActivity extends AppCompatActivity {
@@ -44,16 +44,13 @@ public class AnnouncementActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_four);
-        setTitle("Announcement");
-
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
 
         share=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         userId=share.getString("phone",null);
         isVip=share.getBoolean("isVIP",false);
         postExecutor = ContextCompat.getMainExecutor(this);
         setUpView();
+        getSupportActionBar().hide();
 
         MobileAds.initialize(this, initializationStatus -> {});
         AdView adView = findViewById(R.id.adview);
@@ -63,6 +60,23 @@ public class AnnouncementActivity extends AppCompatActivity {
             adView.loadAd(request);
         }
 
+        setUpMyActionBar();
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void  setUpMyActionBar(){
+        TextView tv=findViewById(R.id.tv_appbar_title);
+        ImageView iv_search=findViewById(R.id.iv_search);
+
+        iv_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(AnnouncementActivity.this, SearchingActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        tv.setText("Announcement");
     }
 
 
@@ -87,13 +101,6 @@ public class AnnouncementActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
 
     private void fetchAnnounceLink(){
@@ -124,7 +131,7 @@ public class AnnouncementActivity extends AppCompatActivity {
                 @Override
                 public void onError(String msg) {
                     postExecutor.execute(() -> {
-
+                        swipe.setRefreshing(false);
                     });
                 }
             }).url(Routing.GET_ANNOUNCEMENT+"?user_id="+userId);

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="30dp"
+    android:layout_marginBottom="10dp"
+    android:layout_marginStart="14dp"
+    android:layout_marginEnd="14dp"
+    android:text="See all"
+    android:gravity="center"
+    android:fontFamily="@font/poppins_medium"
+    android:textSize="11dp"
+    android:textColor="@color/colorBlack1"
+    android:paddingTop="2dp"
+    android:background="@drawable/bg_see_all"/>

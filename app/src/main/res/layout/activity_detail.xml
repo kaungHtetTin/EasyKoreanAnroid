@@ -6,11 +6,60 @@
     android:orientation="vertical"
     tools:context=".DetailActivity">
 
+    <RelativeLayout
+        android:id="@+id/app_bar"
+        android:elevation="1dp"
+        android:background="@color/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize">
+        <ImageView
+            android:id="@+id/iv_back"
+            android:src="@drawable/ic_back"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="15dp"
+            android:padding="3dp"
+            android:layout_alignTop="@id/tv_title"
+            android:layout_centerVertical="true"
+            android:layout_alignBottom="@id/tv_title"
+            android:layout_height="wrap_content"/>
+
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:gravity="center_vertical"
+            android:layout_marginStart="25dp"
+            android:text="@string/app_name"
+            android:elevation="5dp"
+            android:textStyle="bold"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/iv_back"
+            android:fontFamily="@font/poppins_semibold"
+            android:textColor="@color/colorActionBarTitle"
+            android:textSize="20sp"/>
+
+        <ImageView
+            android:id="@+id/iv_spellCheck"
+            android:src="@drawable/ic_spellcheck_black_24dp"
+            android:layout_width="35dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="25dp"
+            android:padding="3dp"
+            android:layout_centerVertical="true"
+            android:layout_alignTop="@id/tv_title"
+            android:layout_alignBottom="@id/tv_title"
+            android:background="@drawable/bg_circle_light_blue"
+            android:layout_height="35dp"/>
+
+    </RelativeLayout>
+
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/app_bar"
         android:layout_above="@id/adview">
 
         <WebView
@@ -24,7 +73,7 @@
         android:id="@+id/adview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        ads:adSize="BANNER"
+        ads:adSize="SMART_BANNER"
         ads:adUnitId="ca-app-pub-2472405866346270/2510952382"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"

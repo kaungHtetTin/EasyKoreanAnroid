@@ -1,14 +1,20 @@
 package com.calamus.easykorean.models;
 
 public class TopGamePlayerModel {
+    String userId;
     String name;
     String imageUrl;
-    String score;
+    int score;
 
-    public TopGamePlayerModel(String name, String imageUrl, String score) {
+    public TopGamePlayerModel(String userId,String name, String imageUrl, int score) {
+        this.userId=userId;
         this.name = name;
         this.imageUrl = imageUrl;
         this.score = score;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public String getName() {
@@ -19,7 +25,7 @@ public class TopGamePlayerModel {
         return imageUrl;
     }
 
-    public String getScore() {
+    public int getScore() {
         return score;
     }
 }

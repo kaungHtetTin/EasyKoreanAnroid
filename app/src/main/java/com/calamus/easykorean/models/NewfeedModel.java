@@ -1,21 +1,22 @@
 package com.calamus.easykorean.models;
 
-
 public class NewfeedModel {
-   String userName;
-   String userId;
-   String userToken;
-   String userImage;
-   String postId;
-   String postBody;
-   String postLikes;
-   String postComments;
-   String postImage;
-   String isVip;
-   String isVideo;
-   String viewCount;
-   String isLike;
-    public NewfeedModel(String userName, String userId, String userToken, String userImage, String postId, String postBody, String postLikes, String postComments, String postImage, String isVip, String isVideo,String viewCount,String isLike) {
+    String userName;
+    String userId;
+    String userToken;
+    String userImage;
+    String postId;
+    String postBody;
+    String postLikes;
+    String postComments;
+    String postImage;
+    String isVip;
+    String isVideo;
+    String viewCount;
+    String isLike;
+    int shareCount;
+    long share;
+    public NewfeedModel(String userName, String userId, String userToken, String userImage, String postId, String postBody, String postLikes, String postComments, String postImage,String isVip,String isVideo, String viewCount,String isLike,int shareCount,long share) {
         this.userName = userName;
         this.userId = userId;
         this.userToken = userToken;
@@ -29,14 +30,24 @@ public class NewfeedModel {
         this.isVideo=isVideo;
         this.viewCount=viewCount;
         this.isLike=isLike;
+        this.share=share;
+        this.shareCount=shareCount;
     }
 
-    public void setIsLike(String isLike) {
-        this.isLike = isLike;
+    public int getShareCount() {
+        return shareCount;
+    }
+
+    public long getShare() {
+        return share;
     }
 
     public String getIsLike() {
         return isLike;
+    }
+
+    public void setIsLike(String isLike) {
+        this.isLike = isLike;
     }
 
     public String getUserName() {

@@ -1,32 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="1dp"
-    app:cardCornerRadius="2dp"
-    app:cardElevation="1dp"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:id="@+id/card_View">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:elevation="0.5dp"
+    android:gravity="center_horizontal"
+    android:layout_gravity="center_horizontal"
+    android:background="@drawable/bg_transparent"
+    android:layout_margin="2dp">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:padding="10dp">
-
+        app:cardElevation="8dp"
+        android:padding="5dp"
+        app:cardCornerRadius="20dp">
         <ImageView
-            android:id="@+id/mainItemIv"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_centerHorizontal="true"
-            android:contentDescription="TODO" />
+            android:id="@+id/iv_book"
+            android:scaleType="centerCrop"
+            android:layout_width="105dp"
+            android:layout_height="105dp"/>
+    </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/tv_category"
-            android:layout_below="@id/mainItemIv"
-            android:layout_width="wrap_content"
-            android:padding="7dp"
-            android:layout_height="wrap_content"/>
-    </RelativeLayout>
-</androidx.cardview.widget.CardView>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:textColor="@color/colorBlack1"
+        android:textSize="14sp"
+        android:padding="4dp"
+        android:id="@+id/tv_category"
+        android:layout_width="100dp"
+        android:gravity="center_horizontal"
+        android:fontFamily="@font/poppins_medium"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

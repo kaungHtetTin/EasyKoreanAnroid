@@ -4,14 +4,27 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/appBar">
+
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
+        android:src="@drawable/ic_back_orange" />
 
     <ScrollView
+        android:id="@+id/layout_edit_profile"
+        android:layout_below="@id/iv_back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="invisible"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp">
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -19,82 +32,136 @@
             android:padding="10dp"
             android:gravity="center"
             android:orientation="vertical">
-            <TextView
-                android:id="@+id/tv1"
-                android:layout_marginTop="20dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Choose Your Profile Image"
-                android:textSize="13sp"
-                android:textColor="@android:color/black"
-                android:textStyle="bold" />
 
             <RelativeLayout
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center">
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/iv_profile"
-                    android:layout_width="70dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_width="200dp"
                     android:background="@drawable/bg_circle"
-                    android:layout_height="70dp"
+                    android:layout_height="200dp"
+                    android:transitionName="profile1"
+                    android:layout_centerHorizontal="true"
                     android:src="@drawable/ic_baseline_account_circle_24"/>
 
                 <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentEnd="true"
-                    android:src="@drawable/ic_baseline_add_a_photo_24"/>
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_alignBottom="@id/iv_profile"
+                    android:layout_alignEnd="@id/iv_profile"
+                    android:src="@drawable/ic_camera_edit_profile"/>
             </RelativeLayout>
 
-            <View
+            <TextView
+                android:id="@id/tv_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:fontFamily="@font/poppins_semibold"
+                android:textSize="25sp"
                 android:layout_marginTop="20dp"
-                android:background="@color/divider"
-                android:layout_height="1dp"
-                android:layout_width="fill_parent"/>
+                android:textColor="@color/colorNameBlack"/>
+
+            <TextView
+                android:id="@+id/tv_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:fontFamily="@font/poppins_regular"
+                android:textSize="17sp"
+                android:textColor="@color/colorNameBlack"/>
 
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="12dp"
+                android:id="@+id/tv_bio"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Edit Detail About You"
-                android:textSize="13sp"
-                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:fontFamily="@font/poppins_regular"
+                android:textSize="17sp"
+                android:layout_marginTop="15dp"
+                android:textColor="@color/colorNameBlack"/>
+
+
+            <TextView
+                android:id="@+id/tv_edit_bio"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pb"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="7dp"
+                android:layout_marginEnd="7dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bg_edit_profile_save"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="center"
+                android:padding="7dp"
+                android:text="Edit Bio"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/white"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:text="Name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorNameBlack"
+                android:fontFamily="@font/poppins_semibold"
+                android:layout_marginTop="10dp"
+                android:textSize="18sp"/>
 
             <EditText
                 android:id="@+id/et_name"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="53dp"
                 android:padding="5dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:background="@drawable/bg_comment_enter_text"
-                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_edit_profile_text_box"
                 android:drawablePadding="8dp"
                 app:drawableStartCompat="@drawable/ic_baseline_account_circle_24"
-                android:hint="@string/enter_your_name"/>
+                android:hint="@string/enter_your_name"
+                android:fontFamily="@font/poppins_regular"
+                android:textColor="@color/colorNameBlack"
+                android:textSize="17sp"/>
+
+            <TextView
+                android:text="Email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorNameBlack"
+                android:fontFamily="@font/poppins_semibold"
+                android:layout_marginTop="10dp"
+                android:textSize="18sp"/>
 
             <EditText
                 android:id="@+id/et_email"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="53dp"
                 android:padding="5dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:drawablePadding="8dp"
                 app:drawableStartCompat="@drawable/ic_baseline_email_24"
-                android:background="@drawable/bg_comment_enter_text"
-                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_edit_profile_text_box"
                 android:inputType="textEmailAddress"
-                android:hint="@string/enter_your_email"/>
+                android:hint="@string/enter_your_email"
+                android:fontFamily="@font/poppins_regular"
+                android:textSize="17sp"
+                android:textColor="@color/colorNameBlack"/>
 
-            <RelativeLayout
-                android:background="@drawable/bg_comment_enter_text"
+
+            <TextView
+                android:text="Gender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorNameBlack"
+                android:fontFamily="@font/poppins_semibold"
                 android:layout_marginTop="10dp"
+                android:textSize="18sp"/>
+            <RelativeLayout
+                android:background="@drawable/bg_edit_profile_text_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -102,11 +169,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="45dp"
-                    android:padding="5dp"
                     android:drawablePadding="8dp"
+                    android:fontFamily="@font/poppins_regular"
                     android:gravity="center_vertical"
-                    android:background="@drawable/bg_transparent"
                     android:hint="Gender"
+                    android:padding="5dp"
+                    android:textSize="16dp"
+                    android:textColor="@color/colorNameBlack"
                     app:drawableStartCompat="@drawable/ic_gender" />
 
                 <TextView
@@ -121,16 +190,23 @@
                     android:text="Edit"
                     android:textStyle="bold"
                     android:layout_marginEnd="3dp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:textColor="@color/colorNameBlack"
                     app:drawableStartCompat="@drawable/ic_baseline_edit_24" />
 
                 <TextView
                     android:id="@+id/tv_myGener"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:layout_margin="15dp"
                     android:layout_below="@id/tv_gender_edit"
-                    android:hint="edit your gender"/>
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:hint="edit your gender"
+                    android:textSize="17sp"
+                    android:textColor="@color/colorNameBlack" />
 
                 <Spinner
                     android:id="@+id/sp_gender"
@@ -142,10 +218,16 @@
 
             </RelativeLayout>
 
-
-            <RelativeLayout
-                android:background="@drawable/bg_comment_enter_text"
+            <TextView
+                android:text="Date of birth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorNameBlack"
+                android:fontFamily="@font/poppins_semibold"
                 android:layout_marginTop="10dp"
+                android:textSize="18sp"/>
+            <RelativeLayout
+                android:background="@drawable/bg_edit_profile_text_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -154,11 +236,14 @@
                     android:id="@+id/tv_birthday"
                     android:layout_width="wrap_content"
                     android:layout_height="45dp"
-                    android:padding="5dp"
+                    android:background="@drawable/bg_transparent"
                     android:drawablePadding="8dp"
                     android:gravity="center_vertical"
-                    android:background="@drawable/bg_transparent"
                     android:hint="Birthday"
+                    android:padding="5dp"
+                    android:textSize="17sp"
+                    android:textColor="@color/colorNameBlack"
+                    android:fontFamily="@font/poppins_regular"
                     app:drawableStartCompat="@drawable/ic_born_year" />
 
                 <TextView
@@ -172,6 +257,7 @@
                     android:layout_alignParentEnd="true"
                     android:text="Edit"
                     android:textStyle="bold"
+                    android:textColor="@color/textPrimary"
                     android:layout_marginEnd="3dp"
                     app:drawableStartCompat="@drawable/ic_baseline_edit_24" />
 
@@ -179,49 +265,63 @@
                     android:id="@+id/tv_myBirthday"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:layout_margin="15dp"
                     android:layout_below="@id/tv_birthday"
-                    android:hint="edit your birthday"/>
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:hint="edit your birthday"
+                    android:textSize="17sp"
+                    android:textColor="@color/colorNameBlack"
+                    android:fontFamily="@font/poppins_regular"/>
 
                 <RelativeLayout
                     android:id="@+id/bd_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
                     android:orientation="horizontal"
+                    android:visibility="gone"
                     android:layout_below="@id/tv_birthday">
-                    <Spinner
-                        android:id="@+id/sp_birth_day"
-                        android:layout_width="wrap_content"
-                        android:layout_height="45dp"/>
-                    <Spinner
-                        android:id="@+id/sp_birth_month"
-                        android:layout_width="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_height="45dp" />
-                    <Spinner
-                        android:id="@+id/sp_birth_year"
-                        android:layout_width="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_height="45dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/layoutSpinnerBD"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <Spinner
+                            android:id="@+id/sp_birth_day"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="45dp"/>
+                        <Spinner
+                            android:id="@+id/sp_birth_month"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="45dp" />
+                        <Spinner
+                            android:id="@+id/sp_birth_year"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="45dp"/>
+                    </LinearLayout>
 
                     <Button
                         android:id="@+id/bt_cancel"
-                        android:layout_width="50dp"
-                        android:layout_height="25dp"
+                        android:layout_width="60dp"
+                        android:layout_height="30dp"
                         android:textStyle="bold"
                         android:textSize="12sp"
                         android:text="cancel"
                         android:layout_margin="10dp"
                         android:background="@drawable/bg_corner_blue"
                         android:layout_toStartOf="@id/bt_done"
-                        android:layout_below="@id/sp_birth_day"/>
+                        android:fontFamily="@font/poppins_regular"
+                        android:layout_below="@id/layoutSpinnerBD"/>
 
                     <Button
                         android:id="@+id/bt_done"
-                        android:layout_width="50dp"
-                        android:layout_height="25dp"
+                        android:layout_width="60dp"
+                        android:layout_height="30dp"
                         android:text="Done"
                         android:textColor="@color/white"
                         android:textStyle="bold"
@@ -229,71 +329,98 @@
                         android:layout_margin="10dp"
                         android:background="@drawable/bg_slid_blue_round_corner"
                         android:layout_alignParentEnd="true"
-                        android:layout_below="@id/sp_birth_day"/>
+                        android:fontFamily="@font/poppins_regular"
+                        android:layout_below="@id/layoutSpinnerBD"/>
                 </RelativeLayout>
 
             </RelativeLayout>
 
+            <TextView
+                android:text="Education"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorNameBlack"
+                android:fontFamily="@font/poppins_semibold"
+                android:layout_marginTop="10dp"
+                android:textSize="18sp"/>
             <EditText
                 android:id="@+id/et_education"
-                android:background="@drawable/bg_comment_enter_text"
+                android:background="@drawable/bg_edit_profile_text_box"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="53dp"
                 android:padding="5dp"
                 android:gravity="center_vertical"
                 android:drawablePadding="8dp"
                 android:hint="Education"
-                android:layout_marginTop="10dp"
+                android:textSize="17sp"
                 app:drawableStartCompat="@drawable/ic_university" />
 
+            <TextView
+                android:text="Work"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorNameBlack"
+                android:fontFamily="@font/poppins_semibold"
+                android:layout_marginTop="10dp"
+                android:textSize="18sp"/>
             <EditText
                 android:id="@+id/et_work"
-                android:background="@drawable/bg_comment_enter_text"
+                android:background="@drawable/bg_edit_profile_text_box"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="53dp"
                 android:padding="5dp"
-                android:layout_marginTop="10dp"
                 android:gravity="center_vertical"
                 android:hint="Work At"
                 android:drawablePadding="8dp"
+                android:textSize="17sp"
                 app:drawableStartCompat="@drawable/ic_baseline_work_24" />
 
-
+            <TextView
+                android:text="Address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorNameBlack"
+                android:fontFamily="@font/poppins_semibold"
+                android:layout_marginTop="10dp"
+                android:textSize="18sp"/>
             <EditText
                 android:id="@+id/et_region"
-                android:background="@drawable/bg_comment_enter_text"
+                android:background="@drawable/bg_edit_profile_text_box"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="53dp"
                 android:padding="5dp"
                 android:gravity="center_vertical"
                 android:drawablePadding="8dp"
-                android:layout_marginTop="10dp"
+                android:textSize="17sp"
                 android:hint="Region( eg. Yangon)"
                 app:drawableStartCompat="@drawable/ic_baseline_location_city_24" />
 
-            <Button
-                android:id="@+id/bt_save"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                android:textColor="@android:color/white"
-                android:text="@string/save_changes"
-                android:background="@drawable/bg_button"/>
+            <TextView
+                android:id="@+id/tv_save"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pb"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="20dp"
+                android:background="@drawable/bg_edit_profile_save"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="center"
+                android:padding="7dp"
+                android:text="Save changes"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
     </ScrollView>
 
     <ProgressBar
-        android:layout_marginTop="10dp"
         android:id="@+id/pb_loading"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="@drawable/bg_progressbar"
-        android:padding="5dp"/>
+        />
 
 </RelativeLayout>

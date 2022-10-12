@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="game_bg">#B6CDFF</color>
+
+    <color name="divider">#E7F3FF</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="colorPrimary">@android:color/white</color>
+    <color name="colorPrimaryDark">#475692</color>
+    <color name="colorAccent">#7772D3</color>
+
+    <color name="purple_500">#070B11</color>
+    <color name="purple_700">#070B11</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="notiBlue">#00172D</color>
+    <color name="dayNight">#fff</color>
+    <color name="primaryLayout">#404143</color>
+    <color name="textPrimary">#ccc</color>
+    <color name="textSecondary">#aaa</color>
+    <color name="colorActionBarTitle">#C9E5FB</color>
+    <color name="appBar">#222</color>
+    <color name="colorNameBlack">#D9D9D9</color>
+    <color name="colorHr">#363636</color>
+    <color name="commentMsg">#414243</color>
+    <color name="feedBackground">#1A1A1A</color>
+    <color name="fragmentOneLayout">#343637</color>
+    <color name="botMsg">#DD5ABCF5</color>
+    <color name="bgVideoCategory">#323233</color>
+    <color name="colorBlack1">#EBEBEB</color>
+    <color name="bgMenuDialog">#222222</color>
+    <color name="bioText">#B0B0B0</color>
+    <color name="selectedVideo">#312F4E</color>
+    <color name="bgBottomNavChatting">#1A1C1E</color>
+    <color name="bgClassRoomSearchBox">#262626</color>
+    <color name="colorConversationMsg">#CCCCCC</color>
+    <color name="bgSeeAll">#4E4E4E</color>
+
+
+
+
+</resources>

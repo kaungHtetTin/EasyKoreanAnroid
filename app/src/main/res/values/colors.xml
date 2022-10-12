@@ -1,15 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">@android:color/white</color>
-    <color name="colorAccent">#3D9EFF</color>
-    <color name="colorPrimaryDark">#2876FC</color>
 
+    <color name="game_bg">#B6CDFF</color>
     <color name="divider">#E7F3FF</color>
-    <color name="purple_500">#1b1a1c</color>
-    <color name="purple_700">#151515</color>
-    <color name="black">#FF000000</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+    <color name="colorPrimary">@android:color/white</color>
+    <color name="colorPrimaryDark">#475692</color>
+    <color name="colorAccent">#7772D3</color>
+
+    <color name="purple_500">#070B11</color>
+    <color name="purple_700">#070B11</color>
+    <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="notiBlue">#E7F3FF</color>
+
+    <color name="primaryLayout">#ffff</color>
+
+    <color name="textPrimary">#333</color>
+    <color name="textSecondary">#555</color>
+    <color name="appBar">#fff</color>
+    <color name="colorHr">#F0F3F5</color>
+    <color name="commentMsg">#F0F3F5</color>
+
+    <color name="colorButton">#3d5f51</color>
+    <color name="colorButtonActive">#1bea95</color>
+    <color name="botMsg">#DD093D5B</color>
+    <color name="dayNight">#000</color>
+
+    <color name="colorTheme">#475692</color>
+    <color name="colorThemeLight">#7772D3</color>
+
+
+    <color name="colorBlack1">#403F3F</color>
+    <color name="colorSpeechBlack">#AD403F3F</color>
+    <color name="colorText">#403F3F</color>
+    <color name="colorActionBarTitle">#1B2730</color>
+    <color name="colorNameBlack">#362D2A</color>
+    <color name="colorConversationMsg">#646464</color>
+    <color name="fragmentOneLayout">#EEF8FE</color>
+    <color name="feedBackground">#F2F7FA</color>
+    <color name="gray">#ccc</color>
+    <color name="learned">#33B159</color>
+    <color name="bgVideoCategory">#EDEFF2</color>
+    <color name="colorVioletLight">#E0DEFF</color>
+    <color name="bgMenuDialog">#F3F3F3</color>
+    <color name="bioText">#646464</color>
+    <color name="selectedVideo">#E0DEFF</color>
+    <color name="bgBottomNavChatting">#EEF8FE</color>
+    <color name="bgClassRoomSearchBox">#F3F3F3</color>
+    <color name="bgSeeAll">#DCDCDC</color>
+
 </resources>

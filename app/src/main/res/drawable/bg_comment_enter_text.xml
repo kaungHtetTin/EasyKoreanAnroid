@@ -30,7 +30,7 @@
                         android:color="#00F0F3F5"/>
 
                     <stroke
-                        android:width="2dp"
+                        android:width="1.3dp"
                         android:color="@color/colorAccent"/>
                     <corners
                         android:radius="10dp"/>

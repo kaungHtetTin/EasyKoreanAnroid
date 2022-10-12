@@ -3,10 +3,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/myActionBar"
+        layout="@layout/my_action_bar"/>
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_go_web"
         android:layout_width="match_parent"
         android:layout_above="@id/adview"
+        android:layout_below="@id/myActionBar"
         android:layout_height="match_parent">
 
         <WebView
@@ -21,7 +26,7 @@
         android:id="@+id/adview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        ads:adSize="BANNER"
+        ads:adSize="SMART_BANNER"
         ads:adUnitId="ca-app-pub-2472405866346270/2510952382"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"

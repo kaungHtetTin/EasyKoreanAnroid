@@ -12,23 +12,25 @@
         android:layout_height="match_parent"
         android:padding="10dp">
         <de.hdodenhof.circleimageview.CircleImageView
-            android:padding="7dp"
+
             android:id="@+id/iv_profile"
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:background="@drawable/bg_circle"
             android:layout_gravity="center"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:src="@drawable/ic_baseline_account_circle_24"/>
 
         <TextView
             android:layout_marginTop="2dp"
-            android:id="@+id/tv_name"
+            android:id="@+id/tv_username"
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@id/iv_profile"
             android:layout_alignParentEnd="true"
-            android:textColor="@android:color/black"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorBlack1"
             android:padding="2dp"
+            android:text="Kaung Htet tin"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="14sp"
             android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

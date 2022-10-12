@@ -3,83 +3,48 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="1dp"
     app:cardElevation="0dp"
+    android:layout_marginBottom="10dp"
+    android:layout_marginStart="14dp"
+    android:layout_marginEnd="14dp"
     android:foreground="?android:attr/selectableItemBackground">
-    <com.facebook.shimmer.ShimmerFrameLayout
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/shimmer_view_container">
+        android:background="@color/appBar"
+        android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:padding="7dp"
-                android:id="@+id/iv_profile"
-                android:layout_width="90dp"
-                android:background="@drawable/bg_circle"
-                android:layout_gravity="center"
-                android:layout_height="90dp"
-                android:src="@drawable/ic_baseline_account_circle_24"/>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_profile"
+            android:layout_width="53dp"
+            android:layout_height="53dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_circle"
+            android:src="@drawable/ic_baseline_account_circle_24" />
 
-            <TextView
-                android:layout_marginTop="2dp"
-                android:id="@+id/tv_name"
-                android:layout_marginStart="5dp"
-                android:layout_toEndOf="@id/iv_profile"
-                android:layout_alignParentEnd="true"
-                android:textColor="@android:color/black"
-                android:layout_above="@id/frag_one_bottom"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:padding="2dp"
-                android:layout_marginBottom="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
 
-            <LinearLayout
-                android:id="@+id/frag_one_bottom"
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:orientation="horizontal"
-                android:layout_marginStart="5dp"
-                android:gravity="end"
-                android:layout_marginBottom="3dp"
-                android:layout_toEndOf="@id/iv_profile"
-                android:layout_alignBottom="@id/iv_profile">
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/iv_profile"
+            android:layout_marginTop="4dp"
+            android:layout_toEndOf="@id/iv_profile"
+            android:fontFamily="@font/poppins_semibold"
+            android:textColor="@color/colorConversationMsg"
+            android:textSize="14sp"
+            android:layout_marginStart="7dp"/>
 
-                <Button
-                    android:id="@+id/bt_chat"
-                    android:layout_width="110dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text="Chat"
-                    android:textColor="@android:color/black"
-                    android:drawableStart="@drawable/ic_chat"
-                    android:background="@drawable/bg_button_remove"/>
+        <TextView
+            android:id="@+id/tv_mutual"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_username"
+            android:layout_alignStart="@id/tv_username"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="11sp"
+            android:textColor="@color/colorConversationMsg"/>
 
-                <Button
-                    android:id="@+id/bt_remove"
-                    android:layout_marginStart="10dp"
-                    android:drawablePadding="8dp"
-                    android:layout_width="110dp"
-                    android:textColor="@android:color/white"
-                    android:layout_marginEnd="20dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_like"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:text="@string/remove"/>
-            </LinearLayout>
-
-            <View
-                android:layout_below="@id/frag_one_bottom"
-                android:layout_marginTop="10dp"
-                android:background="#aaa"
-                android:layout_height="1dp"
-                android:layout_width="fill_parent"/>
-        </RelativeLayout>
-
-    </com.facebook.shimmer.ShimmerFrameLayout>
+    </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

@@ -1,16 +1,26 @@
 package com.calamus.easykorean;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.calamus.easykorean.app.MyHttp;
@@ -34,6 +44,9 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences.Editor editor;
     Executor postExecutor;
 
+    ImageView iv_login_english,iv_login_japanese,iv_login_chinese;
+    LinearLayout orContainer,loginContainer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,15 +56,22 @@ public class LoginActivity extends AppCompatActivity {
         editor=sharedPreferences.edit();
         et_phone=findViewById(R.id.et_phone);
         et_password=findViewById(R.id.et_password);
+        signUpText = findViewById(R.id.tv_login);
         loginButton = findViewById(R.id.bt_log_in);
         loading = findViewById(R.id.pb_loading);
         loading.setVisibility(View.INVISIBLE);
-        signUpText = findViewById(R.id.signup_tv);
+
         callCenter = findViewById(R.id.tv_call_center);
         tv_error=findViewById(R.id.tv_error);
         tv_error.setVisibility(View.INVISIBLE);
         tv_forgetPassword=findViewById(R.id.tv_forget_password);
         postExecutor = ContextCompat.getMainExecutor(this);
+
+        orContainer=findViewById(R.id.or_container);
+        loginContainer=findViewById(R.id.login_with_container);
+        iv_login_english=findViewById(R.id.login_english);
+        iv_login_chinese=findViewById(R.id.login_chinese);
+        iv_login_japanese=findViewById(R.id.login_japanese);
 
         loginButton.setOnClickListener(v -> {
 
@@ -78,7 +98,76 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        checkOtherCalamusApp();
+
+        iv_login_english.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Intent intent=new Intent("com.qanda.learnroom.AuthCheckerActivity");
+                    mStartForResult.launch(intent);
+                    tv_error.setVisibility(View.INVISIBLE);
+                }catch (Exception e){
+                    tv_error.setVisibility(View.VISIBLE);
+                    tv_error.setText("Can't Login. Easy English is not latest version");
+                }
+            }
+        });
+
+        iv_login_japanese.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Intent intent=new Intent("com.calamus.easyjapanese.AuthCheckerActivity");
+                    mStartForResult.launch(intent);
+                    tv_error.setVisibility(View.INVISIBLE);
+                }catch (Exception e){
+                    tv_error.setVisibility(View.VISIBLE);
+                    tv_error.setText("Can't Login");
+                    Log.e("loginClickErr ",e.toString());
+                }
+            }
+        });
+
+        iv_login_chinese.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Intent intent=new Intent("com.calamus.easychinese.AuthCheckerActivity");
+                    mStartForResult.launch(intent);
+                    tv_error.setVisibility(View.INVISIBLE);
+                }catch (Exception e){
+                    tv_error.setVisibility(View.VISIBLE);
+                    tv_error.setText("Can't Login");
+                }
+            }
+        });
     }
+
+    ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent intent = result.getData();
+                        boolean success=intent.getBooleanExtra("success",false);
+                        Log.e("success ",success+"");
+                        if(success){
+                            String phone=intent.getStringExtra("userid");
+                            if(phone!=null)gotoApp(phone);
+                            else  {
+                                tv_error.setVisibility(View.VISIBLE);
+                                tv_error.setText("Can't login! Please try again");
+                            }
+                        }else{
+                            tv_error.setVisibility(View.VISIBLE);
+                            tv_error.setText("Can't login! Please try again with another way.");
+                        }
+
+                    }
+                }
+            });
+
 
 
     private void logInValidate(final String phone, String password){
@@ -137,18 +226,7 @@ public class LoginActivity extends AppCompatActivity {
             String response=jo.getString("result");
 
             if(response.equals("go")){
-                editor.putBoolean("AlreadyLogin", true);
-                editor.putString("phone",phone);
-                editor.apply();
-
-                UserInformation userInformation=new UserInformation(LoginActivity.this);
-                userInformation.getGeneralData(phone);
-
-                Intent intent=new Intent(LoginActivity.this,MainActivity.class);
-                intent.putExtra("message","login");
-
-                startActivity(intent);
-                finish();
+                gotoApp(phone);
             }else{
                 loading.setVisibility(View.INVISIBLE);
                 loginButton.setEnabled(true);
@@ -157,5 +235,56 @@ public class LoginActivity extends AppCompatActivity {
             }
 
         }catch (Exception ignored){}
+    }
+
+    private void gotoApp(String phone){
+        editor.putBoolean("AlreadyLogin", true);
+        editor.putString("phone",phone);
+        editor.apply();
+
+        UserInformation userInformation=new UserInformation(LoginActivity.this);
+        userInformation.getGeneralData(phone);
+
+        Intent intent=new Intent(LoginActivity.this,MainActivity.class);
+        intent.putExtra("message","login");
+
+        startActivity(intent);
+        finish();
+    }
+
+    private void checkOtherCalamusApp(){
+        boolean otherAppExist=false;
+
+        if(isPackageInstalled("com.qanda.learnroom")){
+            iv_login_english.setVisibility(View.VISIBLE);
+            otherAppExist=true;
+        }
+
+        if(isPackageInstalled("com.calamus.easyjapanese")){
+            iv_login_japanese.setVisibility(View.VISIBLE);
+            otherAppExist=true;
+        }
+
+        if(isPackageInstalled("com.calamus.easychinese")){
+            iv_login_chinese.setVisibility(View.VISIBLE);
+            otherAppExist=true;
+        }
+
+        if(otherAppExist){
+            orContainer.setVisibility(View.VISIBLE);
+            loginContainer.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    private boolean isPackageInstalled(String packageName) {
+        PackageManager packageManager=getPackageManager();
+        try {
+            packageManager.getPackageInfo(packageName, 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e("AppNameNot ",e.toString());
+            return false;
+        }
     }
 }

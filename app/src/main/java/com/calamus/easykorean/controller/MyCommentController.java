@@ -23,7 +23,8 @@ public class MyCommentController {
 
     }
 
-    public void addCommentToHostinger(String postOwnerId, String writer_id, String body, String action, String CorR, String tokenPC,String commentImagePath){
+    public void addCommentToHostinger(String postOwnerId, String writer_id, String body, String action, String CorR, String tokenPC,String commentImagePath,String parentCommentID){
+
         new Thread(() -> {
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.POST, new MyHttp.Response() {
                 @Override
@@ -32,18 +33,16 @@ public class MyCommentController {
                         NotificationController notificationController=new NotificationController(c);
                         notificationController.sendNotification(currentUserName+CorR,tokenPC,Routing.APP_NAME,"1");
                     }
-
-                    Log.e("AddCommentRes: ", response);
+                    Log.e("Response cmtAdding ",response);
                 }
                 @Override
-                public void onError(String msg) {
-                    Log.e("AddCommentErr: ", msg);
-                }
+                public void onError(String msg) {}
             }).url(Routing.ADD_COMMENT)
                     .field("post_id",postId)
                     .field("writer_id",writer_id)
                     .field("owner_id",postOwnerId)
                     .field("body",body)
+                    .field("parent",parentCommentID)
                     .field("action",action);
             if(!commentImagePath.equals(""))myHttp .file("myfile",commentImagePath);
             myHttp.runTask();

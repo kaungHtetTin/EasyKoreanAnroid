@@ -5,9 +5,9 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
     android:padding="7dp"
-    app:cardBackgroundColor="@color/cardview_light_background"
+    app:cardBackgroundColor="@color/appBar"
     app:cardCornerRadius="2dp"
-    app:cardElevation="1dp"
+    app:cardElevation="0.5dp"
     android:id="@+id/card_View">
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,9 +16,8 @@
 
         <ImageView
             android:id="@+id/iv_save"
-            android:background="@drawable/rounded_outline"
             android:layout_width="120dp"
-            android:padding="1dp"
+            android:background="@drawable/rounded_outline"
             android:layout_height="90dp"
             android:scaleType="centerCrop"
             android:contentDescription="TODO" />
@@ -56,7 +55,7 @@
             android:layout_alignTop="@id/iv_save"
             android:padding="7dp"
             android:layout_toStartOf="@id/bt_iv_more"
-            android:textColor="@android:color/black"/>
+            android:textColor="@color/textPrimary"/>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/card_reactCount"

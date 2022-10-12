@@ -5,56 +5,47 @@
     android:background="#000"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/c_bar"
-        android:padding="15dp"
-        android:background="#A4000000"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#A4000000"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:padding="15dp">
+
         <ImageButton
             android:id="@+id/ibt_back"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_centerVertical="true"
             android:background="@drawable/bg_transparent"
-            android:src="@drawable/ic_baseline_keyboard_backspace_24"
-            android:contentDescription="TODO" />
+            android:src="@drawable/ic_baseline_keyboard_backspace_24"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
             android:layout_marginStart="10dp"
             android:text="@string/app_name"
-            android:textColor="@android:color/white"
-            />
-    </LinearLayout>
+            android:layout_toEndOf="@id/ibt_back"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+            android:fontFamily="@font/poppins_semibold"
+            android:textSize="20sp"/>
 
+        <ImageView
+            android:id="@+id/iv_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_baseline_more_vert_24" />
+    </RelativeLayout>
 
-    <ImageView
+    <com.ortiz.touchview.TouchImageView
         android:id="@+id/iv_photo"
         android:layout_margin="2dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:contentDescription="TODO" />
-
-    <ScrollView
-        android:id="@+id/id_scroll"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="-250dp"
-        android:background="#A4000000">
-
-        <TextView
-            android:id="@+id/tv_photo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#ddd"
-            android:textSize="15sp"
-            android:padding="15dp"/>
-
-    </ScrollView>
+        android:layout_gravity="center"/>
 
 </LinearLayout>

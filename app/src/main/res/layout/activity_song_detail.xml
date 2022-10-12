@@ -2,178 +2,218 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:background="#203153"
+    android:background="#070B11"
     android:padding="5dp"
     android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_player_gradient">
+        android:id="@+id/my_actionbar_container"
+        android:layout_height="?attr/actionBarSize">
 
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:background="#92454545"
-            android:scaleType="centerCrop"
-            android:src="@drawable/bg_music"
-            android:id="@+id/songImage"
-            android:layout_gravity="center_horizontal"
-            android:contentDescription="TODO" />
-
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:textSize="18sp"
-            android:textColor="@android:color/white"
-            android:padding="7dp"
-            android:layout_toEndOf="@id/songImage"
-            android:text="Stay with me"/>
-
-        <TextView
-            android:id="@+id/tv_artist"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="@android:color/white"
-            android:padding="7dp"
-            android:text="Black Pink"
-            android:layout_toEndOf="@id/songImage"
-            android:layout_below="@id/tv_title"/>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card_react"
+            android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="15dp"
-            app:cardCornerRadius="7dp"
-            app:cardElevation="4dp"
-            android:layout_below="@id/songImage"
-            app:cardBackgroundColor="@color/purple_700"
-            android:layout_margin="10dp"
-            android:layout_alignParentStart="true">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:src="@drawable/ic_back_white" />
+
+        <TextView
+            android:id="@+id/tv_appbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:elevation="5dp"
+            android:fontFamily="@font/poppins_medium"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:text="Songs With Lyrics"
+            android:layout_toEndOf="@id/iv_back"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_below="@id/my_actionbar_container"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/songImage"
+            android:layout_width="112dp"
+            android:layout_height="112dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/bg_book_image"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_music" />
+
+
+        <TextView
+            android:id="@+id/tv_info_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_toStartOf="@id/iv_react"
+            android:layout_toEndOf="@id/songImage"
+            android:fontFamily="@font/poppins_medium"
+            android:padding="3dp"
+            android:text="Stay with me"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_info_header"
+            android:layout_marginStart="5dp"
+            android:layout_toStartOf="@id/tv_react"
+            android:layout_toEndOf="@id/songImage"
+            android:fontFamily="@font/poppins_light"
+            android:padding="3dp"
+            android:text="Black Pink"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
+
+
+        <ImageView
+            android:id="@+id/iv_react"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentEnd="true"/>
+
+
+        <TextView
+            android:id="@+id/tv_react"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/tv_downloadCount"
+            android:layout_gravity="center"
+            android:layout_toStartOf="@id/tv_downloadCount"
+            android:fontFamily="@font/poppins_light"
+            android:text="1M reacts"
+            android:textColor="@color/white"
+            android:textSize="11sp" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_play"
+            android:layout_width="100dp"
+            android:layout_height="44dp"
+            android:layout_alignBottom="@id/songImage"
+            android:layout_marginEnd="10dp"
+            android:layout_toStartOf="@id/card_download"
+            app:cardBackgroundColor="#4B93FF"
+            app:cardCornerRadius="22dp">
+
+            <TextView
+                android:text="Play"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:gravity="center"
-                android:padding="3dp">
-                <ImageView
-                    android:id="@+id/iv_react"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"/>
-                <TextView
-                    android:id="@+id/tv_reactCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#fff"
-                    android:layout_gravity="center"/>
-            </LinearLayout>
+                android:paddingTop="3dp"
+                android:textSize="12dp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/poppins_medium"/>
 
         </androidx.cardview.widget.CardView>
 
-
-        <Button
-            android:id="@+id/bt_download"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@id/card_react"
-            android:layout_alignBottom="@id/card_react"
-            android:background="@drawable/bg_corner_green"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_download"
+            android:layout_width="110dp"
+            android:layout_height="44dp"
+            android:layout_alignBottom="@id/songImage"
             android:layout_alignParentEnd="true"
-            android:text="Download"
-            android:layout_marginEnd="7dp"
-            android:textColor="#0E42FD"
-            android:layout_marginStart="10dp"/>
+            app:cardBackgroundColor="#44CB6D"
+            app:cardCornerRadius="22dp">
 
-        <Button
-            android:id="@+id/bt_play"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_corner_green"
-            android:layout_toStartOf="@id/bt_download"
-            android:text="Play"
-            android:layout_marginEnd="7dp"
-            android:textColor="#0E42FD"
-            android:layout_marginStart="10dp"
-            android:layout_alignTop="@id/card_react"
-            android:layout_alignBottom="@id/card_react"
-            android:layout_below="@id/songImage"/>
+            <TextView
+                android:text="Download"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingTop="3dp"
+                android:textSize="12dp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/poppins_medium"/>
+
+        </androidx.cardview.widget.CardView>
 
         <ImageView
             android:id="@+id/iv_downloadCheck"
             android:layout_width="15dp"
             android:layout_height="15dp"
-            android:layout_toEndOf="@id/songImage"
             android:layout_alignBottom="@id/songImage"
             android:layout_marginStart="7dp"
-            android:visibility="gone"
-            android:src="@drawable/ic_downloaded"/>
+            android:layout_toEndOf="@id/songImage"
+            android:src="@drawable/ic_downloaded" />
 
         <ImageView
             android:id="@+id/iv_isPlaying"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_toEndOf="@id/songImage"
             android:layout_alignBottom="@id/songImage"
             android:layout_marginStart="7dp"
-            android:visibility="gone"
-            android:src="@drawable/ic_baseline_campaign_24"/>
+            android:layout_toEndOf="@id/songImage"
+            android:src="@drawable/ic_baseline_campaign_24" />
 
         <TextView
             android:id="@+id/tv_downloadCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/songImage"
+            android:layout_alignBottom="@id/tv_description"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="7dp"
-            android:textColor="#aaa"
-            android:textStyle="italic"
-            android:text="1k downloads"/>
+            android:fontFamily="@font/poppins_light"
+            android:text="1k downloads"
+            android:textColor="@color/white"
+            android:textSize="11sp" />
 
         <ProgressBar
             android:id="@+id/pb_download"
+            style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="100dp"
             android:layout_height="5dp"
-            android:progress="0"
-            android:layout_marginBottom="5dp"
-            android:visibility="gone"
-            android:layout_toStartOf="@id/tv_downloadCount"
             android:layout_alignBottom="@id/songImage"
             android:layout_marginStart="7dp"
-            style="@android:style/Widget.ProgressBar.Horizontal" />
+            android:layout_marginBottom="5dp"
+            android:layout_toStartOf="@id/tv_downloadCount"
+            android:progress="0"
+            android:visibility="gone" />
 
 
         <ScrollView
-            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/bt_play"
-            android:layout_above="@id/adview">
+            android:layout_above="@id/adview"
+            android:layout_below="@id/songImage"
+            android:layout_marginTop="20dp">
+
             <TextView
                 android:id="@+id/tv_lyrics"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
                 android:gravity="center"
                 android:padding="10dp"
-                android:text="... Requesting Lyrics ..."/>
+                android:fontFamily="@font/poppins_regular"
+                android:text="... Requesting Lyrics ..."
+                android:textColor="@color/white" />
         </ScrollView>
 
-        <com.google.android.gms.ads.AdView
-            xmlns:ads="http://schemas.android.com/apk/res-auto"
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
             android:id="@+id/adview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            ads:adSize="BANNER"
-            ads:adUnitId="ca-app-pub-2472405866346270/2510952382"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            ads:adSize="SMART_BANNER"
+            ads:adUnitId="ca-app-pub-6762509980018216/5501495421" />
 
     </RelativeLayout>
 

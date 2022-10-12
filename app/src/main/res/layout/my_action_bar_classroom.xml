@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/my_actionbar_container"
+    android:background="@color/appBar"
+    android:layout_height="?attr/actionBarSize">
+
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/ic_back" />
+
+    <TextView
+        android:id="@+id/tv_info_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@id/iv_back"
+        android:elevation="5dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Message"
+        android:textColor="@color/colorActionBarTitle"
+        android:textSize="20sp" />
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_profile"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="15dp"
+        android:src="@drawable/ic_baseline_account_circle_24" />
+
+</RelativeLayout>
+
+
+

@@ -1,40 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:background="@color/purple_500"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    app:cardBackgroundColor="#203153"
-    app:cardCornerRadius="2dp"
-    app:cardElevation="3dp"
-    android:layout_margin="7dp"
-    android:layout_gravity="center"
-    android:id="@+id/card_View">
+    android:adjustViewBounds="true">
 
-    <RelativeLayout
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_songArtist"
+        android:layout_width="118dp"
+        android:layout_height="118dp"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/tv_artistName"
+        android:layout_below="@id/iv_songArtist"
         android:layout_width="match_parent"
-        android:background="@drawable/bg_player_gradient"
-        android:layout_height="match_parent"
-        android:adjustViewBounds="true">
+        android:padding="7dp"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        android:gravity="center"
+        android:fontFamily="@font/poppins_medium"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>
 
-        <ImageView
-            android:id="@+id/iv_songArtist"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:scaleType="centerCrop"
-            android:layout_centerHorizontal="true"
-            android:contentDescription="TODO" />
-
-        <TextView
-            android:id="@+id/tv_artistName"
-            android:layout_below="@id/iv_songArtist"
-            android:layout_width="wrap_content"
-            android:padding="7dp"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:text="Black Pink"
-            android:layout_centerHorizontal="true"
-            android:layout_height="wrap_content"/>
-    </RelativeLayout>
-
-</androidx.cardview.widget.CardView>

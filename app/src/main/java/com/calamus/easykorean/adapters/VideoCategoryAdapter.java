@@ -12,19 +12,23 @@ import com.calamus.easykorean.models.VideoCategoryModel;
 
 import java.util.ArrayList;
 
+
 public class VideoCategoryAdapter extends RecyclerView.Adapter<VideoCategoryAdapter.Holder> {
 
-    private final Activity c;
-    private final ArrayList<VideoCategoryModel> data;
-    private final LayoutInflater mInflater;
+    private Activity c;
+    private ArrayList<VideoCategoryModel> data;
+    private LayoutInflater mInflater;
     @SuppressLint("SimpleDateFormat")
     private Callback callback;
+    int activeIndex;
+
 
     public VideoCategoryAdapter(Activity c, ArrayList<VideoCategoryModel> data,Callback callback) {
         this.data = data;
         this.c = c;
         this.mInflater = LayoutInflater.from(c);
         this.callback = callback;
+        activeIndex=0;
 
     }
 
@@ -32,10 +36,13 @@ public class VideoCategoryAdapter extends RecyclerView.Adapter<VideoCategoryAdap
         this.callback = callback;
     }
 
-
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+    public void setActiveIndex(int activeIndex) {
+        this.activeIndex = activeIndex;
     }
 
     @Override
@@ -52,8 +59,15 @@ public class VideoCategoryAdapter extends RecyclerView.Adapter<VideoCategoryAdap
         holder.tv.setText(category);
         holder.callback = callback;
 
-    }
+        if(activeIndex==i){
+            holder.tv.setTextColor(c.getResources().getColor(R.color.white));
+            holder.tv.setBackgroundColor(c.getResources().getColor(R.color.colorThemeLight));
+        }else{
+            holder.tv.setTextColor(c.getResources().getColor(R.color.colorBlack1));
+            holder.tv.setBackgroundColor(c.getResources().getColor(R.color.bgVideoCategory));
+        }
 
+    }
 
 
     public class Holder extends RecyclerView.ViewHolder {
@@ -63,9 +77,20 @@ public class VideoCategoryAdapter extends RecyclerView.Adapter<VideoCategoryAdap
         public Holder(View view) {
             super(view);
             tv=view.findViewById(R.id.tv_category);
-            view.setOnClickListener(v -> {
-                if (callback != null) {
-                    callback.onCategoryClick(data.get(getAbsoluteAdapterPosition()).getId());
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (callback != null) {
+                        VideoCategoryModel model=data.get(getAbsoluteAdapterPosition());
+                        callback.onCategoryClick(model.getId(),model.getCategory());
+
+                        tv.setTextColor(c.getResources().getColor(R.color.white));
+                        tv.setBackgroundColor(c.getResources().getColor(R.color.colorTheme));
+                        activeIndex=getAbsoluteAdapterPosition();
+                        notifyDataSetChanged();
+
+                    }
+
                 }
             });
         }
@@ -76,9 +101,8 @@ public class VideoCategoryAdapter extends RecyclerView.Adapter<VideoCategoryAdap
         return position;
     }
 
+
     public  interface Callback {
-        void onCategoryClick(String category);
-
+        void onCategoryClick(String categoryID,String category);
     }
-
 }

@@ -3,7 +3,7 @@ package com.calamus.easykorean;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -24,20 +24,21 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.calamus.easykorean.adapters.ChatAdapter;
+import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.controller.NotificationController;
@@ -57,6 +58,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -79,7 +82,7 @@ public class ChattingActivity extends AppCompatActivity {
 
     String myId,FId,fName;
     SharedPreferences sharedPreferences;
-    private DatabaseReference db,dbc;
+    private DatabaseReference db,dbc,dbn;
     SwipeRefreshLayout swipe;
     public static String fImage;
     SQLiteDatabase dbLite;
@@ -100,6 +103,10 @@ public class ChattingActivity extends AppCompatActivity {
     Executor postExecutor;
     FirebaseDatabase firebaseDatabase;
 
+    //app bar;
+    TextView tv_name,tv_status;
+    ImageView iv_profile,iv_back,iv_more;
+
     ValueEventListener valueEventListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,8 +114,6 @@ public class ChattingActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_chatting);
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
 
         sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         myId=Long.parseLong(sharedPreferences.getString("phone",null))+"";
@@ -129,14 +134,15 @@ public class ChattingActivity extends AppCompatActivity {
 
         db= firebaseDatabase.getReference().child(Routing.MAJOR).child("ChatRoom");
         dbc=firebaseDatabase.getReference().child(Routing.MAJOR).child("Conservation");
+        dbn=firebaseDatabase.getReference().child(Routing.MAJOR).child("notification");
 
         dbdir= Objects.requireNonNull(getFilesDir()).getPath()+"/databases/";
         dbPath=dbdir+dbName;
         dbLite=SQLiteDatabase.openDatabase(dbPath,null,SQLiteDatabase.OPEN_READWRITE);
 
         setUpView();
+        setUpActionBar();
 
-        setTitle((Html.fromHtml("<small><font>" +setMyanmar(fName)+ "</font></small>")));
         status(FId);
 
         checkSeen();
@@ -153,12 +159,73 @@ public class ChattingActivity extends AppCompatActivity {
 
     }
 
+
+
     @Override
     protected void onDestroy() {
         isChatting="";
         super.onDestroy();
     }
 
+    private void setUpActionBar(){
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+
+        LayoutInflater inflator = (LayoutInflater) this .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflator.inflate(R.layout.my_action_bar_chat, null);
+
+        tv_name=v.findViewById(R.id.tv_username);
+        tv_status=v.findViewById(R.id.tv_status);
+        iv_back=v.findViewById(R.id.iv_back);
+        iv_profile=v.findViewById(R.id.iv_profile);
+        iv_more=v.findViewById(R.id.iv_menuMore);
+
+        tv_name.setText(setMyanmar(fName));
+
+        iv_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setSeenOnLocalConservation();
+                finish();
+            }
+        });
+
+        iv_more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                 showChatMenu(v);
+
+
+            }
+        });
+
+        AppHandler.setPhotoFromRealUrl(iv_profile,fImage);
+        actionBar.setCustomView(v);
+    }
+
+    private void showChatMenu(View v){
+        PopupMenu popup=new PopupMenu(this,v);
+        popup.getMenuInflater().inflate(R.menu.chat_menu,popup.getMenu());
+
+        popup.setOnMenuItemClickListener(item -> {
+            int id=item.getItemId();
+            if(id==R.id.profile){
+                Intent intent=new Intent(ChattingActivity.this,MyDiscussionActivity.class);
+                intent.putExtra("userId",FId); // give fri Id
+                intent.putExtra("userName",fName);
+                startActivity(intent);
+            }else if(id==R.id.clear_all_message){
+                confirmDeleteMessage();
+            }else if(id==R.id.block){
+                blockUser();
+            }
+
+            return true;
+        });
+        popup.show();
+
+    }
 
     private void setUpView(){
         recyclerView=findViewById(R.id.recyclerChat);
@@ -168,7 +235,6 @@ public class ChattingActivity extends AppCompatActivity {
         iv_msg=findViewById(R.id.iv_msg);
         iv_cancel=findViewById(R.id.iv_cancel);
         iv_insert_photo=findViewById(R.id.iv_insert_photo);
-
         lm = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(lm);
 
@@ -176,7 +242,7 @@ public class ChattingActivity extends AppCompatActivity {
         adapter = new ChatAdapter(this,ChatList);
 
         recyclerView.setAdapter(adapter);
-
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         ibtSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,6 +261,8 @@ public class ChattingActivity extends AppCompatActivity {
                 iv_msg.setVisibility(View.GONE);
                 iv_cancel.setVisibility(View.GONE);
                 hasImage="";
+
+                dbn.child(FId).child("message_arrive").setValue(true);
 
             }
         });
@@ -235,46 +303,6 @@ public class ChattingActivity extends AppCompatActivity {
         });
 
     }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        menu.add("Profile");
-        menu.add("Clear all messages");
-        menu.add("Block");
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.Q)
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            setSeenOnLocalConservation();
-            finish();
-        }else{
-            String s = item.getTitle().toString();
-            switch (s) {
-
-                case "Profile":
-                    Intent intent=new Intent(ChattingActivity.this,MyDiscussionActivity.class);
-                    intent.putExtra("userId",FId); // give fri Id
-                    intent.putExtra("userName",fName);
-                    startActivity(intent);
-                    break;
-                case "Clear all messages":
-                    confirmDeleteMessage();
-                    break;
-                case "Block":
-                    blockUser();
-                    break;
-
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private boolean isConservationExist(){
         String query="SELECT*FROM Conservations WHERE fri_id="+FId+" and my_id="+myId;
         Cursor cursor=dbLite.rawQuery(query,null);
@@ -312,7 +340,7 @@ public class ChattingActivity extends AppCompatActivity {
 
     private void fetchMessage(){
         swipe.setRefreshing(true);
-         ArrayList<ChatModel> tempChatList=new ArrayList<>();
+        ArrayList<ChatModel> tempChatList=new ArrayList<>();
         valueEventListener=new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -395,24 +423,24 @@ public class ChattingActivity extends AppCompatActivity {
 
     private void deleteMessageFromFIrebase(String chatRoomId) {
 
-       if( saveNewMessageOnLocal()){
-           Query applesQuery = db.child(chatRoomId);
+        if( saveNewMessageOnLocal()){
+            Query applesQuery = db.child(chatRoomId);
 
-           applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-               @Override
-               public void onDataChange(DataSnapshot dataSnapshot) {
-                   for (DataSnapshot appleSnapshot: dataSnapshot.getChildren()) {
-                       appleSnapshot.getRef().removeValue();
+            applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot appleSnapshot: dataSnapshot.getChildren()) {
+                        appleSnapshot.getRef().removeValue();
 
-                   }
-               }
+                    }
+                }
 
-               @Override
-               public void onCancelled(DatabaseError databaseError) {
-                   Log.e(TAG, "onCancelled", databaseError.toException());
-               }
-           });
-       }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.e(TAG, "onCancelled", databaseError.toException());
+                }
+            });
+        }
     }
 
 
@@ -420,7 +448,7 @@ public class ChattingActivity extends AppCompatActivity {
     private void fetchMessageFromLocal(){
         swipe.setRefreshing(false);
         counting=20;
-     //   String query="SELECT*FROM Chats WHERE (senderId="+myId+" AND chatRoom like '%"+FId+myId+"%') OR senderId="+FId+ " ORDER BY time DESC LIMIT 20";
+        //   String query="SELECT*FROM Chats WHERE (senderId="+myId+" AND chatRoom like '%"+FId+myId+"%') OR senderId="+FId+ " ORDER BY time DESC LIMIT 20";
         String query="SELECT*FROM Chats WHERE  chatRoom like '%"+FId+myId+"%' ORDER BY time DESC LIMIT 20";
 
         Cursor cursor=dbLite.rawQuery(query,null);
@@ -435,7 +463,7 @@ public class ChattingActivity extends AppCompatActivity {
                 int seen=cursor.getInt(6);
                 ChatList.add(new ChatModel(senderId,msgBody,Long.parseLong(time),seen,imageUrl));
 
-              //  Log.e("dbMsg: ", id+" : "+senderId+" : "+msgBody+" : "+time+" : "+imageUrl+" : "+seen);
+                //  Log.e("dbMsg: ", id+" : "+senderId+" : "+msgBody+" : "+time+" : "+imageUrl+" : "+seen);
                 cursor.moveToPrevious();
 
             }
@@ -451,7 +479,7 @@ public class ChattingActivity extends AppCompatActivity {
         swipe.setRefreshing(false);
         long firstIndexTime=getMsgTimeAtIndexZero();
         int itemPost=0;
-       // String query="SELECT*FROM Chats WHERE (senderId="+myId+" AND chatRoom like '%"+FId+myId+"%') OR senderId="+FId+ " ORDER BY time DESC LIMIT "+count;
+        // String query="SELECT*FROM Chats WHERE (senderId="+myId+" AND chatRoom like '%"+FId+myId+"%') OR senderId="+FId+ " ORDER BY time DESC LIMIT "+count;
         String query="SELECT*FROM Chats WHERE chatRoom like '%"+FId+myId+"%' ORDER BY time DESC LIMIT "+count;
 
         Cursor cursor=dbLite.rawQuery(query,null);
@@ -521,7 +549,7 @@ public class ChattingActivity extends AppCompatActivity {
 
     private void status(String fId){
 
-        DatabaseReference dbA=FirebaseDatabase.getInstance().getReference().child("korea").child("Active").child(fId);
+        DatabaseReference dbA=FirebaseDatabase.getInstance().getReference().child(Routing.MAJOR).child("Active").child(fId);
 
         dbA.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -531,12 +559,14 @@ public class ChattingActivity extends AppCompatActivity {
 
                     long time=(Long)snapshot.child("time").getValue();
                     if(active) {
-                        Objects.requireNonNull(getSupportActionBar()).setSubtitle((Html.fromHtml("<small><font color=\"#00ff00\">" +"Active now"+ "</font></small>")));
+
+                        tv_status.setText(Html.fromHtml("<small><font color=\"#00ff00\">" +"Active now"+ "</font></small>"));
                         activeNow[0]=true;
                     }
                     else {
                         activeNow[0]=false;
-                        Objects.requireNonNull(getSupportActionBar()).setSubtitle((Html.fromHtml("<small><font>" +calculateMin(time)+ "</font></small>")));
+                        tv_status.setText(Html.fromHtml("<small><font>" +calculateMin(time)+ "</font></small>"));
+                       // Objects.requireNonNull(getSupportActionBar()).setSubtitle(());
                     }
 
                 }else{
@@ -629,8 +659,7 @@ public class ChattingActivity extends AppCompatActivity {
         int storageRequestCode = 123;
         if(requestCode== storageRequestCode){
             if(grantResults.length==2 && grantResults[0]== PackageManager.PERMISSION_GRANTED && grantResults[1]==PackageManager.PERMISSION_GRANTED){
-
-
+                
             }else{
                 if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE) ||   ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) ){
                     Toast.makeText(this,"Storage permission is required.",Toast.LENGTH_SHORT).show();
@@ -686,8 +715,9 @@ public class ChattingActivity extends AppCompatActivity {
         });
     }
 
+
     //this method is invoked when sending a message with photo
-    private void saveMessageOnFirebase(String msg,long time,String imageUrl) {
+    private void saveMessageOnFirebase(@NotNull String msg, long time, String imageUrl) {
         String msgNull;
         if(msg.equals(""))msgNull=myName+" sent a photo";
         else msgNull=msg;

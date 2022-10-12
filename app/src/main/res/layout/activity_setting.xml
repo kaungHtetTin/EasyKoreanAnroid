@@ -1,31 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".SettingActivity">
 
-    <Button
-        android:id="@+id/bt_editProfile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:gravity="start|center_vertical"
-        android:background="@drawable/bg_comment_enter_text"
-        android:paddingStart="10dp"
-        android:drawableStart="@drawable/ic_baseline_account_circle_24"
-        android:text=" Edit Profile"/>
+    <include layout="@layout/my_action_bar"/>
 
-    <Button
-        android:id="@+id/bt_resetPw"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
-        android:gravity="start|center_vertical"
-        android:background="@drawable/bg_comment_enter_text"
-        android:paddingStart="10dp"
-        android:drawableStart="@drawable/ic_baseline_lock_24"
-        android:text=" Password Reset"/>
+        android:layout_marginStart="20dp"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/setting_edit_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/MenuText"
+            android:text="Edit Profile"
+            app:drawableStartCompat="@drawable/ic_setting_edit_profile" />
+
+
+        <TextView
+            android:id="@+id/setting_reset_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/MenuText"
+            android:text=" Password Reset"
+            app:drawableStartCompat="@drawable/ic_setting_reset_password" />
+
+        <TextView
+            android:id="@+id/setting_like_facebook"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/MenuText"
+            android:text=" Like Us On Facebook"
+            app:drawableStartCompat="@drawable/ic_setting_like_facebook" />
+
+        <TextView
+            android:id="@+id/setting_check_update"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/MenuText"
+            android:text=" Check Update"
+            app:drawableStartCompat="@drawable/ic_setting_check_update" />
+
+        <TextView
+            android:id="@+id/setting_share_app"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/MenuText"
+            android:text=" Share App"
+            app:drawableStartCompat="@drawable/ic_setting_share_app" />
+
+        <TextView
+            android:id="@+id/setting_rate_us"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/MenuText"
+            android:text=" Rate Us"
+            app:drawableStartCompat="@drawable/ic_setting_rate_us" />
+
+        <TextView
+            android:id="@+id/setting_sign_out"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/MenuText"
+            android:text=" Sign Out"
+            app:drawableStartCompat="@drawable/ic_menu_sign_out" />
+    </LinearLayout>
 
 </LinearLayout>

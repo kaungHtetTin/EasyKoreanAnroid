@@ -1,25 +1,29 @@
 package com.calamus.easykorean;
 
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-
-import com.calamus.easykorean.fragments.ChatOne;
-import com.calamus.easykorean.fragments.ChatThree;
-import com.calamus.easykorean.fragments.ChatTwo;
+import android.widget.ImageView;
+import android.widget.TextView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.calamus.easykorean.app.AppHandler;
+import com.calamus.easykorean.fragments.ChatOne;
+import com.calamus.easykorean.fragments.ChatThree;
+import com.calamus.easykorean.fragments.ChatTwo;
+
 import java.util.Objects;
 
 public class ClassRoomActivity extends AppCompatActivity {
@@ -29,21 +33,28 @@ public class ClassRoomActivity extends AppCompatActivity {
     ChatThree fragmentThree;
     BottomNavigationView bnv;
     private ViewPager viewPager;
-
     public static boolean isConservationFrag=true;
     boolean isVip;
     SharedPreferences sharedPreferences;
+    String profileUrl,userId,username;
+    TextView tv_title;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class_room);
         sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
+        profileUrl=sharedPreferences.getString("imageUrl",null);
         isVip=sharedPreferences.getBoolean("isVIP",false);
+        username=sharedPreferences.getString("Username",null);
+        userId=sharedPreferences.getString("phone",null);
         MobileAds.initialize(this, initializationStatus -> {});
 
 
+        setUpActionBar();
         setUpView();
+        Objects.requireNonNull(getSupportActionBar()).hide();
         AdView adView = findViewById(R.id.adview);
         if(!isVip){
             adView.setVisibility(View.VISIBLE);
@@ -61,6 +72,8 @@ public class ClassRoomActivity extends AppCompatActivity {
     }
 
     private void setUpView() {
+        tv_title=findViewById(R.id.tv_info_header); //action bar title
+
         fragmentOne =new ChatOne();
         fragmentTwo=new ChatTwo();
         fragmentThree=new ChatThree();
@@ -82,17 +95,17 @@ public class ClassRoomActivity extends AppCompatActivity {
                 switch (position){
                     case 0:
                         bnv.getMenu().findItem(R.id.nav_one).setChecked(true);
-                        Objects.requireNonNull(getSupportActionBar()).setTitle("ChatRoom");
+                        tv_title.setText("Message");
                         isConservationFrag=true;
                         break;
                     case 1:
                         bnv.getMenu().findItem(R.id.nav_two).setChecked(true);
-                        Objects.requireNonNull(getSupportActionBar()).setTitle("Requests");
+                        tv_title.setText("Friend Request");
                         isConservationFrag=false;
                         break;
                     case 2:
                         bnv.getMenu().findItem(R.id.nav_three).setChecked(true);
-                        Objects.requireNonNull(getSupportActionBar()).setTitle("Classmates");
+                        tv_title.setText("Friend List");
                         isConservationFrag=false;
                         break;
 
@@ -123,6 +136,31 @@ public class ClassRoomActivity extends AppCompatActivity {
         });
     }
 
+
+    private void setUpActionBar(){
+        ImageView iv_profile=findViewById(R.id.iv_profile);
+        ImageView iv_back=findViewById(R.id.iv_back);
+
+        if(profileUrl!=null) AppHandler.setPhotoFromRealUrl(iv_profile,profileUrl);
+
+        iv_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        iv_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(ClassRoomActivity.this, MyDiscussionActivity.class);
+                intent.putExtra("userId",userId);
+                intent.putExtra("userName",username);
+                startActivity(intent);
+            }
+        });
+    }
+
     public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
         public ViewPagerAdapter(FragmentManager fm){
@@ -149,6 +187,5 @@ public class ClassRoomActivity extends AppCompatActivity {
             return 3;
         }
     }
-
 
 }

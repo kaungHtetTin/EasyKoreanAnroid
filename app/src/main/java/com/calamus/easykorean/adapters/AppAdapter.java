@@ -15,9 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.models.AppModel;
-
 import java.util.ArrayList;
-
 import me.myatminsoe.mdetect.MDetect;
 
 public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {

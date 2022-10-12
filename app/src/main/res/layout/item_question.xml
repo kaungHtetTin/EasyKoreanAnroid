@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="14dp"
+    android:layout_marginEnd="14dp"
+    android:orientation="horizontal">
+    <RelativeLayout
+        android:id="@+id/layout_teacher"
+        android:layout_width="84dp"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/iv_teacher"
+            android:layout_width="84dp"
+            android:layout_height="84dp"/>
+
+        <TextView
+            android:id="@+id/tv_teacher"
+            android:text="Teacher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="7dp"
+            android:textColor="#4B93FF"
+            android:fontFamily="@font/poppins_medium"
+            android:layout_below="@id/iv_teacher"
+            android:layout_centerHorizontal="true"
+            android:textSize="13sp"/>
+
+        <ImageView
+            android:id="@+id/noti_red_mark_teacher"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_alignEnd="@id/tv_teacher"
+            android:layout_alignTop="@id/tv_teacher"
+            android:src="@drawable/bg_noti_alart"
+            android:visibility="gone"
+            android:contentDescription="TODO" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_developer"
+        android:layout_width="84dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/layout_teacher">
+        <ImageView
+            android:id="@+id/iv_developer"
+            android:layout_width="84dp"
+            android:layout_height="84dp"/>
+
+        <TextView
+            android:id="@+id/tv_developer"
+            android:text="Developer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="7dp"
+            android:textColor="#4B93FF"
+            android:layout_below="@id/iv_developer"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="13sp"/>
+
+        <ImageView
+            android:id="@+id/noti_red_mark_developer"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:visibility="gone"
+            android:layout_alignEnd="@id/tv_developer"
+            android:layout_alignTop="@id/tv_developer"
+            android:src="@drawable/bg_noti_alart"
+            android:contentDescription="TODO" />
+
+    </RelativeLayout>
+</RelativeLayout>

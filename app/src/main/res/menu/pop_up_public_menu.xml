@@ -3,10 +3,14 @@
 
     <item
         android:id="@+id/report"
-         android:title="@string/report_this_post_to_admin"/>
+        android:title="Report this post to Admin"/>
 
     <item
         android:id="@+id/save"
-        android:title="@string/save_the_post"/>
+        android:title="Save the post"/>
+
+    <item
+        android:id="@+id/react"
+        android:title="Who react the post"/>
 
 </menu>

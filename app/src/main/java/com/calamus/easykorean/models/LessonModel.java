@@ -3,36 +3,51 @@ package com.calamus.easykorean.models;
 
 public class LessonModel  {
     String id;
-    String cate;
     String link;
     String title;
+    String title_mini;
     boolean isVideo;
     boolean isVip;
     long time;
     boolean learned;
+    String image_url;
+    String thumbnail;
+    int duration;
+    String category;
 
-    public LessonModel(String id,String cate, String link, String title, boolean isVideo, boolean isVip,long time,  boolean learned) {
-        this.cate = cate;
+    public LessonModel(String id, String link, String title,String title_mini, boolean isVideo,
+                       boolean isVip,long time,  boolean learned,String image_url,String thumbnail,
+                       int duration,String category) {
         this.id=id;
         this.link = link;
         this.title = title;
+        this.title_mini=title_mini;
         this.isVideo = isVideo;
         this.isVip=isVip;
         this.time=time;
         this.learned=learned;
+        this.image_url=image_url;
+        this.thumbnail=thumbnail;
+        this.duration=duration;
+        this.category=category;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public String getTitle_mini() {
+        return title_mini;
     }
 
     public String getId() {
         return id;
     }
 
-    public String getCate() {
-        return cate;
-    }
-
-    public void setCate(String cate) {
-        this.cate = cate;
-    }
 
     public String getLink() {
         return link;
@@ -76,5 +91,13 @@ public class LessonModel  {
 
     public void setLearned(boolean learned) {
         this.learned = learned;
+    }
+
+    public String getImage_url() {
+        return image_url;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
     }
 }

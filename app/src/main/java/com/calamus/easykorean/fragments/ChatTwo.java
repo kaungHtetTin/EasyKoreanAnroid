@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -15,14 +16,18 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.adapters.FriendRequestAdapter;
-import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
+import com.calamus.easykorean.interfaces.OnFriendRequestSeeMoreClick;
 import com.calamus.easykorean.models.FriendModel;
+import com.calamus.easykorean.models.NewStudentModel;
+import com.calamus.easykorean.app.MyHttp;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 
@@ -31,11 +36,14 @@ public class ChatTwo extends Fragment {
     View v;
     private SwipeRefreshLayout swipe;
     FriendRequestAdapter adapter;
-    ArrayList<FriendModel> arrLists=new ArrayList<>();
-    ArrayList<FriendModel> peopleLists=new ArrayList<>();
+    ArrayList<Object> arrLists=new ArrayList<>();
+    ArrayList<FriendModel> friends=new ArrayList<>();
+
     Executor postExecutor;
     String currentUserId;
     SharedPreferences sharedPreferences;
+
+    SeeMore seeMore;
 
     @Nullable
     @Override
@@ -56,8 +64,8 @@ public class ChatTwo extends Fragment {
         LinearLayoutManager lm = new LinearLayoutManager(getActivity());
         recycler.setLayoutManager(lm);
         recycler.setItemAnimator(new DefaultItemAnimator());
-        arrLists.add(new FriendModel("","","",""));
-        adapter = new FriendRequestAdapter(getActivity(), arrLists,peopleLists);
+
+        adapter = new FriendRequestAdapter(getActivity(), arrLists);
         recycler.setAdapter(adapter);
 
 
@@ -65,18 +73,28 @@ public class ChatTwo extends Fragment {
             @Override
             public void onRefresh()
             {
+
                 arrLists.clear();
-                arrLists.add(new FriendModel("","","",""));
-                peopleLists.clear();
+                friends.clear();
                 fetchData();
             }
         });
 
-
+        seeMore=new SeeMore(new OnFriendRequestSeeMoreClick() {
+            @Override
+            public void onClick() {
+                arrLists.clear();
+                arrLists.add(0,new SearchBox());
+                arrLists.add(1,"Friend Requests");
+                arrLists.addAll(friends);
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void fetchData(){
         swipe.setRefreshing(true);
+        arrLists.add(0,new SearchBox()); // this is for search bar
         new Thread(() -> {
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
                 @Override
@@ -86,42 +104,51 @@ public class ChatTwo extends Fragment {
                         public void run() {
                             swipe.setRefreshing(false);
                             try {
-
                                 JSONObject joMain=new JSONObject(response);
 
-                                try {
-                                    JSONArray ja= joMain.getJSONArray("people");
-                                    for(int i=0;i<ja.length();i++) {
-                                        JSONObject jo = ja.getJSONObject(i);
-                                        String userName = jo.getString("userName");
-                                        String imageUrl=jo.getString("userImage");
-                                        String phone=jo.getString("phone");
-                                        String token=jo.getString("token");
-                                        peopleLists.add(new FriendModel(phone,userName,imageUrl,token));
-                                    }
-                                    adapter.notifyDataSetChanged();
-                                }catch (Exception e){
-                                    Log.e("ErrPeople: ",e.toString());
-                                }
-
                                 if(!joMain.getString("request").equals("null")){
+                                    arrLists.add(1,"Friend Requests");
+
                                     try {
                                         JSONArray ja= joMain.getJSONArray("request");
+                                        adapter.setFriendRequestCount(ja.length());
                                         for(int i=0;i<ja.length();i++) {
                                             JSONObject jo = ja.getJSONObject(i);
                                             String userName = jo.getString("userName");
                                             String imageUrl=jo.getString("userImage");
                                             String phone=jo.getString("phone");
                                             String token=jo.getString("token");
-                                            arrLists.add(new FriendModel(phone,userName,imageUrl,token));
-                                        }
+                                            String friendJSON=jo.getString("friends");
+                                            friends.add(new FriendModel(phone,userName,imageUrl,token,friendJSON));
+                                            if(i<3){
+                                                arrLists.add(new FriendModel(phone,userName,imageUrl,token,friendJSON));
+                                            }
+                                            if(i==3)arrLists.add(seeMore);
 
+                                        }
                                     }catch (Exception e){
                                         Log.e("ErrReq: ",e.toString());
                                     }
                                     adapter.notifyDataSetChanged();
                                 }
 
+                                try {
+                                    JSONArray ja= joMain.getJSONArray("people");
+                                    arrLists.add("New Students You May Know");
+                                    for(int i=0;i<ja.length();i++) {
+                                        JSONObject jo = ja.getJSONObject(i);
+                                        String userName = jo.getString("userName");
+                                        String imageUrl=jo.getString("userImage");
+                                        String phone=jo.getString("phone");
+                                        String token=jo.getString("token");
+                                        String friends=jo.getString("friends");
+                                        arrLists.add(new NewStudentModel(phone,userName,imageUrl,token,friends));
+
+                                    }
+                                    adapter.notifyDataSetChanged();
+                                }catch (Exception e){
+                                    Log.e("ErrPeople: ",e.toString());
+                                }
                             }catch (Exception e){
                                 Log.e("ErrJson: ",e.toString());
                                 swipe.setRefreshing(false);
@@ -140,8 +167,22 @@ public class ChatTwo extends Fragment {
                         }
                     });
                 }
-            }).url(Routing.GET_FRIEND_REQUEST+"/"+currentUserId);
+            }).url(Routing.GET_FRIEND_REQUEST+currentUserId);
             myHttp.runTask();
         }).start();
     }
+
+
+    public class SearchBox{}
+    public class SeeMore{
+        OnFriendRequestSeeMoreClick click;
+        public SeeMore(OnFriendRequestSeeMoreClick click){
+            this.click=click;
+        }
+
+        public OnFriendRequestSeeMoreClick getClick() {
+            return click;
+        }
+    }
+
 }

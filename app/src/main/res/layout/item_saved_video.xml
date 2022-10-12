@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@android:color/white"
+    android:layout_height="90dp"
+    android:background="@color/appBar"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <ImageView
+        android:id="@+id/iv_selector"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="10dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_file_unselected"/>
 
 
     <androidx.cardview.widget.CardView
@@ -11,50 +20,50 @@
         android:layout_width="100dp"
         android:layout_height="75dp"
         app:cardCornerRadius="7dp"
-        android:layout_margin="7dp"
-        app:cardElevation="4dp"
-        android:background="@android:color/white">
+        android:layout_marginStart="7dp"
+        android:layout_centerVertical="true"
+        app:cardElevation="4dp">
         <ImageView
             android:id="@+id/iv_videoThumb"
             android:layout_width="100dp"
             android:layout_height="75dp"
             android:cropToPadding="true"
-            android:layout_gravity="center"
-            android:src="@mipmap/kommmainicon"/>
+            android:layout_gravity="center"/>
         <TextView
             android:id="@+id/tv_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="01:03:55"
+            android:textSize="11sp"
+            android:padding="4dp"
             android:textColor="@android:color/white"
             android:background="@android:color/black"
+            android:fontFamily="@font/poppins_light"
+
             android:layout_gravity="bottom|end"/>
     </androidx.cardview.widget.CardView>
-
-
 
     <TextView
         android:id="@+id/videoName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="7dp"
-        android:textSize="16sp"
         android:text="text"
         android:layout_toRightOf="@id/card_videoThumb"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@id/card_videoThumb"
-        android:layout_alignBottom="@id/card_videoThumb"
-        android:textColor="@android:color/black"
-        android:gravity="center_vertical"/>
+        android:fontFamily="@font/poppins_regular"
+        android:textColor="@color/colorBlack1"
+        android:textSize="16sp"
+        android:layout_centerVertical="true"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#ddd"
-        android:layout_below="@id/card_videoThumb"
+        android:background="@color/colorHr"
         android:layout_toRightOf="@id/card_videoThumb"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="3dp"/>
+        android:layout_marginTop="3dp"
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.facebook.shimmer.ShimmerFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:padding="7dp"
+        android:background="@color/white"
+        android:id="@+id/card_View">
+
+
+        <ImageButton
+            android:id="@+id/bt_iv_more"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/bg_shimmer_content"
+            android:layout_alignTop="@id/iv_profile"
+            android:layout_alignParentEnd="true"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_profile"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            android:src="@drawable/ic_baseline_account_circle_24" />
+
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_toStartOf="@id/bt_iv_more"
+            android:layout_toEndOf="@id/iv_profile"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/bg_shimmer_content"
+            android:textSize="13sp"
+            android:fontFamily="@font/poppins_semibold"
+            android:textColor="@color/textPrimary" />
+
+
+
+
+        <TextView
+            android:id="@+id/tv_body"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_below="@id/iv_profile"
+            android:autoLink="all"
+            android:background="@drawable/bg_shimmer_content"
+            android:fontFamily="@font/poppins_regular"
+            android:linksClickable="true"
+            android:padding="7dp"
+            android:textColor="@color/textPrimary"
+            android:textIsSelectable="true"
+            android:textSize="13sp" />
+
+    </RelativeLayout>
+
+
+</com.facebook.shimmer.ShimmerFrameLayout>

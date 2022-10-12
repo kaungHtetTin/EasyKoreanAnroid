@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:background="@color/appBar">
+
+    <ImageView
+        android:id="@+id/iv_selector"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="10dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_file_unselected"/>
+
+    <ImageView
+        android:id="@+id/iv_folder"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart= "5dp"
+        android:background="@drawable/bg_folder"
+        android:padding="10dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_baseline_folder_24"/>
+
+    <TextView
+        android:id="@+id/tv_folderName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/iv_folder"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:text="Video Folder"
+        android:textColor="@color/colorBlack1"
+        android:textSize="16sp"
+        android:fontFamily="@font/poppins_regular"
+        android:padding="7dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorHr"
+        android:layout_toEndOf="@id/iv_folder"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

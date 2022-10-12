@@ -2,13 +2,10 @@ package com.calamus.easykorean.app;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.calamus.easykorean.R;
 

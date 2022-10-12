@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".CourseRatingActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_course_item"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="#999">
+
+        <ImageView
+            android:id="@+id/iv_course_cover"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_course_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_semibold"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toEndOf="@+id/iv_course_cover"
+            app:layout_constraintTop_toTopOf="@+id/iv_course_cover" />
+
+        <TextView
+            android:id="@+id/tv_course_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_light"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toEndOf="@+id/iv_course_cover"
+            app:layout_constraintTop_toBottomOf="@+id/tv_course_title" />
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="20dp" />
+
+        <TextView
+            android:id="@+id/tv_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_light"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:visibility="invisible"
+            app:drawableStartCompat="@drawable/ic_baseline_date_range_24"
+            app:layout_constraintStart_toEndOf="@+id/iv_course_cover"
+            app:layout_constraintTop_toBottomOf="@+id/tv_course_description" />
+
+        <ImageView
+            android:id="@+id/iv_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_rating_stars" />
+
+        <TextView
+            android:id="@+id/tv_course_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:fontFamily="@font/poppins_medium"
+            android:text="..."
+            android:textColor="#FED718"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_rating"
+            app:layout_constraintEnd_toStartOf="@+id/iv_rating"
+            app:layout_constraintTop_toTopOf="@+id/iv_rating" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <ProgressBar
+        android:id="@+id/pb"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/layout_rating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/layout_add_review"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_rate_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="Rate This Course"
+                    android:textColor="@color/colorBlack1"
+                    android:textSize="17sp" />
+                <TextView
+                    android:id="@+id/tv_rate_header2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_rate_header"
+                    android:text="Tell something about this course"
+                    android:fontFamily="@font/poppins_regular"/>
+
+                <RatingBar
+                    android:id="@+id/post_rating_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@id/tv_rate_header2"/>
+
+                <EditText
+                    android:id="@+id/et_post"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:hint="Please Enter your review"
+                    android:gravity="start"
+                    android:padding="10dp"
+                    android:layout_below="@id/post_rating_bar"
+                    android:fontFamily="@font/poppins_regular"
+                    android:textSize="14sp"
+                    android:background="@drawable/bg_rating_edittext" />
+
+                <Button
+                    android:id="@+id/bt_post"
+                    android:layout_width="120dp"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/et_post"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_post_review_button"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:paddingTop="3dp"
+                    android:text="POST"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_my_review"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:id="@+id/your_review"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="Your Review"
+                    android:textColor="@color/colorBlack1"
+                    android:textSize="17sp" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_profile"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_below="@id/your_review" />
+
+                <TextView
+                    android:id="@+id/tv_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/iv_profile"
+                    android:layout_marginStart="10dp"
+                    android:layout_toStartOf="@id/rating_bar"
+                    android:layout_toEndOf="@id/iv_profile"
+                    android:fontFamily="@font/poppins_regular"
+                    android:textColor="#8E8E8E" />
+
+                <TextView
+                    android:id="@+id/tv_review"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_username"
+                    android:layout_alignStart="@id/tv_username"
+                    android:fontFamily="@font/poppins_medium"
+                    android:textColor="@color/textPrimary" />
+
+
+                <RatingBar
+                    android:id="@+id/rating_bar"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/tv_username"
+                    android:layout_alignParentEnd="true"
+                    android:isIndicator="true"
+                    android:numStars="5"
+                    android:stepSize="0.1" />
+
+                <TextView
+                    android:id="@+id/tv_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/tv_review"
+                    android:layout_alignStart="@id/tv_review"
+                    android:fontFamily="@font/poppins_regular"
+                    android:textColor="#8E8E8E"
+                    android:textSize="11sp" />
+
+                <ImageView
+                    android:id="@+id/iv_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_more_black"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignTop="@id/your_review"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/poppins_semibold"
+                android:text="Rating And Reviews"
+                android:textColor="@color/colorBlack1"
+                android:textSize="17sp" />
+
+            <include layout="@layout/item_rating_counter"/>
+
+            <TextView
+                android:id="@+id/tv_see_reviews"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="See All Reviews"
+                android:padding="5dp"
+                android:fontFamily="@font/poppins_semibold"
+                android:gravity="end"
+                android:textColor="@color/colorTheme"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/poppins_semibold"
+                android:text="About "
+                android:textColor="@color/colorBlack1"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/tv_about"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/colorBlack1"
+                android:fontFamily="@font/poppins_regular"/>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

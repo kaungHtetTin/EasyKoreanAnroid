@@ -3,44 +3,55 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="1dp"
     app:cardElevation="0dp"
     android:foreground="?android:attr/selectableItemBackground"
+    android:layout_marginBottom="10dp"
     android:id="@+id/conservation_card">
     <com.facebook.shimmer.ShimmerFrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="80dp"
         android:id="@+id/shimmer_view_container">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:paddingStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:layout_height="80dp">
+
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_margin="5dp"
                 android:id="@+id/iv_profile"
-                android:layout_width="70dp"
-                android:background="@drawable/bg_circle"
-                android:layout_gravity="center"
-                android:layout_height="70dp"/>
+                android:layout_width="61dp"
+                android:layout_height="61dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/bg_circle" />
 
             <TextView
-                android:layout_marginTop="7dp"
                 android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/iv_profile"
                 android:layout_marginStart="5dp"
                 android:layout_toEndOf="@id/iv_profile"
-                android:textColor="@android:color/black"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:padding="2dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:fontFamily="@font/poppins_semibold"
+                android:padding="5dp"
+                android:text="Kaung HTet tin"
+                android:layout_toStartOf="@id/tv_time"
+                android:textColor="@color/colorBlack1"
+                android:textSize="13sp" />
 
             <TextView
-                 android:id="@+id/tv_msg"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:layout_below="@id/tv_name"
-                 android:layout_toEndOf="@id/iv_profile"
-                 android:padding="5dp"/>
+                android:id="@+id/tv_msg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_name"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/iv_profile"
+                android:ellipsize="end"
+                android:fontFamily="@font/poppins_regular"
+                android:maxLines="1"
+                android:text="How are your?"
+                android:textColor="@color/colorConversationMsg"
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/tv_time"
@@ -48,15 +59,11 @@
                 android:layout_height="wrap_content"
                 android:padding="2dp"
                 android:layout_marginEnd="5dp"
-                android:layout_below="@id/tv_msg"
-                android:layout_alignParentEnd="true"/>
-
-            <View
-                android:layout_below="@id/tv_time"
-                android:layout_marginTop="4dp"
-                android:background="#aaa"
-                android:layout_height="1dp"
-                android:layout_width="fill_parent"/>
+                android:layout_alignTop="@id/iv_profile"
+                android:layout_alignParentEnd="true"
+                android:fontFamily="@font/poppins_regular"
+                android:textSize="11sp"
+                android:textColor="@color/colorConversationMsg"/>
 
         </RelativeLayout>
 

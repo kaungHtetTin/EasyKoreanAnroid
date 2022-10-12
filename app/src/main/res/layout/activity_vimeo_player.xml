@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/main"
+    android:background="@color/appBar"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/vimeo_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <WebView
+            android:id="@+id/wv_vimeo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/pb_video_frame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/wv_vimeo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/wv_vimeo"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@+id/wv_vimeo" />
+
+        <TextView
+            android:id="@+id/tv_view_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="12dp"
+            android:fontFamily="@font/poppins_medium"
+            android:textColor="@color/colorBlack1"
+            android:textSize="11sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/wv_vimeo" />
+
+        <TextView
+            android:id="@+id/tv_comment"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:drawableStart="@drawable/ic_comment"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:padding="10dp"
+            android:textColor="#4B93FF"
+            android:textSize="11sp"
+            app:layout_constraintEnd_toStartOf="@+id/tv_share"
+            app:layout_constraintTop_toBottomOf="@+id/tv_view_count" />
+
+        <TextView
+            android:id="@+id/tv_share"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginEnd="12dp"
+            android:drawableStart="@drawable/ic_share_post"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:textColor="#33B159"
+            android:textSize="11sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_view_count" />
+
+        <TextView
+            android:id="@+id/tv_react"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:drawableStart="@drawable/ic_normal_react"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:padding="10dp"
+            android:textColor="#FF5157"
+            android:textSize="11sp"
+            app:layout_constraintEnd_toStartOf="@+id/tv_comment"
+            app:layout_constraintTop_toTopOf="@+id/tv_share" />
+
+        <TextView
+            android:id="@+id/tv_mini_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:textColor="@color/colorBlack1"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_react"
+            app:layout_constraintEnd_toStartOf="@+id/tv_react"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_info_header"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:fontFamily="@font/poppins_medium"
+            android:textColor="#7772D3"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_react" />
+
+
+        <TextView
+            android:id="@+id/tv_related_lesson"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_medium"
+            android:text="Related Lessons"
+            app:layout_constraintStart_toStartOf="@+id/tv_info_header"
+            app:layout_constraintTop_toBottomOf="@+id/tv_description" />
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"
+            app:adSize="SMART_BANNER"
+            app:adUnitId="ca-app-pub-2472405866346270/2510952382"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/adview"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_related_lesson" />
+
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:textColor="#646464"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_info_header" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/pb_vimeo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>
+

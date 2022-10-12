@@ -25,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.Executor;
 
 public class SearchingActivity extends AppCompatActivity {
@@ -42,9 +43,10 @@ public class SearchingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_searching);
-        getSupportActionBar().hide();
+
         postExecutor= ContextCompat.getMainExecutor(this);
         setUpView();
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
     }
 

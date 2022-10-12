@@ -3,24 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:id="@+id/activity_main"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/activity_main">
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bot_nav_view"/>
+        android:layout_above="@id/bot_nav_view" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bot_nav_view"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:animateLayoutChanges="true"
-        android:background="#ffffff"
-        app:menu="@menu/bottom_nav_menu"
-        app:itemIconSize="27dp"
-        app:itemIconTint="@drawable/bottom_item_color"/>
+        android:background="@drawable/bg_bottom_nav_bar"
+        android:elevation="20dp"
+        app:itemIconSize="38dp"
+        app:itemIconTint="@drawable/bottom_item_color"
+        app:itemTextAppearanceActive="@style/BottomNavigationViewTextStyle"
+        app:menu="@menu/bottom_nav_menu" />
 
 </RelativeLayout>

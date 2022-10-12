@@ -30,7 +30,7 @@
     <string name="highest">HIGHEST</string>
     <string name="game_over">Game Over</string>
     <string name="korean_course_app_for_myanmar">Korean Course App For Myanmar</string>
-    <string name="medifire_get">If there is no google playservice get update on mediafire</string>
+    <string name="mediafire_get">If there is no google playservice get update on APK pure</string>
     <string name="playstore_get">Get it on PlayStore</string>
     <string name="get_it_on_mediafire">Get it on Mediafire</string>
     <string name="get_other_products_on_playstore">Get Other Products On Playstore</string>
@@ -38,5 +38,7 @@
     <string name="description">Media Controls</string>
     <string name="help_center">Join On Facebook For Help</string>
     <string name="forget_password"><u>Forget Password</u></string>
+    <string name="current_version_is_2_0">Current version is 3.2.3</string>
+    <string name="ad_attribution">Ad</string>
 
 </resources>

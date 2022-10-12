@@ -1,129 +1,241 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:background="@drawable/side_nav_bar">
+    android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="680dp"
+    android:background="#FEE68C">
+
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="380dp"
+        android:src="@drawable/ic_sign_up1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/ic_login_1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageView3" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/poppins_bold"
+        android:text="Welcome!"
+        android:textColor="#363636"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_login"
-        android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp"
-        android:padding="10dp"
+        android:layout_marginBottom="100dp"
         android:gravity="center"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/tv1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Create account and join to"
-                android:textSize="13sp"
-                android:textColor="@android:color/black"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/calamus_education"
-                android:textSize="20sp"
-                android:textColor="@android:color/black"
-                android:textStyle="bold"
-                android:layout_below="@id/tv1"/>
-        </RelativeLayout>
-
-        <ProgressBar
-            android:layout_marginTop="10dp"
-            android:id="@+id/pb_loading"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:background="@drawable/bg_progressbar"
-            android:padding="5dp"/>
-
-        <ImageView
-            android:layout_width="120dp"
-            android:layout_marginTop="5dp"
-            android:layout_gravity="center"
-            android:layout_height="120dp"
-            android:src="@drawable/ic_feather"
-            android:contentDescription="TODO" />
-
-        <EditText
-            android:id="@+id/et_name"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:padding="5dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:drawablePadding="8dp"
-            android:background="@drawable/bg_comment_enter_text"
-            android:layout_marginTop="10dp"
-            android:hint="Enter Your Name"/>
-
-        <EditText
-            android:id="@+id/et_phone"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:padding="5dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:drawablePadding="8dp"
-            android:background="@drawable/bg_comment_enter_text"
-            android:layout_marginTop="10dp"
-            android:inputType="phone"
-            android:hint="Phone number( Type in english)"/>
-
-        <EditText
-            android:id="@+id/et_password"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:padding="5dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:drawablePadding="8dp"
-            android:background="@drawable/bg_comment_enter_text"
-            android:layout_marginTop="10dp"
-            android:inputType="textPassword"
-            android:hint="Enter your password"/>
-
-        <Button
-            android:id="@+id/bt_SignUp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            android:textColor="@android:color/white"
-            android:text="Create Account"
-            android:background="@drawable/bg_button"/>
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
-            android:id="@+id/tv_error"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:id="@+id/tv_1"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/bg_signup_info_normal"
             android:gravity="center"
-            android:textColor="#F00"/>
+            android:text="1"
+            android:textColor="@color/black" />
 
         <TextView
-            android:id="@+id/tv_login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="25dp"
-            android:text=" Already Registered? Log In"
-            android:padding="5dp"
+            android:id="@+id/tv_2"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/bg_signup_info_normal"
             android:gravity="center"
-            android:background="@drawable/bg_corner_blue"
-            android:textColor="@color/colorAccent"
-            app:drawableStartCompat="@drawable/ic_baseline_login_24" />
+            android:text="2"
+            android:textColor="@color/black" />
+
+
+        <TextView
+            android:id="@+id/tv_3"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/bg_signup_info_normal"
+            android:gravity="center"
+            android:text="3"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/tv_4"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/bg_signup_info_normal"
+            android:gravity="center"
+            android:text="4"
+            android:textColor="@color/black" />
 
     </LinearLayout>
 
-</LinearLayout>
+    <EditText
+        android:id="@+id/et_sign_up"
+        android:layout_width="333dp"
+        android:layout_height="50dp"
+        android:background="@drawable/bg_login_edittext"
+        android:ems="10"
+        android:fontFamily="@font/poppins_semibold"
+        android:hint="Enter Phone Number"
+        android:inputType="textPersonName"
+        android:paddingStart="20dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="20dp"
+        android:textColor="#363636"
+        android:textColorHint="#403F3F"
+        android:textSize="15sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_info_header" />
+
+    <Button
+        android:id="@+id/bt_SignUp"
+        android:layout_width="102dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_login_button"
+        android:fontFamily="@font/poppins_semibold"
+        android:paddingTop="4dp"
+        android:text="next"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textAllCaps="false"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/et_sign_up"
+        app:layout_constraintTop_toBottomOf="@+id/et_sign_up" />
+
+    <TextView
+        android:id="@+id/tv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Already a menber?"
+        android:textColor="#403F3F"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bt_SignUp" />
+
+    <TextView
+        android:id="@+id/tv_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/poppins_bold"
+        android:text="Login"
+        android:textColor="#010101"
+        android:textColorLink="#010101"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv1" />
+
+    <TextView
+        android:id="@+id/tv_call_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:drawablePadding="10dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="@string/help_center"
+        android:textStyle="bold"
+        android:textColor="#403F3F"
+        app:drawableStartCompat="@drawable/ic_facebook"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/bg_circle_white"
+        android:padding="7dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_bold"
+        android:gravity="center"
+        android:textColor="#F00"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_call_center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_login" />
+
+    <TextView
+        android:id="@+id/tv_info_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_bold"
+        android:text="Create New Account"
+        android:textColor="#363636"
+        android:textSize="23sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_back" />
+
+    <ImageView
+        android:id="@+id/iv_sign_up_ready"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/et_sign_up"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3"
+        app:srcCompat="@drawable/ic_sign_up_ready" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -1,6 +1,5 @@
 package com.calamus.easykorean;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import android.content.Context;
@@ -10,19 +9,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.app.UserInformation;
+import com.calamus.easykorean.app.MyHttp;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.Objects;
 import java.util.concurrent.Executor;
 
@@ -51,21 +51,35 @@ public class ForgetPasswordActivity extends AppCompatActivity {
         sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         editor=sharedPreferences.edit();
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
 
         animOut= AnimationUtils.loadAnimation(this, android.R.anim.fade_out);
         animIn= AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
 
         postExecutor= ContextCompat.getMainExecutor(this);
-        setTitle("Forget Password");
+
         setUpView();
+        Objects.requireNonNull(getSupportActionBar()).hide();
+        setUpCustomAppBar();
+
+    }
+
+    private void setUpCustomAppBar(){
+
+        TextView tv=findViewById(R.id.tv_appbar);
+        ImageView iv=findViewById(R.id.iv_back);
+        tv.setText("Forget Password");
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
     }
 
     private void setUpView(){
-        tv_title=findViewById(R.id.tv_title);
-        tv_info=findViewById(R.id.tv_info);
+        tv_title=findViewById(R.id.tv_info_title);
+        tv_info=findViewById(R.id.tv_info_header);
         tv_error=findViewById(R.id.tv_error);
         et_phone=findViewById(R.id.et_inputPhone);
         et_code=findViewById(R.id.et_inputCode);
@@ -87,7 +101,6 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                 bt_facebook.setVisibility(View.GONE);
                 tv_error.setAnimation(animOut);
                 bt_facebook.setAnimation(animOut);
-
                 if(!TextUtils.isEmpty(et_phone.getText().toString())){
                     bt_search.setEnabled(false);
                     phone=et_phone.getText().toString();
@@ -175,7 +188,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
 
     private void logIn(final String phone, String password) {
 
-       bt_login.setEnabled(true);
+        bt_login.setEnabled(true);
         loading.setVisibility(View.VISIBLE);
         if (!TextUtils.isEmpty(phone) && !TextUtils.isEmpty(password)) {
             new Thread(() -> {
@@ -225,14 +238,14 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                 tv_error.setText(response);
             }
 
-        }catch (Exception ignored){}
+        }catch (Exception e){}
     }
 
 
     private void resetPassword(String newPassword){
         loading.setVisibility(View.VISIBLE);
         new Thread(() -> {
-            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
+            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.POST, new MyHttp.Response() {
                 @Override
                 public void onResponse(String response) {
                     postExecutor.execute(() -> {
@@ -266,7 +279,10 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                         tv_error.setText("An unexpected error! Connect to help center");
                     });
                 }
-            }).url(Routing.RESET_PASSWORD_BY_CODE+phone+"/"+code+"/"+newPassword);
+            }).url(Routing.RESET_PASSWORD_BY_CODE)
+                    .field("phone",phone)
+                    .field("code",code)
+                    .field("newPassword",newPassword);
             myHttp.runTask();
         }).start();
     }
@@ -314,9 +330,10 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                         bt_confirm.setEnabled(true);
                         tv_error.setVisibility(View.VISIBLE);
                         tv_error.setText("An unexpected error! Connect to help center");
+                        Log.e("pw resetErr ",msg);
                     });
                 }
-            }).url(Routing.VERIFY_CODE+phone+"/"+code);
+            }).url(Routing.VERIFY_CODE+"?phone="+phone+"&code="+code);
             myHttp.runTask();
         }).start();
     }
@@ -324,6 +341,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
 
     private void searchMyAccount(String phone){
         loading.setVisibility(View.VISIBLE);
+
         new Thread(() -> {
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
                 @Override
@@ -373,16 +391,8 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                         tv_error.setText("An unexpected error! Connect to help center");
                     });
                 }
-            }).url(Routing.SEARCH_MY_ACCOUNT+phone+"/"+Routing.APP_NAME);
+            }).url(Routing.SEARCH_MY_ACCOUNT+"?phone="+phone+"&appname="+Routing.APP_NAME);
             myHttp.runTask();
         }).start();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

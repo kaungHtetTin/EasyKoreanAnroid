@@ -19,6 +19,7 @@ import android.os.IBinder;
 import android.support.v4.media.session.MediaSessionCompat;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.SongListActivity;
 import com.calamus.easykorean.recivers.NotificationReceiver;
@@ -42,6 +43,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     static ActionPlaying actionPlaying;
     MediaSessionCompat mediaSessionCompat;
 
+    Notification notification;
 
     AudioManager audioManager;
     AudioAttributes playbackAttributes;
@@ -216,19 +218,19 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
     public void showNotification(int playPauseBtn,String p){
         Intent intent=new Intent(this, SongListActivity.class);
-        PendingIntent contentIntent=PendingIntent.getActivity(this,0,intent,0);
+        PendingIntent contentIntent=PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_IMMUTABLE);
 
         Intent prevIntent=new Intent(this,NotificationReceiver.class)
                 .setAction(ACTON_PREVIOUS);
-        PendingIntent prevPending=PendingIntent.getBroadcast(this,0,prevIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent prevPending=PendingIntent.getBroadcast(this,0,prevIntent,PendingIntent.FLAG_IMMUTABLE);
 
         Intent pauseIntent=new Intent(this,NotificationReceiver.class)
                 .setAction(ACTION_PLAY);
-        PendingIntent pausePending=PendingIntent.getBroadcast(this,0,pauseIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pausePending=PendingIntent.getBroadcast(this,0,pauseIntent,PendingIntent.FLAG_IMMUTABLE);
 
         Intent nextIntent=new Intent(this, NotificationReceiver.class)
                 .setAction(ACTION_NEXT);
-        PendingIntent nextPending=PendingIntent.getBroadcast(this,0,nextIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent nextPending=PendingIntent.getBroadcast(this,0,nextIntent,PendingIntent.FLAG_IMMUTABLE);
 
         byte[] picture;
         String tempName=musicFiles.get(position).getTitle();
@@ -241,7 +243,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
             thumb=BitmapFactory.decodeResource(getResources(), R.drawable.bg_player);
         }
 
-        Notification notification=new NotificationCompat.Builder(this,CHANNEL_ID_2)
+        notification=new NotificationCompat.Builder(this,CHANNEL_ID_2)
                 .setSmallIcon(playPauseBtn)
                 .setLargeIcon(thumb)
                 .setContentTitle(musicFiles.get(songPosition).getTitle())
@@ -250,11 +252,20 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                 .addAction(R.drawable.ic_baseline_skip_next_24,"Next",nextPending)
                 .setContentIntent(contentIntent)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setDefaults(0)
                 .build();
 
+        startForeground();
+
+
+    }
+
+    public void startForeground(){
         startForeground(1,notification);
+    }
 
-
+    public void stopForeground(){
+        stopForeground(false);
     }
 
     @Override

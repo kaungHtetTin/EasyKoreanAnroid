@@ -18,8 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.calamus.easykorean.CommentActivity;
 import com.calamus.easykorean.MyDiscussionActivity;
-import com.calamus.easykorean.MyYouTubeVideoActivity;
 import com.calamus.easykorean.R;
+import com.calamus.easykorean.VimeoPlayerActivity;
 import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.models.FriendModel;
 import com.calamus.easykorean.models.SaveModel;
@@ -138,7 +138,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             if(model.getIsVideo().equals("1")){
                 String videoId=model.getPost_image().substring(model.getPost_image().indexOf("vi/")+3);
                 videoId=videoId.substring(0,videoId.length()-6);
-                Intent intent=new Intent(c, MyYouTubeVideoActivity.class);
+                Intent intent=new Intent(c, VimeoPlayerActivity.class);
                 intent.putExtra("videoTitle","");
                 intent.putExtra("videoId",videoId);
                 intent.putExtra("time",Long.parseLong(model.getPost_id()));
@@ -165,7 +165,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         public PeopleHolder(@NonNull View itemView) {
             super(itemView);
             iv=itemView.findViewById(R.id.iv_profile);
-            tv_name=itemView.findViewById(R.id.tv_name);
+            tv_name=itemView.findViewById(R.id.tv_username);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

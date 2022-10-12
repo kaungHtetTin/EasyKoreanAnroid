@@ -8,17 +8,24 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
 
     <queries>
-        <intent>
-            <action android:name="com.google.android.youtube.api.service.START" />
-        </intent>
+
+        <!-- Explicit apps you know in advance about: -->
+        <package android:name="com.qanda.learnroom" />
+        <package android:name="com.calamus.easychinese" />
+        <package android:name="com.calamus.easyjapanese" />
     </queries>
 
     <application
         android:name=".ApplicationClass"
         android:allowBackup="true"
+        android:exported="true"
         android:icon="@mipmap/kommmainicon"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -27,9 +34,50 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".SearchingActivity"/>
-        <activity android:name=".TeacherActivity" />
-        <activity android:name=".ChattingActivity"/>
+        <activity
+            android:name=".MyAdActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AuthCheckerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.calamus.easykorean.AuthCheckerActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".StartCourseActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ReviewsActivity"
+            android:theme="@style/Theme.Toolbar.NoActionBar" />
+        <activity
+            android:name=".CourseRatingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UpdateCoverPhotoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UpdateBioActivity"
+            android:exported="false" />
+        <activity
+            android:name=".WordDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DownloadingListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".VimeoPlayerActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".DayListActivity" />
+        <activity android:name=".SearchingActivity" />
+        <activity
+            android:name=".TeacherActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ChattingActivity"
+            android:theme="@style/AppTheme" />
         <activity android:name=".ClassRoomActivity" />
         <activity android:name=".ResetPasswordActivity" />
         <activity android:name=".SettingActivity" />
@@ -68,7 +116,6 @@
         <activity
             android:name=".MyDiscussionActivity"
             android:label="@string/title_activity_my_discussion" />
-        <activity android:name=".MyYouTubeVideoActivity" />
         <activity android:name=".DetailActivity" />
         <activity android:name=".LessonActivity" />
         <activity
@@ -76,6 +123,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SplashScreenActivity"
+            android:exported="true"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -83,13 +131,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"
-            android:theme="@style/AppTheme"/>
+        <activity android:name=".MainActivity" />
         <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name=".service.MyFirebaseMessagingService">
+        <service
+            android:name=".service.MyFirebaseMessagingService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -103,6 +152,7 @@
         <receiver
             android:name=".recivers.NotificationReceiver"
             android:enabled="true"
+            android:exported="false"
             android:permission="TODO">
             <intent-filter>
                 <action android:name="actionprevious" />
@@ -110,7 +160,7 @@
                 <action android:name="actionplay" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".recivers.AlarmReceiver"/>
+        <receiver android:name=".recivers.AlarmReceiver" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

@@ -1,6 +1,5 @@
 package com.calamus.easykorean;
 
-import java.io.IOException;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -10,29 +9,53 @@ import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 import com.calamus.easykorean.service.MusicService;
+import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.PlaybackException;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.ProgressiveMediaSource;
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 
-public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callback, MediaPlayer.OnPreparedListener, VideoControllerView.MediaPlayerControl,AudioManager.OnAudioFocusChangeListener  {
+public class VideoPlayerActivity extends Activity implements AudioManager.OnAudioFocusChangeListener,View.OnClickListener  {
 
-    SurfaceView videoSurface;
-    MediaPlayer player;
-    VideoControllerView controller;
+
     Uri videoUri;
-
     AudioManager audioManager;
     AudioAttributes playbackAttributes;
     AudioFocusRequest focusRequest;
     final Object focusLock = new Object();
     boolean playbackDelayed = false;
     boolean playbackNowAuthorized = false;
-    public static boolean userPause;
+
+    PlayerView playerView;
+    SimpleExoPlayer player;
+    TextView title;
+    String videoTitle;
+    ConcatenatingMediaSource concatenatingMediaSource;
+    ImageView videoBack,lock,unlock,scaling;
+    RelativeLayout root;
+    private ControlsMode controlsMode;
+    public enum ControlsMode{
+        LOCK,FULLSCREEN
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +67,10 @@ public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callb
                 .setUsage(AudioAttributes.USAGE_GAME)
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .build();
+
         videoUri= (Uri) getIntent().getExtras().get("videoData");
-
-        videoSurface = findViewById(R.id.videoSurface);
-
+        videoTitle=getIntent().getStringExtra("title");
         autoRotateOnScreen(videoUri);
-
-        SurfaceHolder videoHolder = videoSurface.getHolder();
-        videoHolder.addCallback(this);
-
 
         AudioManager mAudioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 
@@ -64,6 +82,24 @@ public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callb
 
         Intent intent=new Intent(this, MusicService.class);
         stopService(intent);
+
+
+        playerView=findViewById(R.id.exoplayer_view);
+        title=findViewById(R.id.video_title);
+        videoBack=findViewById(R.id.video_back);
+        lock=findViewById(R.id.lock);
+        unlock=findViewById(R.id.unlock);
+        root=findViewById(R.id.root_layout);
+        scaling=findViewById(R.id.scaling);
+
+        title.setText(videoTitle);
+        videoBack.setOnClickListener(this);
+        lock.setOnClickListener(this);
+        unlock.setOnClickListener(this);
+        scaling.setOnClickListener(firstListener);
+
+        playVideo();
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             focusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
@@ -79,7 +115,8 @@ public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callb
                     playbackNowAuthorized = false;
                 } else if (res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
                     playbackNowAuthorized = true;
-                    startingPlayer();
+                    player.setPlayWhenReady(true);
+                    player.getPlaybackState();
                 } else if (res == AudioManager.AUDIOFOCUS_REQUEST_DELAYED) {
                     playbackDelayed = true;
                     playbackNowAuthorized = false;
@@ -91,121 +128,10 @@ public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callb
                     AudioManager.STREAM_MUSIC,
                     AudioManager.AUDIOFOCUS_GAIN);
             if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                startingPlayer();
+                player.setPlayWhenReady(true);
+                player.getPlaybackState();
             }
         }
-
-    }
-
-    private void startingPlayer(){
-        player = new MediaPlayer();
-        controller = new VideoControllerView(this);
-        try {
-            player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            player.setDataSource(this,videoUri);
-            player.setOnPreparedListener(this);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        controller.show();
-        return false;
-    }
-
-    // Implement SurfaceHolder.Callback
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        player.setDisplay(holder);
-        player.prepareAsync();
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-
-    }
-    // End SurfaceHolder.Callback
-
-    // Implement MediaPlayer.OnPreparedListener
-    @Override
-    public void onPrepared(MediaPlayer mp) {
-        controller.setMediaPlayer(this);
-        controller.setAnchorView(findViewById(R.id.videoSurfaceContainer));
-        player.start();
-    }
-    // End MediaPlayer.OnPreparedListener
-
-    // Implement VideoMediaController.MediaPlayerControl
-    @Override
-    public boolean canPause() {
-        return true;
-    }
-
-    @Override
-    public boolean canSeekBackward() {
-        return true;
-    }
-
-    @Override
-    public boolean canSeekForward() {
-        return true;
-    }
-
-    @Override
-    public int getBufferPercentage() {
-        return 0;
-    }
-
-    @Override
-    public int getCurrentPosition() {
-        return player.getCurrentPosition();
-    }
-
-    @Override
-    public int getDuration() {
-        return player.getDuration();
-    }
-
-    @Override
-    public boolean isPlaying() {
-        return player.isPlaying();
-    }
-
-    @Override
-    public void pause() {
-        player.pause();
-    }
-
-    @Override
-    public void seekTo(int i) {
-        player.seekTo(i);
-    }
-
-    @Override
-    public void start() {
-        player.start();
-    }
-
-    @Override
-    public boolean isFullScreen() {
-        return false;
-    }
-
-    @Override
-    public void toggleFullScreen() {
 
     }
 
@@ -227,21 +153,136 @@ public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callb
     }
 
     @Override
+    public void onAudioFocusChange(int i) {
+
+    }
+
+
+    private void playVideo() {
+
+        player=new SimpleExoPlayer.Builder(this)
+                .setSeekBackIncrementMs(10000)
+                .setSeekForwardIncrementMs(10000)
+                .build();
+        DefaultDataSourceFactory dataSourceFactory=new DefaultDataSourceFactory(
+                this, Util.getUserAgent(this,"app"));
+
+        concatenatingMediaSource=new ConcatenatingMediaSource();
+        MediaSource mediaSource=new ProgressiveMediaSource.Factory(dataSourceFactory)
+                .createMediaSource(MediaItem.fromUri(Uri.parse(String.valueOf(videoUri))));
+
+        concatenatingMediaSource.addMediaSource(mediaSource);
+
+        playerView.setPlayer(player);
+        playerView.setKeepScreenOn(true);
+        player.prepare(concatenatingMediaSource);
+        player.seekTo(0, C.TIME_UNSET);
+        playError();
+    }
+
+    private void playError() {
+        player.addListener(new Player.Listener() {
+            @Override
+            public void onPlayerError(PlaybackException error) {
+                Player.Listener.super.onPlayerError(error);
+                Toast.makeText(getApplicationContext(),"Playing Playing Error",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        player.setPlayWhenReady(true);
+    }
+
+    @Override
     public void onBackPressed() {
-        player.pause();
-        player.stop();
         super.onBackPressed();
+        if(player.isPlaying()){
+            player.stop();
+        }
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        player.stop();
-        player.pause();
+    protected void onPause() {
+        super.onPause();
+        player.setPlayWhenReady(false);
+        player.getPlaybackState();
     }
 
     @Override
-    public void onAudioFocusChange(int focusChange) {
-
+    protected void onResume() {
+        super.onResume();
+        player.setPlayWhenReady(true);
+        player.getPlaybackState();
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        player.setPlayWhenReady(true);
+        player.getPlaybackState();
+    }
+
+    private void setFullScreen(){
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.video_back:
+                if(player!=null){
+                    player.release();
+                }
+                finish();
+                break;
+            case R.id.lock:
+                controlsMode=ControlsMode.FULLSCREEN;
+                root.setVisibility(View.VISIBLE);
+                lock.setVisibility(View.INVISIBLE);
+                Toast.makeText(this,"Unlocked",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.unlock:
+                controlsMode=ControlsMode.LOCK;
+                root.setVisibility(View.INVISIBLE);
+                lock.setVisibility(View.VISIBLE);
+                Toast.makeText(this,"Locked",Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    View.OnClickListener firstListener=new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+            player.setVideoScalingMode(C.VIDEO_SCALING_MODE_DEFAULT);
+            scaling.setImageResource(R.drawable.fullscreen);
+
+            Toast.makeText(VideoPlayerActivity.this,"Full Screen",Toast.LENGTH_SHORT).show();
+
+            scaling.setOnClickListener(secondListener);
+        }
+    };
+
+    View.OnClickListener secondListener=new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
+            player.setVideoScalingMode(C.VIDEO_SCALING_MODE_DEFAULT);
+            scaling.setImageResource(R.drawable.zoom);
+            Toast.makeText(getApplicationContext(),"Zoom",Toast.LENGTH_SHORT).show();
+            scaling.setOnClickListener(thirdListener);
+        }
+    };
+
+    View.OnClickListener thirdListener=new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+            player.setVideoScalingMode(C.VIDEO_SCALING_MODE_DEFAULT);
+            scaling.setImageResource(R.drawable.fit);
+            Toast.makeText(getApplicationContext(),"Fit",Toast.LENGTH_SHORT).show();
+            scaling.setOnClickListener(firstListener);
+        }
+    };
 }

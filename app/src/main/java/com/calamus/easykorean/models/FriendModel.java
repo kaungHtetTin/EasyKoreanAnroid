@@ -1,29 +1,19 @@
 package com.calamus.easykorean.models;
 
-public class FriendModel {
-    String phone;
-    String name;
-    String imageUrl;
-    String token;
+
+public class FriendModel extends StudentModel {
+
+    public FriendModel(){
+        super();
+    }
 
     public FriendModel(String phone, String name, String imageUrl,String token) {
-        this.phone = phone;
-        this.name = name;
-        this.imageUrl = imageUrl;
-        this.token=token;
+        super(phone, name, imageUrl, token);
     }
 
-    public String getToken(){return  token;}
 
-    public String getPhone() {
-        return phone;
+    public FriendModel(String phone, String name, String imageUrl, String token, String friendsJson) {
+        super(phone, name, imageUrl, token, friendsJson);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
 }

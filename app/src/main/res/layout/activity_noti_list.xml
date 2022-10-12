@@ -2,18 +2,24 @@
 
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/swipe_1"
+    android:id="@+id/swipe"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/app_bar"
+            layout="@layout/my_action_bar"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler"
             android:layout_width="match_parent"
+            android:layout_margin="1dp"
             android:layout_height="wrap_content"
+            android:layout_below="@id/app_bar"
             android:clipToPadding="false"
-            android:layout_alignParentTop="true"
             android:layout_above="@id/adview"/>
 
         <com.google.android.gms.ads.AdView
@@ -21,7 +27,7 @@
             android:id="@+id/adview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            ads:adSize="BANNER"
+            ads:adSize="SMART_BANNER"
             ads:adUnitId="ca-app-pub-2472405866346270/2510952382"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"

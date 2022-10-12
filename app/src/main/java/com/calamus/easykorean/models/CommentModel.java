@@ -1,7 +1,10 @@
 package com.calamus.easykorean.models;
 
+import java.util.ArrayList;
+
 public class CommentModel {
     String postId;
+    String parentId;
     String imageUrl;
     String name;
     String comment;
@@ -12,8 +15,9 @@ public class CommentModel {
     String likes;
     String isLiked;
     String commentImage;
+    ArrayList<CommentModel> childComments =new ArrayList<>();
 
-    public CommentModel(String postId,String imageUrl, String name, String comment, String time,String isVip,String writerId,String writerToken,String likes,String isLiked,String commentImage) {
+    public CommentModel(String postId,String parentId,String imageUrl, String name, String comment, String time,String isVip,String writerId,String writerToken,String likes,String isLiked,String commentImage) {
         this.imageUrl = imageUrl;
         this.name = name;
         this.comment = comment;
@@ -25,12 +29,16 @@ public class CommentModel {
         this.likes=likes;
         this.isLiked=isLiked;
         this.commentImage=commentImage;
+        this.parentId=parentId;
     }
 
     public String getLikes() {
         return likes;
     }
 
+    public String getParentId() {
+        return parentId;
+    }
 
     public void setLikes(String likes) {
         this.likes = likes;
@@ -106,5 +114,17 @@ public class CommentModel {
 
     public String getCommentImage() {
         return commentImage;
+    }
+
+    public void addChildComment(CommentModel model){
+        childComments.add(model);
+    }
+
+    public ArrayList<CommentModel> getChildComments() {
+        return childComments;
+    }
+
+    public void clearChildComments(){
+        childComments.clear();
     }
 }

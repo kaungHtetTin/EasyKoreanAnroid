@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="New Students You May Know"
-        android:textColor="@color/black"
+        android:textColor="@color/textPrimary"
         android:textStyle="bold"
         android:padding="7dp"
         android:textSize="14sp"/>
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Confirm The Request To Be A Classmate"
-        android:textColor="@color/black"
+        android:textColor="@color/textPrimary"
         android:textStyle="bold"
         android:padding="7dp"
         android:textSize="14sp"/>

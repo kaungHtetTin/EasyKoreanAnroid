@@ -1,36 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:layout_width="match_parent"
+android:background="@color/purple_500"
+android:layout_height="match_parent"
+android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/my_actionbar_container"
+        android:layout_height="56dp">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_back_white"
+            android:layout_marginStart="15dp"
+            />
+
+        <TextView
+            android:id="@+id/tv_appbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:layout_toEndOf="@id/iv_back"
+            android:elevation="5dp"
+            android:fontFamily="@font/poppins_medium"
+            android:text="Songs With Lyrics"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/purple_500"
+        android:layout_marginStart="7dp"
+        android:layout_marginEnd="7dp"
+        android:layout_below="@id/my_actionbar_container"
+        app:tabIndicator="@drawable/bg_tab_indicator"
+        app:tabIndicatorColor="#4B93FF"
         app:tabIndicatorFullWidth="true"
         app:tabIndicatorGravity="center"
-        app:tabTextColor="@color/white"
         app:tabIndicatorHeight="40dp"
-        app:tabIndicator="@drawable/bg_tab_indicator"/>
+        app:tabTextAppearance="@style/TabBarLayoutTextStyle"
+        app:tabTextColor="@color/white" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/tab_layout"
-        android:layout_above="@id/adview"/>
+        android:layout_above="@id/adview"
+        android:layout_below="@id/tab_layout" />
 
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/adview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        ads:adSize="BANNER"
+        ads:adSize="SMART_BANNER"
         ads:adUnitId="ca-app-pub-2472405866346270/2510952382"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"

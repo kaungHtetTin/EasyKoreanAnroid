@@ -7,13 +7,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.provider.AlarmClock;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.TimePicker;
-import androidx.annotation.RequiresApi;
+
 import androidx.fragment.app.FragmentActivity;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.recivers.AlarmReceiver;
@@ -51,7 +50,7 @@ public class StudyTimeSetter {
     public void setAlarm(){
         alarmManager=(AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
         Intent intent=new Intent(c, AlarmReceiver.class);
-        pendingIntent= PendingIntent.getBroadcast(c,5241,intent,0);
+        pendingIntent= PendingIntent.getBroadcast(c,5241,intent,PendingIntent.FLAG_IMMUTABLE);
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY,pendingIntent);
         Intent intentClockAlarm=new Intent(AlarmClock.ACTION_SET_ALARM);
@@ -97,7 +96,7 @@ public class StudyTimeSetter {
         });
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
+
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 cancelAlarm();
@@ -136,8 +135,10 @@ public class StudyTimeSetter {
                 public void onError(String msg) {
                     Log.e("StudyTime Err:",msg);
                 }
-            }).url(Routing.SET_STUDY_TIME+"/"+currentUserId)
-                    .field("studyTime",time);
+            }).url(Routing.SET_STUDY_TIME)
+                    .field("studyTime",time)
+                    .field("mCode",Routing.MAJOR_CODE)
+                    .field("userId",currentUserId);
             myHttp.runTask();
         }).start();
     }

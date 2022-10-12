@@ -19,6 +19,10 @@ import me.myatminsoe.mdetect.Rabbit;
 
 public class AppHandler {
 
+
+    public static final String AD_UNIT_ID="ca-app-pub-2472405866346270/3806485083";
+
+
     public static void setPhotoFromRealUrl(ImageView iv, String url){
         Picasso.get()
                 .load(url)
@@ -88,6 +92,9 @@ public class AppHandler {
 
     public static String reactFormat(int a){
         DecimalFormat decimalFormat = new DecimalFormat("0.0");
+        if(a==0){
+            return "";
+        }
         if((double) a >=1000&& (double) a <1000000){
             double j= (double) a /1000;
 
@@ -180,6 +187,26 @@ public class AppHandler {
             return decimalFormat.format((double)i/1000000) +"M downloads";
         }else{
             return  i+" downloads";
+        }
+    }
+
+    public static String formatDuration(int a){
+        if(a==0){
+            return "";
+        }else if(a<60){
+            return a+" s";
+        }else if(a<3600){
+            int min=a/60;
+            return min+" min";
+        }else{
+            int hr=a/3600;
+            int min=(a%3600)/60;
+
+            if(min>0){
+                return hr+" hr "+min+" min";
+            }else {
+                return hr + " hr";
+            }
         }
     }
 

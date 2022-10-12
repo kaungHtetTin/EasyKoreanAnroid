@@ -1,19 +1,17 @@
 package com.calamus.easykorean;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,13 +20,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.calamus.easykorean.app.AppHandler;
+import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.RealPathUtil;
-import com.calamus.easykorean.app.Routing;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,20 +35,22 @@ import java.util.Objects;
 import java.util.concurrent.Executor;
 import me.myatminsoe.mdetect.MDetect;
 
+
 public class EditProfileActivity extends AppCompatActivity {
 
     EditText et_name,et_email,et_education,et_work,et_region;
     ImageView iv;
-    Button bt;
+    ScrollView layout_edit_profile;
+
     ProgressBar pb;
     private final int galleryPick=1;
     private final int storageRequestCode=123;
     Uri imageUri;
-    String ivName="",imagePath="",userPhone,userName,userEmail,G_gender,born,month,day,bd_d,bd_m,bd_y,userWork,userEducation,userRegion;
+    String ivName="",imagePath="",userPhone,userName,userEmail,G_gender,born,month,day,bd_d,bd_m,bd_y,userWork,userEducation,userRegion,imageUrl;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     Executor postExecutor;
-    TextView tv_genderEdit,tv_myGender;
+    TextView tv_genderEdit,tv_myGender,tv_save,tv_phone,tv_bio,tv_edit_bio;
 
     private final ArrayList<Integer> year=new ArrayList<Integer>();
     private final ArrayList<Integer> days=new ArrayList<Integer>();
@@ -57,32 +58,37 @@ public class EditProfileActivity extends AppCompatActivity {
     TextView tv_bird_edit,tv_myBirthday;
     RelativeLayout bd_layout;
     Button bt_cancel,bt_done;
+    String bio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-
+        Objects.requireNonNull(getSupportActionBar()).hide();
         sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         editor=sharedPreferences.edit();
         MDetect.INSTANCE.init(this);
         postExecutor = ContextCompat.getMainExecutor(this);
         userPhone=sharedPreferences.getString("phone",null);
 
-        setTitle("Edit Profile");
+        ImageView iv=findViewById(R.id.iv_back);
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         setUpView();
         getData();
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
     }
-
 
     private void setUpView(){
         et_name=findViewById(R.id.et_name);
         et_email=findViewById(R.id.et_email);
         iv=findViewById(R.id.iv_profile);
-        bt=findViewById(R.id.bt_save);
+        tv_save=findViewById(R.id.tv_save);
         bd_layout=findViewById(R.id.bd_layout);
         bt_cancel=findViewById(R.id.bt_cancel);
         bt_done=findViewById(R.id.bt_done);
@@ -95,13 +101,30 @@ public class EditProfileActivity extends AppCompatActivity {
         et_education=findViewById(R.id.et_education);
         et_work=findViewById(R.id.et_work);
         et_region=findViewById(R.id.et_region);
-
+        tv_phone=findViewById(R.id.tv_phone);
+        tv_edit_bio=findViewById(R.id.tv_edit_bio);
+        tv_bio=findViewById(R.id.tv_bio);
+        layout_edit_profile=findViewById(R.id.layout_edit_profile);
 
         Spinner sp_birth_year = findViewById(R.id.sp_birth_year);
         Spinner sp_birth_month = findViewById(R.id.sp_birth_month);
         Spinner sp_birth_day=findViewById(R.id.sp_birth_day);
         Spinner sp_gender = findViewById(R.id.sp_gender);
 
+
+        tv_phone.setText(userPhone);
+
+        tv_edit_bio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(EditProfileActivity.this, UpdateBioActivity.class);
+                intent.putExtra("bio",bio);
+                intent.putExtra("userId",userPhone);
+                intent.putExtra("profileUrl",imageUrl);
+                intent.putExtra("username",userName);
+                startActivity(intent);
+            }
+        });
 
         setYear();
         ArrayAdapter<Integer> yearAdapter=new ArrayAdapter<Integer>(this,android.R.layout.simple_dropdown_item_1line,year);
@@ -166,56 +189,76 @@ public class EditProfileActivity extends AppCompatActivity {
         });
 
 
-        tv_bird_edit.setOnClickListener(v -> {
-            tv_myBirthday.setVisibility(View.GONE);
-            bd_layout.setVisibility(View.VISIBLE);
-        });
-
-        bt_done.setOnClickListener(v -> {
-            tv_myBirthday.setVisibility(View.VISIBLE);
-            bd_layout.setVisibility(View.GONE);
-            bd_y=born;
-            bd_m=month;
-            bd_d=day;
-            tv_myBirthday.setText(day+" "+month+" "+born);
-        });
-
-        bt_cancel.setOnClickListener(v -> {
-            born=bd_y;
-            month=bd_m;
-            day=bd_d;
-            tv_myBirthday.setText(day+" "+month+" "+born);
-            tv_myBirthday.setVisibility(View.VISIBLE);
-            bd_layout.setVisibility(View.GONE);
-        });
-
-        tv_genderEdit.setOnClickListener(v -> {
-            tv_myGender.setVisibility(View.GONE);
-            sp_gender.setVisibility(View.VISIBLE);
-        });
-
-
-        iv.setOnClickListener(v -> {
-            if(isPermissionGranted())openGallery();
-            else takePermission();
-        });
-
-        bt.setOnClickListener(v -> {
-            pb.setVisibility(View.VISIBLE);
-            userName=et_name.getText().toString();
-            userEmail=et_email.getText().toString();
-            userWork=et_work.getText().toString();
-            userEducation=et_education.getText().toString();
-            userRegion=et_region.getText().toString();
-            if(userName.isEmpty()){
-                pb.setVisibility(View.INVISIBLE);
-                Toast.makeText(EditProfileActivity.this,"Please enter your name",Toast.LENGTH_SHORT).show();
+        tv_bird_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tv_myBirthday.setVisibility(View.GONE);
+                bd_layout.setVisibility(View.VISIBLE);
             }
+        });
 
-            if(!userName.isEmpty()){
-                saveData();
+        bt_done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tv_myBirthday.setVisibility(View.VISIBLE);
+                bd_layout.setVisibility(View.GONE);
+                bd_y=born;
+                bd_m=month;
+                bd_d=day;
+                tv_myBirthday.setText(day+" "+month+" "+born);
             }
+        });
 
+        bt_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                born=bd_y;
+                month=bd_m;
+                day=bd_d;
+                tv_myBirthday.setText(day+" "+month+" "+born);
+                tv_myBirthday.setVisibility(View.VISIBLE);
+                bd_layout.setVisibility(View.GONE);
+            }
+        });
+
+        tv_genderEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tv_myGender.setVisibility(View.GONE);
+                sp_gender.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isPermissionGranted())openGallery();
+                else takePermission();
+            }
+        });
+
+        tv_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pb.setVisibility(View.VISIBLE);
+                layout_edit_profile.setVisibility(View.INVISIBLE);
+                userName=et_name.getText().toString();
+                userEmail=et_email.getText().toString();
+                userWork=et_work.getText().toString();
+                userEducation=et_education.getText().toString();
+                userRegion=et_region.getText().toString();
+                if(userName.isEmpty()){
+                    pb.setVisibility(View.INVISIBLE);
+                    layout_edit_profile.setVisibility(View.VISIBLE);
+                    Toast.makeText(EditProfileActivity.this,"Please enter your name",Toast.LENGTH_SHORT).show();
+                }
+
+                if(!userName.isEmpty()){
+                    saveData();
+                }
+
+            }
         });
 
 
@@ -241,31 +284,27 @@ public class EditProfileActivity extends AppCompatActivity {
         return readExternalStorage==PackageManager.PERMISSION_GRANTED;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 
     private void openGallery() {
-        mGetContent.launch("image/*");
+        Intent galleryIntent=new Intent();
+        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+        galleryIntent.setType("image/*");
+        startActivityForResult(galleryIntent,galleryPick);
     }
 
-    ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
-            new ActivityResultCallback<Uri>() {
-                @Override
-                public void onActivityResult(Uri uri) {
-                    // Handle the returned Uri
-                    imageUri=uri;
-                    iv.setImageURI(imageUri);
-                    imagePath= RealPathUtil.getRealPath(EditProfileActivity.this,imageUri);
-                    ivName=imagePath.substring(imagePath.lastIndexOf("/")+1);
-                }
-            });
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode==galleryPick && resultCode==RESULT_OK && data!=null){
+            imageUri=data.getData();
+            iv.setImageURI(imageUri);
+            imagePath= RealPathUtil.getRealPath(this,imageUri);
+            ivName=imagePath.substring(imagePath.lastIndexOf("/")+1);
+
+        }
+    }
+
 
     private void getData(){
 
@@ -273,25 +312,29 @@ public class EditProfileActivity extends AppCompatActivity {
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
                 @Override
                 public void onResponse(String response) {
-                    postExecutor.execute(() -> {
-                        pb.setVisibility(View.INVISIBLE);
-                        doAsGetResult(response);
+                    postExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            pb.setVisibility(View.INVISIBLE);
+                            doAsGetResult(response);
+                        }
                     });
                 }
                 @Override
                 public void onError(String msg) {
-                    postExecutor.execute(() -> {
-                        pb.setVisibility(View.VISIBLE);
-                        Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+                    postExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            pb.setVisibility(View.VISIBLE);
+                            Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+                        }
                     });
                 }
             }).url(Routing.GET_PROFILE+"/"+userPhone);
             myHttp.runTask();
         }).start();
 
-
     }
-
 
     private void saveData(){
 
@@ -299,21 +342,27 @@ public class EditProfileActivity extends AppCompatActivity {
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.POST, new MyHttp.Response() {
                 @Override
                 public void onResponse(String response) {
-                    postExecutor.execute(() -> {
-                        pb.setVisibility(View.INVISIBLE);
-                        doAsResult(response);
+                    postExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            pb.setVisibility(View.INVISIBLE);
+                            doAsResult(response);
+                        }
                     });
                 }
                 @Override
                 public void onError(String msg) {
-                    postExecutor.execute(() -> {
-                        pb.setVisibility(View.VISIBLE);
-                        Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+                    postExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            pb.setVisibility(View.VISIBLE);
+                            Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+                        }
                     });
                 }
             }).url(Routing.EDIT_PROFILE)
                     .field("phone",userPhone)
-                    .field("name", AppHandler.changeUnicode(userName))
+                    .field("name",AppHandler.changeUnicode(userName))
                     .field("email",userEmail)
                     .field("bd_day",bd_d)
                     .field("bd_month",bd_m)
@@ -326,15 +375,15 @@ public class EditProfileActivity extends AppCompatActivity {
             myHttp.runTask();
         }).start();
 
-
     }
 
     private void doAsGetResult(String response){
+        layout_edit_profile.setVisibility(View.VISIBLE);
         try {
             JSONObject jsonObject=new JSONObject(response);
             String name=jsonObject.getString("learner_name");
             String email=jsonObject.getString("learner_email");
-            String imageUrl=jsonObject.getString("learner_image");
+            imageUrl=jsonObject.getString("learner_image");
             String gender=jsonObject.getString("gender");
             String bd_day=jsonObject.getString("bd_day");
             String bd_month=jsonObject.getString("bd_month");
@@ -342,7 +391,9 @@ public class EditProfileActivity extends AppCompatActivity {
             String education=jsonObject.getString("education");
             String work=jsonObject.getString("work");
             String region=jsonObject.getString("region");
+            bio=jsonObject.getString("bio");
 
+            tv_bio.setText(bio);
             bd_d=bd_day;
             bd_m=bd_month;
             bd_y=bd_year;
@@ -360,7 +411,6 @@ public class EditProfileActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
         }
     }
-
 
     private void doAsResult(String response){
 
@@ -383,8 +433,6 @@ public class EditProfileActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
         }
     }
-
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)

@@ -51,9 +51,15 @@ public class SongLocalAdapter extends RecyclerView.Adapter<SongLocalAdapter.Hold
 
     @Override
     public void onBindViewHolder(final SongLocalAdapter.Holder holder, final int i) {
-        String tempName=data.get(i).getTitle();
+        String tempName=data.get(holder.getAbsoluteAdapterPosition()).getTitle();
         String songFileName=tempName.substring(0,tempName.length()-4);
-        holder.tv_file_name.setText(songFileName);
+        String songName=songFileName.substring(0,songFileName.indexOf("("));
+        String artistName=songFileName.substring(songFileName.indexOf("(")+1,songFileName.length()-1);
+        holder.tv_file_name.setText(songName);
+
+        artistName=artistName.replace(".","");
+        artistName=artistName.replace("_"," ");
+        holder.tv_artist_name.setText(artistName);
 
 
         holder.iv_menuMore.setOnClickListener(view -> {
@@ -76,18 +82,25 @@ public class SongLocalAdapter extends RecyclerView.Adapter<SongLocalAdapter.Hold
 
     public class Holder extends RecyclerView.ViewHolder {
 
-        ImageView album_art,iv_menuMore;
-        TextView tv_file_name;
+        ImageView music_img,iv_menuMore;
+        TextView tv_file_name,tv_artist_name;
         public Holder(View v) {
             super(v);
 
-            album_art=itemView.findViewById(R.id.music_img);
-            tv_file_name=itemView.findViewById(R.id.tv_songName);
-            iv_menuMore=itemView.findViewById(R.id.iv_menuMore);
-            v.setOnClickListener(v1 -> {
-                Intent intent=new Intent(c, PlayerActivity.class);
-                intent.putExtra("position",getAbsoluteAdapterPosition());
-                c.startActivity(intent);
+            music_img=v.findViewById(R.id.music_img);
+            tv_file_name=v.findViewById(R.id.tv_songName);
+            tv_artist_name=v.findViewById(R.id.tv_artistName);
+            iv_menuMore=v.findViewById(R.id.iv_menuMore);
+
+            music_img.setClipToOutline(true);
+
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent=new Intent(c, PlayerActivity.class);
+                    intent.putExtra("position",getAbsoluteAdapterPosition());
+                    c.startActivity(intent);
+                }
             });
 
         }

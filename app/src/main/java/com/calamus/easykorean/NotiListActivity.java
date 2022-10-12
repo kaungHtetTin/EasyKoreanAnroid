@@ -1,6 +1,5 @@
 package com.calamus.easykorean;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -10,8 +9,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import com.calamus.easykorean.adapters.NotiAdapter;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
@@ -46,7 +46,7 @@ public class NotiListActivity extends AppCompatActivity {
 
         MDetect.INSTANCE.init(this);
         recyclerView=findViewById(R.id.recycler);
-        swipe=findViewById(R.id.swipe_1);
+        swipe=findViewById(R.id.swipe);
         sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         currentUserId=sharedPreferences.getString("phone",null);
         isVip=sharedPreferences.getBoolean("isVIP",false);
@@ -57,7 +57,6 @@ public class NotiListActivity extends AppCompatActivity {
         editor.putBoolean("notiRedMark",false);
         editor.apply();
 
-        setTitle("Notifications");
         adapter = new NotiAdapter(this, postList);
         final LinearLayoutManager gm = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(gm);
@@ -71,8 +70,7 @@ public class NotiListActivity extends AppCompatActivity {
             fetchNotification(currentUserId,true);
         });
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+
 
 
         MobileAds.initialize(this, initializationStatus -> {});
@@ -85,17 +83,24 @@ public class NotiListActivity extends AppCompatActivity {
 
         }
 
+        setUpCustomAppBar();
+        Objects.requireNonNull(getSupportActionBar()).hide();
+
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
+    private void setUpCustomAppBar(){
 
-        }
-        return super.onOptionsItemSelected(item);
+        TextView tv=findViewById(R.id.tv_appbar);
+        ImageView iv=findViewById(R.id.iv_back);
+        tv.setText("Notifications");
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
     }
-
 
     private void fetchNotification(String currentUserId, boolean isRefresh){
 
@@ -110,7 +115,7 @@ public class NotiListActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onError(String msg) {}
-            }).url(Routing.FETCH_NOTIFICATION +"/"+currentUserId);
+            }).url(Routing.FETCH_NOTIFICATION +currentUserId);
             myHttp.runTask();
         }).start();
 

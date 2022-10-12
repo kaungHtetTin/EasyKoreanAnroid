@@ -3,7 +3,6 @@ package com.calamus.easykorean;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +11,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
-
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.app.UserInformation;
@@ -43,29 +41,35 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     String dbName2="conservation.db";
     public static ValueEventListener mListener=null;
-    private DatabaseReference dbc;
+    private DatabaseReference dbc,dbn;
     ExecutorService myExecutor;
+
+
+    public static boolean MESSAGE_ARRIVE=false;
+    public static boolean TEACHER_MESSAGE=false;
+    public static boolean DEVELOPER_MESSAGE=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        dbc= FirebaseDatabase.getInstance().getReference().child("korea").child("Conservation");
-        myExecutor= Executors.newFixedThreadPool(2);
+        dbc= FirebaseDatabase.getInstance().getReference().child(Routing.MAJOR).child("Conservation");
+        dbn= FirebaseDatabase.getInstance().getReference().child(Routing.MAJOR).child("notification");
+        myExecutor= Executors.newFixedThreadPool(3);
         handleShareData();
-        getMessagingToken(phone);
+        getMessagingToken();
+
         createSQLiteDatabase();
-        getForm();
+        getAppForm();
         getWordOfTheDay(Routing.GET_WORD_OF_THE_DAY);//get word of the day
         setScreen();
 
-        if(autoLogin){
+        if(autoLogin&&phone!=null){
             UserInformation userInformation=new UserInformation(SplashScreenActivity.this);
             userInformation.getGeneralData(phone);
         }
 
     }
-
 
     private void handleShareData(){
         sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
@@ -76,7 +80,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
 
-    private void getMessagingToken(String phone){
+    private void getMessagingToken(){
         FirebaseInstallations.getInstance().getId();
         FirebaseMessaging.getInstance().setAutoInitEnabled(true);
         FirebaseMessaging.getInstance().getToken()
@@ -87,7 +91,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                     }
                     // Get new FCM registration token
                     String token = task.getResult();
-
                     editor.putString("token",token);
                     editor.apply();
 
@@ -159,31 +162,28 @@ public class SplashScreenActivity extends AppCompatActivity {
         finish();
     }
 
-    private void getForm(){
-         myExecutor.execute(()->{
-             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
-                 @Override
-                 public void onResponse(String response) {
-                     try {
-                         JSONObject jo=new JSONObject(response);
-                         String firstForm=jo.getString("firstform");
-                         editor.putString("firstForm",firstForm);
-                         String secondForm=jo.getString("secondform");
-                         editor.putString("secondForm",secondForm);
-                         String functionForm=jo.getString("function");
-                         editor.putString("functionForm",functionForm);
-                         String videoForm=jo.getString("videoform");
-                         editor.putString("videoForm",videoForm);
-                         editor.apply();
+    private void getAppForm(){
+        myExecutor.execute(()->{
+            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jo=new JSONObject(response);
+                        editor.putString("mainCourse",jo.getString("mainCourse"));
+                        editor.putString("additionalLessons",jo.getString("additionalLessons"));
+                        editor.putString("functions",jo.getString("functions"));
+                        editor.putString("videoChannels",jo.getString("videoChannels"));
+                        editor.putString("kDramas",jo.getString("kDramas"));
+                        editor.apply();
 
-                     }catch (Exception ignored){}
+                    }catch (Exception ignored){}
 
-                 }
-                 @Override
-                 public void onError(String msg) {}
-             }).url(Routing.GET_FORM);
-             myHttp.runTask();
-         });
+                }
+                @Override
+                public void onError(String msg) {}
+            }).url(Routing.GET_APP_FORM);
+            myHttp.runTask();
+        });
     }
 
     private void getWordOfTheDay(String w){
@@ -211,31 +211,31 @@ public class SplashScreenActivity extends AppCompatActivity {
         return cursor.getCount()>0;
     }
 
-    private void fetchConservation(String myId){
+    private void fetchConservation(String myId) {
         Log.e("ConFet: ", myId);
-        mListener=new ValueEventListener() {
+        mListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                try{
+                try {
 
-                    for (DataSnapshot dss: snapshot.getChildren()){
-                        String senderId=(String)dss.child("senderId").getValue();
-                        String msg=(String)dss.child("message").getValue();
-                        String time= (String) dss.child("time").getValue();
-                        String name=(String)dss.child("userName").getValue();
-                        String image=(String)dss.child("imageUrl").getValue();
-                        String token=(String)dss.child("token").getValue();
-                        long seen=(long)dss.child("seen").getValue();
+                    for (DataSnapshot dss : snapshot.getChildren()) {
+                        String senderId = (String) dss.child("senderId").getValue();
+                        String msg = (String) dss.child("message").getValue();
+                        String time = (String) dss.child("time").getValue();
+                        String name = (String) dss.child("userName").getValue();
+                        String image = (String) dss.child("imageUrl").getValue();
+                        String token = (String) dss.child("token").getValue();
+                        long seen = (long) dss.child("seen").getValue();
 
 
-                        if(!msg.equals("") && !image.equals("")) {
+                        if (!msg.equals("") && !image.equals("")) {
                             makeConservation(msg, senderId, time, name, image, myId, token, (int) seen);
                         }
 
                     }
 
-                }catch (Exception e){
-                //   Log.e(" ConFet241: ",e.toString());
+                } catch (Exception e) {
+                    //   Log.e(" ConFet241: ",e.toString());
                 }
             }
 
@@ -244,8 +244,37 @@ public class SplashScreenActivity extends AppCompatActivity {
 
             }
         };
-        dbc.child(myId).addValueEventListener(mListener);
 
+        dbc.child(myId).addValueEventListener(mListener);
+        checkMessageArrive(myId);
+    }
+
+    private void checkMessageArrive(String myId){
+        dbn.child(myId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.child("message_arrive").exists()){
+                    MESSAGE_ARRIVE = (Boolean) snapshot.child("message_arrive").getValue();
+                }else{
+                    MESSAGE_ARRIVE=false;
+                }
+
+                if(snapshot.child("teacher_message").exists()){
+                    TEACHER_MESSAGE= (Boolean) snapshot.child("teacher_message").getValue();
+                }else{
+                    TEACHER_MESSAGE=false;
+                }
+
+                if(snapshot.child("developer_message").exists()){
+                    DEVELOPER_MESSAGE= (Boolean) snapshot.child("developer_message").getValue();
+                }else{
+                    DEVELOPER_MESSAGE=false;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
     }
 
 
@@ -263,7 +292,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 cv.put("seen",seen);
                 db.update("Conservations",cv,"fri_id="+senderId,null);
             }else{
-                cv.put("fri_name","Easy Korean User");
+                cv.put("fri_name","Calamus User");
                 cv.put("fri_image",image);
                 cv.put("msg_body",name +" blocked you");
                 cv.put("time",time);
@@ -272,9 +301,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                 cv.put("fri_id","5241");
                 db.update("Conservations",cv,"fri_id="+senderId+" and my_id="+myId,null);
             }
-            updateConservationRealtime();
-            if(!image.equals(""))deleteConservationOnFirebase(myId,senderId);
-
         }else{
 
             if(!msgBody.equals("block5241")){
@@ -289,11 +315,11 @@ public class SplashScreenActivity extends AppCompatActivity {
                 cv.put("seen",seen);
                 cv.put("my_id",Long.parseLong(phone));
                 db.insert("Conservations",null,cv);
-
-                updateConservationRealtime();
-                if(!image.equals(""))deleteConservationOnFirebase(myId,senderId);
             }
         }
+
+        updateConservationRealtime();
+        if(!image.equals(""))deleteConservationOnFirebase(myId,senderId);
     }
 
     private void deleteConservationOnFirebase(String myId,String fri){

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:elevation="1dp"
+    android:background="@color/appBar"
+    android:layout_height="?attr/actionBarSize">
+
+    <TextView
+        android:id="@+id/tv_appbar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_centerVertical="true"
+        android:elevation="5dp"
+        android:textStyle="bold"
+        android:fontFamily="@font/good_morning"
+        android:textColor="@color/colorAccent"
+        android:textSize="20sp"/>
+
+    <ImageView
+        android:id="@+id/iv_search"
+        android:src="@drawable/ic_search"
+        android:layout_width="35dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="25dp"
+        android:padding="3dp"
+        android:background="@drawable/bg_circle_light_blue"
+        android:layout_height="35dp"/>
+
+</RelativeLayout>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_menu_setting">
+    
+    
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="3dp"
+        android:background="#707070"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="17dp"/>
+
+    <TextView
+        android:id="@+id/menu_setting"
+        android:text="Setting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/MenuText"
+        app:drawableStartCompat="@drawable/ic_menu_setting" />
+
+    <TextView
+        android:id="@+id/menu_vip"
+        android:text="Purchase VIP Plan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/MenuText"
+        app:drawableStartCompat="@drawable/ic_menu_vip_register" />
+
+    <TextView
+        android:id="@+id/menu_timer"
+        android:text="Set Your Study Timer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/MenuText"
+        app:drawableStartCompat="@drawable/ic_menu_timer" />
+
+    <TextView
+        android:id="@+id/menu_video"
+        android:text="Downloaded Videos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/MenuText"
+        app:drawableStartCompat="@drawable/ic_menu_download_video" />
+
+    <TextView
+        android:id="@+id/menu_words"
+        android:text="Saved Words"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/MenuText"
+        app:drawableStartCompat="@drawable/ic_menu_save_words"/>
+
+    <TextView
+        android:id="@+id/menu_posts"
+        android:text="Saved Posts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/MenuText"
+        app:drawableStartCompat="@drawable/ic_menu_save_post"/>
+
+    <TextView
+        android:id="@+id/menu_sign_out"
+        android:text="Sign out"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/MenuText"
+        app:drawableStartCompat="@drawable/ic_menu_sign_out"/>
+
+</LinearLayout>

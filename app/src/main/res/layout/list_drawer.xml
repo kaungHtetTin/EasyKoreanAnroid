@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    app:cardCornerRadius="5dp"
-    app:cardElevation="1dp"
+    android:layout_margin="2dp"
+    app:cardCornerRadius="3dp"
+    app:cardElevation="0.5dp"
     android:foreground="?android:attr/selectableItemBackground">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/appBar"
         android:padding="4dp"
-        android:foreground="?android:attr/selectableItemBackground"
-        tools:targetApi="m">
-
+        android:foreground="?android:attr/selectableItemBackground">
 
         <ImageView
             android:id="@+id/list_iv"
@@ -26,7 +24,7 @@
 
         <TextView
             android:id="@+id/list_tv"
-            android:textColor="@android:color/black"
+            android:textColor="@color/textPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="testing"

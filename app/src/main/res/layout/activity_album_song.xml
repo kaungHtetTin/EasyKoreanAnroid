@@ -4,11 +4,41 @@
     android:layout_height="match_parent"
     android:background="@color/purple_700">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/my_actionbar_container"
+        android:layout_height="?attr/actionBarSize">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_back_white"
+            android:layout_marginStart="15dp"
+            />
+
+        <TextView
+            android:id="@+id/tv_appbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:layout_toEndOf="@id/iv_back"
+            android:elevation="5dp"
+            android:fontFamily="@font/poppins_medium"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeSong"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/my_actionbar_container"
         android:layout_above="@id/adview">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -26,7 +56,7 @@
         android:id="@+id/adview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        ads:adSize="BANNER"
+        ads:adSize="SMART_BANNER"
         ads:adUnitId="ca-app-pub-2472405866346270/2510952382"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"/>

@@ -1,10 +1,13 @@
 package com.calamus.easykorean.adapters;
 
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,18 +16,22 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.calamus.easykorean.ChattingActivity;
 import com.calamus.easykorean.MyDiscussionActivity;
 import com.calamus.easykorean.PhotoActivity;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.models.ChatModel;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
 import me.myatminsoe.mdetect.MDetect;
 
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
@@ -40,7 +47,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Holder> {
     @SuppressLint("SimpleDateFormat")
     final
     SimpleDateFormat sdf= new SimpleDateFormat("MMMdd ,yyyy HH:mm");
-    public ChatAdapter(Activity c,ArrayList<ChatModel> data){
+    public ChatAdapter(Activity c, ArrayList<ChatModel> data){
         this.data=data;
         this.c=c;
         this.mInflater=LayoutInflater.from(c);
@@ -52,14 +59,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Holder> {
 
     @NonNull
     @Override
-    public ChatAdapter.Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view=mInflater.inflate(R.layout.item_message,parent,false);
 
         return new Holder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ChatAdapter.Holder holder, int position) {
+    public void onBindViewHolder(@NonNull Holder holder, int position) {
         try{
 
 
@@ -78,6 +85,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Holder> {
             holder.iv_seen.setVisibility(View.INVISIBLE);
             holder.iv_msg.setVisibility(View.GONE);
             holder.iv_card.setVisibility(View.GONE);
+            Log.e("MyId : ",myId);
+            Log.e("senderId : ",model.getSenderId());
             if(position!=data.size()-1)holder.tv_receive.setVisibility(View.GONE);
             if(myId.equals(model.getSenderId())){
 
@@ -85,7 +94,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Holder> {
                 holder.msgContainer.setGravity(Gravity.RIGHT);
                 holder.bubbleLayout.setBackgroundResource(R.drawable.my_msg);
                 holder.bubbleLayout.setGravity(Gravity.RIGHT);
+                holder.tv_msgBody.setTextColor(Color.WHITE);
 
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)holder.iv_card.getLayoutParams();
+                // params.addRule(RelativeLayout.ALIGN_PARENT_END);
+                params.addRule(RelativeLayout.START_OF, R.id.iv_seen);
+                holder.iv_card.setLayoutParams(params);
 
                 if(model.getSeen()==1){
                     holder.iv_seen.setVisibility(View.VISIBLE);
@@ -99,19 +113,22 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Holder> {
                     if(position==data.size()-1)holder.tv_receive.setVisibility(View.VISIBLE);
                 }
 
-
-
             }else{
                 holder.msgContainer.setGravity(Gravity.LEFT);
                 holder.bubbleLayout.setBackgroundResource(R.drawable.other_msg);
                 holder.bubbleLayout.setGravity(Gravity.LEFT);
                 holder.tv_receive.setVisibility(View.GONE);
 
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)holder.iv_card.getLayoutParams();
+                params.addRule(RelativeLayout.ALIGN_PARENT_START);
+                holder.iv_card.setLayoutParams(params);
+
+                holder.tv_msgBody.setTextColor(Color.parseColor("#403F3F"));
 
                 if(position>=1){
                     ChatModel model1=data.get(position-1);
                     if(!model.getSenderId().equals(model1.getSenderId())){
-                        AppHandler.setPhotoFromRealUrl(holder.iv_msg_profile,ChattingActivity.fImage);
+                        AppHandler.setPhotoFromRealUrl(holder.iv_msg_profile, ChattingActivity.fImage);
                         holder.iv_msg_profile.setVisibility(View.VISIBLE);
                     }else {
                         holder.iv_msg_profile.setVisibility(View.INVISIBLE);
@@ -151,7 +168,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Holder> {
             }
 
 
-        }catch (Exception ignored){
+        }catch (Exception e){
 
         }
 

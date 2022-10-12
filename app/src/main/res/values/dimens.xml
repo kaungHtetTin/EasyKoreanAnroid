@@ -1,1 +1,12 @@
-<resources></resources>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="comment_profile">35dp</dimen>
+    <dimen name="comment_profile_margin">4dp</dimen>
+
+    <dimen name="profile_dimension">100dp</dimen>
+    <dimen name="profile_to_backkey_distance">30dp</dimen>
+    <dimen name="cover_photo_height">210dp</dimen>
+    <dimen name="profile_target_Y">19dp</dimen>
+    <dimen name="actionbar_offset">10dp</dimen>
+
+</resources>

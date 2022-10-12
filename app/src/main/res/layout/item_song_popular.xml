@@ -1,73 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="150dp"
-    android:layout_height="150dp"
-    android:layout_marginBottom="8dp"
-    app:cardBackgroundColor="#203153"
-    app:cardCornerRadius="2dp"
-    app:cardElevation="1dp"
+    android:layout_width="wrap_content"
     android:layout_margin="5dp"
-    android:id="@+id/card_View">
+    android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:background="@drawable/bg_player_gradient">
+    <TextView
+        android:id="@+id/tv_react"
+        android:layout_width="65dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:drawablePadding="4dp"
+        android:textColor="@color/white"
+        android:fontFamily="@font/poppins_medium"
+        android:textSize="13sp"
+        android:text="256"
+        app:drawableStartCompat="@drawable/ic_song_love_react"/>
 
-        <ImageView
-            android:layout_width="150dp"
-            android:layout_height="100dp"
-            android:background="#92454545"
-            android:scaleType="centerCrop"
-            android:src="@drawable/bg_music"
-            android:id="@+id/songImage"
-            android:layout_gravity="center_horizontal"
-            android:layout_centerHorizontal="true"
-            android:layout_above="@id/tv_title"
-            android:layout_alignParentTop="true"
-            android:contentDescription="TODO" />
+    <TextView
+        android:id="@+id/tv_downloadCount"
+        android:layout_width="65dp"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/card_View"
+        android:drawablePadding="4dp"
+        android:fontFamily="@font/poppins_medium"
+        android:gravity="center_vertical"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        app:drawableStartCompat="@drawable/ic_song_not_downloaded" />
 
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:padding="4dp"
-            android:gravity="center"
-            android:layout_alignParentBottom="true"
-            android:text="Stay with me"/>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card_react"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="15dp"
-            app:cardCornerRadius="7dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/purple_700"
-            android:layout_margin="10dp"
-            android:layout_alignParentEnd="true">
-            <LinearLayout
-                android:layout_width="wrap_content"
+    <androidx.cardview.widget.CardView
+        android:layout_width="139dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="1dp"
+        android:layout_below="@id/tv_react"
+        android:id="@+id/card_View">
+
+        <RelativeLayout
+            android:layout_width="139dp"
+            android:layout_height="181dp"
+            android:background="@drawable/bg_player_gradient">
+
+            <ImageView
+                android:layout_width="139dp"
+                android:layout_height="181dp"
+                android:background="#92454545"
+                android:scaleType="centerCrop"
+                android:src="@drawable/bg_music"
+                android:id="@+id/songImage"
+                android:layout_gravity="center_horizontal"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentTop="true"
+                android:contentDescription="TODO" />
+
+            <TextView
+                android:id="@+id/tv_info_header"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_alignParentBottom="true"
                 android:gravity="center"
-                android:padding="3dp">
-                <ImageView
-                    android:id="@+id/iv_react"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"/>
-                <TextView
-                    android:id="@+id/tv_reactCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#fff"
-                    android:layout_gravity="center"/>
-            </LinearLayout>
+                android:padding="4dp"
+                android:text="Stay with me"
+                android:background="#E6DCDCDC"
+                android:textSize="11sp"
+                android:fontFamily="@font/poppins_medium"
+                android:textColor="#403F3F" />
 
-        </androidx.cardview.widget.CardView>
-
-    </RelativeLayout>
-
-</androidx.cardview.widget.CardView>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>
