@@ -32,7 +32,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import me.myatminsoe.mdetect.MDetect;
 
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
 
@@ -53,7 +52,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Holder> {
         this.mInflater=LayoutInflater.from(c);
         sharedPreferences=c.getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         myId=Long.parseLong(sharedPreferences.getString("phone",null))+"";
-        MDetect.INSTANCE.init(c);
     }
 
 

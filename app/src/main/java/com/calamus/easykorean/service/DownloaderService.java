@@ -132,7 +132,7 @@ public class DownloaderService extends Service {
                 mContext,
                 0,
                 intent,
-                PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_MUTABLE
         );
 
         notification = mBuilder.setSmallIcon(R.mipmap.kommmainicon)

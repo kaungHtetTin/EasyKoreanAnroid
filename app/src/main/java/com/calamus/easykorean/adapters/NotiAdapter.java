@@ -18,9 +18,6 @@ import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.models.NotiModel;
 import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
-import me.myatminsoe.mdetect.MDetect;
-
-
 public class NotiAdapter extends RecyclerView.Adapter<NotiAdapter.Holder> {
 
     private Activity c;
@@ -32,8 +29,6 @@ public class NotiAdapter extends RecyclerView.Adapter<NotiAdapter.Holder> {
         this.data = data;
         this.c = c;
         this.mInflater = LayoutInflater.from(c);
-        MDetect.INSTANCE.init(c);
-
         int nightModeFlags =
                 c.getResources().getConfiguration().uiMode &
                         Configuration.UI_MODE_NIGHT_MASK;

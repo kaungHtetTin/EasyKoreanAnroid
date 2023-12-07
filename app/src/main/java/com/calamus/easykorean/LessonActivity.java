@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -18,29 +20,23 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdLoader;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.gms.ads.nativead.NativeAd;
-import com.google.android.gms.ads.nativead.NativeAdOptions;
+
+import com.calamus.easykorean.app.FileManager;
+import com.calamus.easykorean.models.FileModel;
+import com.calamus.easykorean.models.SavedVideoModel;
 import com.google.android.material.snackbar.Snackbar;
 import com.calamus.easykorean.adapters.LessonAdapter;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.models.LessonModel;
 import com.calamus.easykorean.app.MyHttp;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 
-import static com.calamus.easykorean.app.AppHandler.AD_UNIT_ID;
 
 public class LessonActivity extends AppCompatActivity
 {
@@ -70,6 +66,11 @@ public class LessonActivity extends AppCompatActivity
     String appBarTitle;
     String category_title;
 
+    String rootDir;
+    FileManager fileManager;
+    ArrayList<FileModel> downloadedVideoFiles =new ArrayList<>();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -80,8 +81,6 @@ public class LessonActivity extends AppCompatActivity
         currentUserId=sharedPreferences.getString("phone",null);
         postExecutor = ContextCompat.getMainExecutor(this);
         Objects.requireNonNull(getSupportActionBar()).hide();
-
-
 
         category = Objects.requireNonNull(getIntent().getExtras()).getString("category_id", "");
         appBarTitle=getIntent().getExtras().getString("course_title");
@@ -97,17 +96,18 @@ public class LessonActivity extends AppCompatActivity
         if(isDayPlan)fetchLessonByDayPlan();
         else fetchLesson(1,false);
 
-        MobileAds.initialize(this,new OnInitializationCompleteListener() {
+
+        rootDir=getExternalFilesDir(Environment.DIRECTORY_MOVIES).getPath();
+        fileManager=new FileManager(this);
+
+        Log.e("root ",rootDir + "/" + appBarTitle);
+        fileManager.loadFiles(new File(rootDir + "/" + appBarTitle), new FileManager.OnFileLoading() {
             @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {}
+            public void onLoaded(ArrayList<FileModel> files) {
+                downloadedVideoFiles.addAll(files);
+            }
         });
 
-        AdView adView = findViewById(R.id.adview);
-        if(!isVip){
-            adView.setVisibility(View.VISIBLE);
-            AdRequest request=new AdRequest.Builder().build();
-            adView.loadAd(request);
-        }
     }
 
 
@@ -129,7 +129,7 @@ public class LessonActivity extends AppCompatActivity
         LinearLayoutManager lm = new LinearLayoutManager(this);
         recycler.setLayoutManager(lm);
         recycler.setItemAnimator(new DefaultItemAnimator());
-        adapter = new LessonAdapter(this, lessonList, new LessonAdapter.CallBack() {
+        adapter = new LessonAdapter(this, lessonList,appBarTitle, new LessonAdapter.CallBack() {
             @Override
             public void onDownloadClick() {
                 setSnackBar("Start Downloading");
@@ -263,7 +263,6 @@ public class LessonActivity extends AppCompatActivity
         }).start();
     }
 
-
     private void doAsResult(String response){
         adapter.setLessonJSON(response);
         try {
@@ -285,15 +284,28 @@ public class LessonActivity extends AppCompatActivity
                 long time=jo.getLong("date");
                 int duration=jo.getInt("duration");
 
-                lessonList.add(new LessonModel(id,link,title,title_mini,isVideo,isVip,time,learned,
-                        image_url,thumbnail,duration,appBarTitle));
+                LessonModel model=new LessonModel(id,link,title,title_mini,isVideo,isVip,time,learned,
+                        image_url,thumbnail,duration,appBarTitle);
 
-            }
+                if(isVideo){
+                    String checkTitle=title.replace("/"," ");
+                    checkTitle=checkTitle+".mp4";
+                    if(downloadedVideoFiles.size()>0){
+                        for(int j=0;j<downloadedVideoFiles.size();j++){
+                            FileModel file=downloadedVideoFiles.get(j);
+                            if(file.getFile().getName().equals(checkTitle)){
+                                model.setDownloaded(true);
+                                model.setVideoModel((SavedVideoModel) file);
+                                Log.e("Downloaded ", checkTitle + " is downloaded");
 
-            if(!isVip&&page<2){
-                loadNativeAds();
-            }else {
-                adapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
+                }
+
+                Log.e("Downloaded model ",model.isDownloaded()+" ");
+                lessonList.add(model);
+
             }
 
             adapter.notifyDataSetChanged();
@@ -304,41 +316,5 @@ public class LessonActivity extends AppCompatActivity
             Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
         }
     }
-
-    private void loadNativeAds() {
-
-        AdLoader adLoader = new AdLoader.Builder(this, AD_UNIT_ID)
-                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
-                    @Override
-                    public void onNativeAdLoaded(@NotNull NativeAd nativeAd) {
-
-                        if(lessonList.size()>6){
-                            lessonList.add(4,nativeAd);
-                        }else {
-                            lessonList.add(nativeAd);
-                        }
-                        adapter.notifyDataSetChanged();
-
-
-                    }
-                })
-                .withAdListener(new AdListener() {
-                    @Override
-                    public void onAdFailedToLoad(LoadAdError adError) {
-                        adapter.notifyDataSetChanged();
-                    }
-                })
-                .withNativeAdOptions(new NativeAdOptions.Builder()
-                        // Methods in the NativeAdOptions.Builder class can be
-                        // used here to specify individual options settings.
-                        .build())
-
-                .build();
-
-
-        adLoader.loadAd(new AdRequest.Builder().build());
-
-    }
-
 }
 

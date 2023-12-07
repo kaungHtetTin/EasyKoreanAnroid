@@ -78,13 +78,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/current_version_is_2_0"
                     android:layout_below="@id/tv2"
-                    android:textColor="@color/textPrimary"
-                    android:textSize="13sp"
-                    android:fontFamily="@font/poppins_regular"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="4dp"
                     android:layout_toEndOf="@id/iv_card"
-                    android:layout_margin="4dp"/>
+                    android:fontFamily="@font/poppins_regular"
+                    android:text="@string/current_version_is_2_0"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="13sp" />
 
             </RelativeLayout>
 

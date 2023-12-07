@@ -10,15 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.calamus.easykorean.app.AppHandler;
 
 import org.json.JSONArray;
@@ -35,7 +26,7 @@ public class WordDetailActivity extends AppCompatActivity {
     String wordOfTheDay;
     boolean isVIP;
     SharedPreferences sharedPreferences;
-    private InterstitialAd interstitialAd;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +34,6 @@ public class WordDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_word_detail);
         sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         isVIP=sharedPreferences.getBoolean("isVIP",false);
-
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });
 
         wordOfTheDay=getIntent().getExtras().getString("word","");
 
@@ -78,13 +63,6 @@ public class WordDetailActivity extends AppCompatActivity {
         tv_main=findViewById(R.id.tv_main);
         tv_detail=findViewById(R.id.tv_detail);
 
-        AdView adView = findViewById(R.id.adview);
-        if(!isVIP){
-            adView.setVisibility(View.VISIBLE);
-            AdRequest request=new AdRequest.Builder().build();
-            adView.loadAd(request);
-            loadAds();
-        }
 
         SimpleDateFormat sdf= new SimpleDateFormat("MMMdd,yyyy HH:mm");
         Date resultDate=new Date(System.currentTimeMillis());
@@ -112,52 +90,8 @@ public class WordDetailActivity extends AppCompatActivity {
     {
 
         if (item.getItemId() == android.R.id.home) {
-            if (interstitialAd != null) {
-                interstitialAd.show(WordDetailActivity.this);
-            } else {
-                // Proceed to the next level.
-                finish();
-            }
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    public void onBackPressed() {
-        if (interstitialAd != null) {
-            interstitialAd.show(WordDetailActivity.this);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    private void loadAds(){
-
-        FullScreenContentCallback fullScreenContentCallback = new FullScreenContentCallback() {
-            @Override
-            public void onAdDismissedFullScreenContent() {
-                interstitialAd = null;
-                // Proceed to the next level.
-                finish();
-            }
-        };
-
-        InterstitialAd.load(
-                this,
-                "ca-app-pub-2472405866346270/9132394579",
-                new AdRequest.Builder().build(),
-                new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd ad) {
-                        interstitialAd = ad;
-                        interstitialAd.setFullScreenContentCallback(fullScreenContentCallback);
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError adError) {
-                        // Code to be executed when an ad request fails.
-                    }
-                });
-    }
-
 }

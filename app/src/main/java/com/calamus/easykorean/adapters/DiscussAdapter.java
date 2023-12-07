@@ -14,7 +14,6 @@ import com.calamus.easykorean.holders.ProfileHolders;
 import com.calamus.easykorean.models.NewfeedModel;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
-import me.myatminsoe.mdetect.MDetect;
 
 public  class DiscussAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -37,7 +36,6 @@ public  class DiscussAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.c = c;
         this.mInflater = LayoutInflater.from(c);
         this.profileHolder=profileHolder;
-        MDetect.INSTANCE.init(c);
         sharedPreferences=c.getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         imagePath=sharedPreferences.getString("imageUrl",null);
         notiRedMark=sharedPreferences.getBoolean("notiRedMark",false);
@@ -64,9 +62,6 @@ public  class DiscussAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         if(viewType==0){
             return  profileHolder;
-        } else if(viewType==1){
-            View view = mInflater.inflate(R.layout.item_native_ads, parent, false);
-            return new NativeAdsHolder(view,c);
         }else{
             View view = mInflater.inflate(R.layout.item_newfeed, parent, false);
             return new PostHolder(view,c,currentUserId,userName,imagePath);
@@ -78,10 +73,8 @@ public  class DiscussAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         if(position==0){
             return 0;
-        }else if(data.get(position) instanceof com.google.android.gms.ads.nativead.NativeAd){
-            return 1;
         }else {
-            return 2;
+            return 1;
         }
 
     }
@@ -91,25 +84,15 @@ public  class DiscussAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(@NotNull final RecyclerView.ViewHolder holder, final int i) {
 
         if(i !=0){
-            if(data.get(i) instanceof com.google.android.gms.ads.nativead.NativeAd){
-                NativeAdsHolder nativeAdsHolder=(NativeAdsHolder)holder;
-                com.google.android.gms.ads.nativead.NativeAd nativeAd=(com.google.android.gms.ads.nativead.NativeAd)data.get(i);
-                nativeAdsHolder.populateNativeAdView(nativeAd, nativeAdsHolder.adView);
-                nativeAdsHolder.adView.setNativeAd(nativeAd);
-                nativeAdsHolder.frameLayout.removeAllViews();
-                nativeAdsHolder.frameLayout.addView(nativeAdsHolder.adView);
-            }else {
-                PostHolder postHolder=(PostHolder) holder;
-                postHolder.setNewsfeedModel((NewfeedModel) data.get(i));
-                postHolder.setCallBack(new PostHolder.CallBack() {
-                    @Override
-                    public void onPostDelete() {
-                        data.remove(holder.getAbsoluteAdapterPosition());
-                        notifyDataSetChanged();
-                    }
-                });
-
-            }
+            PostHolder postHolder=(PostHolder) holder;
+            postHolder.setNewsfeedModel((NewfeedModel) data.get(i));
+            postHolder.setCallBack(new PostHolder.CallBack() {
+                @Override
+                public void onPostDelete() {
+                    data.remove(holder.getAbsoluteAdapterPosition());
+                    notifyDataSetChanged();
+                }
+            });
         }
 
     }

@@ -1,6 +1,6 @@
 package com.calamus.easykorean;
 
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -17,23 +17,12 @@ import android.widget.ImageView;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.app.XUtils;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import me.myatminsoe.mdetect.MDetect;
-import me.myatminsoe.mdetect.Rabbit;
-
-import static java.lang.Thread.sleep;
 
 public class DetailActivity extends AppCompatActivity {
     WebView wv;
@@ -42,9 +31,8 @@ public class DetailActivity extends AppCompatActivity {
     String title,content,link;
     SimpleDateFormat sdf= new SimpleDateFormat("MMMdd,yyyy HH:mm");
     boolean zg=true;
-    boolean isVip,isTimeToShowAds=true;
+    boolean isVip;
     SharedPreferences sharedPreferences;
-    private InterstitialAd interstitialAd;
     Executor postExecutor;
     ExecutorService myExecutor;
     String lessonResult,userId,lessonId;
@@ -75,46 +63,17 @@ public class DetailActivity extends AppCompatActivity {
         setUpView();
         swipe=findViewById(R.id.swipe_2);
         swipe.setRefreshing(true);
-        MDetect.INSTANCE.init(this);
 
         share1=getSharedPreferences("GeneralData",Context.MODE_PRIVATE);
         swipe.setOnRefreshListener(() -> setUpView());
 
-
-
-        MobileAds.initialize(this, initializationStatus -> {});
-        AdView adView = findViewById(R.id.adview);
-        if(!isVip){
-            adView.setVisibility(View.VISIBLE);
-            AdRequest request=new AdRequest.Builder().build();
-            adView.loadAd(request);
-            myExecutor.execute(()->{
-                try {
-                    sleep(10000);
-                    postExecutor.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (isTimeToShowAds) loadAds();
-                        }
-                    });
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            });
-        }
 
         recordStudyingOnLesson();
 
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isTimeToShowAds=false;
-                if (interstitialAd != null) {
-                    interstitialAd.show(DetailActivity.this);
-                } else {
-                    // Proceed to the next level.
-                    finish();
-                }
+                finish();
             }
         });
 
@@ -137,7 +96,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
     public String setMyanmar(String s) {
-        return Rabbit.uni2zg(s);
+        return s;
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -147,11 +106,8 @@ public class DetailActivity extends AppCompatActivity {
         WebSettings settings = wv.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
-        settings.setAppCacheEnabled(true);
         settings.setDatabaseEnabled(true);
-        settings.setAppCachePath(getCacheDir().getAbsolutePath());
         settings.setAllowFileAccess(true);
-        settings.setAppCacheEnabled(true);
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
 
         extractLesson();
@@ -213,56 +169,15 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        myExecutor.shutdown();
-        isTimeToShowAds=false;
-        if (interstitialAd != null) {
-            interstitialAd.show(DetailActivity.this);
 
-        } else {
-
-            super.onBackPressed();
-
-        }
+        super.onBackPressed();
     }
 
     @Override
     protected void onDestroy(){
           wv.destroy();
           wv=null;
-          myExecutor.shutdown();
         super.onDestroy();
 
     }
-
-
-    private void loadAds(){
-
-        FullScreenContentCallback fullScreenContentCallback = new FullScreenContentCallback() {
-            @Override
-            public void onAdDismissedFullScreenContent() {
-                interstitialAd = null;
-                // Proceed to the next level.
-                finish();
-
-            }
-        };
-
-        InterstitialAd.load(
-                this,
-                "ca-app-pub-2472405866346270/9132394579",
-                new AdRequest.Builder().build(),
-                new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd ad) {
-                        interstitialAd = ad;
-                        interstitialAd.setFullScreenContentCallback(fullScreenContentCallback);
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError adError) {
-                        // Code to be executed when an ad request fails.
-                    }
-                });
-    }
-
 }

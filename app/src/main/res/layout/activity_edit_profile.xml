@@ -47,6 +47,7 @@
                     android:src="@drawable/ic_baseline_account_circle_24"/>
 
                 <ImageView
+                    android:id="@+id/iv_profile_edit"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_alignBottom="@id/iv_profile"

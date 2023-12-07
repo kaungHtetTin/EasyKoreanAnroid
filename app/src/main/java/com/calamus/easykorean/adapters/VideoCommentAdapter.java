@@ -13,7 +13,6 @@ import com.calamus.easykorean.holders.CommentHolder;
 import com.calamus.easykorean.models.CommentModel;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
-import me.myatminsoe.mdetect.MDetect;
 
 
 
@@ -33,7 +32,6 @@ public class VideoCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.checkTime=checkTime;
         this.mInflater = LayoutInflater.from(c);
         this.callback=callback;
-        MDetect.INSTANCE.init(c);
         sharedPreferences=c.getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         imagePath=sharedPreferences.getString("imageUrl",null);
         currentUserId=sharedPreferences.getString("phone",null);

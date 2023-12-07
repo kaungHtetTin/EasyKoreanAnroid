@@ -2,8 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/hide_post"
+        android:title="Hide post"/>
+
+    <item
         android:id="@+id/report"
-        android:title="Report this post to Admin"/>
+        android:title="Report post"/>
 
     <item
         android:id="@+id/save"

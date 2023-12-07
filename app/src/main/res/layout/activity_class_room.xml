@@ -13,7 +13,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/adview"
+        android:layout_above="@id/bot_nav_view_chat"
         android:layout_below="@id/mybar">
 
     </FrameLayout>
@@ -22,20 +22,10 @@
         android:id="@+id/view_pager_chat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/adview"
+        android:layout_above="@id/bot_nav_view_chat"
         android:layout_below="@id/mybar" />
 
-    <com.google.android.gms.ads.AdView
-        xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/adview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        ads:adSize="SMART_BANNER"
-        ads:adUnitId="ca-app-pub-2472405866346270/2510952382"
-        android:visibility="gone"
-        android:layout_above="@id/bot_nav_view_chat">
-    </com.google.android.gms.ads.AdView>
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bot_nav_view_chat"

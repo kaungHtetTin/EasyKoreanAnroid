@@ -68,6 +68,13 @@ public class UpdateCoverPhotoActivity extends AppCompatActivity {
             }
         });
 
+        iv_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
     }
 
     private void saveCoverPhoto(){

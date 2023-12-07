@@ -1,6 +1,8 @@
 package com.calamus.easykorean.models;
 
 
+import java.io.File;
+
 public class LessonModel  {
     String id;
     String link;
@@ -14,6 +16,8 @@ public class LessonModel  {
     String thumbnail;
     int duration;
     String category;
+    boolean downloaded;
+    SavedVideoModel model;
 
     public LessonModel(String id, String link, String title,String title_mini, boolean isVideo,
                        boolean isVip,long time,  boolean learned,String image_url,String thumbnail,
@@ -99,5 +103,21 @@ public class LessonModel  {
 
     public String getThumbnail() {
         return thumbnail;
+    }
+
+    public void setDownloaded(boolean downloaded) {
+        this.downloaded=downloaded;
+    }
+
+    public boolean isDownloaded() {
+        return downloaded;
+    }
+
+    public SavedVideoModel getVideoModel() {
+        return model;
+    }
+
+    public void setVideoModel(SavedVideoModel model) {
+        this.model = model;
     }
 }

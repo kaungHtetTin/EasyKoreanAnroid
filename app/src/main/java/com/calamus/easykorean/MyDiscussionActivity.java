@@ -30,12 +30,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdLoader;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.nativead.NativeAd;
-import com.google.android.gms.ads.nativead.NativeAdOptions;
+
+import com.calamus.easykorean.app.MyDialog;
 import com.google.android.material.appbar.AppBarLayout;
 import com.calamus.easykorean.adapters.DiscussAdapter;
 import com.calamus.easykorean.app.AppHandler;
@@ -44,15 +40,12 @@ import com.calamus.easykorean.holders.ProfileHolders;
 import com.calamus.easykorean.interfaces.OnProfileLoaded;
 import com.calamus.easykorean.models.NewfeedModel;
 import com.calamus.easykorean.app.MyHttp;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.Executor;
-import me.myatminsoe.mdetect.MDetect;
 
-import static com.calamus.easykorean.app.AppHandler.AD_UNIT_ID;
 
 public class MyDiscussionActivity extends AppCompatActivity {
 
@@ -88,7 +81,6 @@ public class MyDiscussionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_discussion);
-        MDetect.INSTANCE.init(this);
         share=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         isVip=share.getBoolean("isVIP",false);
         currentUserId=share.getString("phone","");
@@ -134,13 +126,6 @@ public class MyDiscussionActivity extends AppCompatActivity {
         displacementX=initialProfileX-targetProfileX;
 
 
-        Log.e("actionBarHeight ",actionBarOffset+"");
-        Log.e("initialProfileX ",initialProfileX+"");
-        Log.e("targetProfileX ",targetProfileX+"");
-        Log.e("VerticalOffsetRange ",verticalOffsetRange+"");
-        Log.e("displacementX",displacementX+"");
-        Log.e("targetProfileY ",targetProfileY+"");
-
         lm = new LinearLayoutManager(this){};
         recycler.setLayoutManager(lm);
         // recycler.addItemDecoration(new SpacingItemDecoration(2, XUtils.toPx(Objects.requireNonNull(tth), 2), true));
@@ -153,19 +138,20 @@ public class MyDiscussionActivity extends AppCompatActivity {
                 vipProfile=vip;
                 myBio=bio;
                 profileUrl=profile_url;
+
                 if(cover_url.equals("")){
                     if(currentUserId.equals(userId)) tv_add_cover.setVisibility(View.VISIBLE);
                 }else{
                     AppHandler.setPhotoFromRealUrl(iv_cover_photo,cover_url);
-                    if(currentUserId.equals(userId)) iv_edit_cover_photo.setVisibility(View.VISIBLE);
+                    if(currentUserId.equals(userId)) {
+                        iv_edit_cover_photo.setImageResource(R.drawable.ic_baseline_camera_alt_24);
+                        iv_edit_cover_photo.setVisibility(View.VISIBLE);
+                    }
                     coverUrl=cover_url;
                 }
 
                 if(!profile_url.equals("")) AppHandler.setPhotoFromRealUrl(iv_profile,profile_url);
                 if(vip)iv_blueMark.setVisibility(View.VISIBLE);
-
-
-
             }
         });
 
@@ -243,7 +229,6 @@ public class MyDiscussionActivity extends AppCompatActivity {
                     }
                 }
 
-
                 if(verticalOffset<-100) {
                     isShow = true;
                     iv_blueMark.setVisibility(View.INVISIBLE);
@@ -292,12 +277,22 @@ public class MyDiscussionActivity extends AppCompatActivity {
     }
 
     private boolean isPermissionGranted(){
-        int  readExternalStorage=ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        return  readExternalStorage== PackageManager.PERMISSION_GRANTED;
+        int  readExternalStorage;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES);
+        }else{
+            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        return  readExternalStorage==PackageManager.PERMISSION_GRANTED;
     }
 
     private void takePermission(){
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},101);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_MEDIA_IMAGES},101);
+        }else{
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},101);
+        }
+
     }
 
 
@@ -375,14 +370,16 @@ public class MyDiscussionActivity extends AppCompatActivity {
                     String isVideo=jo.getString("has_video");
                     String viewCount=jo.getString("viewCount");
                     String isLike=jo.getString("is_liked");
+                    int hidden=jo.getInt("hidden");
+                    int blocked=jo.getInt("blocked");
                     long share=jo.getLong("share");
                     int shareCount=jo.getInt("shareCount");
                     Log.e("discuss post id ",postId);
                     NewfeedModel model = new NewfeedModel(userName,userId,userToken,userImage,postId,postBody,posLikes,postComment,postImage,isVip,isVideo,viewCount,isLike,shareCount,share);
-                    postList.add(model);
+                    if(hidden!=1 && blocked!=1) postList.add(model);
                 }
 
-                if(!isVip)loadNativeAds();
+                //if(!isVip)loadNativeAds();
                 adapter.notifyDataSetChanged();
                 loading=true;
             }else {
@@ -393,39 +390,6 @@ public class MyDiscussionActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
             Log.e("DiscussErr ",e.toString());
         }
-
-    }
-
-    private void loadNativeAds() {
-
-        AdLoader adLoader = new AdLoader.Builder(this, AD_UNIT_ID)
-                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
-                    @Override
-                    public void onNativeAdLoaded(@NotNull NativeAd nativeAd) {
-
-                        if(postList.size()>6&&postList.size()<15){
-                            postList.add(4,nativeAd);
-                        }else{
-                            postList.add(nativeAd);
-                        }
-
-                    }
-                })
-                .withAdListener(new AdListener() {
-                    @Override
-                    public void onAdFailedToLoad(LoadAdError adError) {
-
-                    }
-                })
-                .withNativeAdOptions(new NativeAdOptions.Builder()
-                        // Methods in the NativeAdOptions.Builder class can be
-                        // used here to specify individual options settings.
-                        .build())
-
-                .build();
-
-
-        adLoader.loadAd(new AdRequest.Builder().build());
 
     }
 

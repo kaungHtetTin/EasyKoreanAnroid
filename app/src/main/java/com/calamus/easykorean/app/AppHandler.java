@@ -14,13 +14,13 @@ import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import me.myatminsoe.mdetect.MDetect;
-import me.myatminsoe.mdetect.Rabbit;
+
 
 public class AppHandler {
 
 
     public static final String AD_UNIT_ID="ca-app-pub-2472405866346270/3806485083";
+    public static final String REWARDED_AD_UNIT_ID="ca-app-pub-2472405866346270/2271244116";
 
 
     public static void setPhotoFromRealUrl(ImageView iv, String url){
@@ -41,16 +41,11 @@ public class AppHandler {
 
     public static String changeUnicode(String s){
 
-        if(MDetect.INSTANCE.isUnicode()){
-            return s;
-        }else {
-            return Rabbit.zg2uni(s);
-        }
+        return s;
     }
 
     public static String setMyanmar(String s) {
-
-        return MDetect.INSTANCE.getText(s);
+        return s;
     }
 
     public static  String viewCountFormat(int i){
@@ -225,13 +220,7 @@ public class AppHandler {
     }
 
     public static String changeFont(String s){
-        String result;
-        if(MDetect.INSTANCE.isUnicode()){
-            result=s;
-        }else{
-            result= Rabbit.zg2uni(s);
-        }
-        return result;
+        return s;
     }
 
     public static void makeActiveNow(String userId){

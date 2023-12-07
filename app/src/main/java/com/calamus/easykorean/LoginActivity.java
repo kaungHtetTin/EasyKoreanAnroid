@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     //view type variable
     EditText et_phone, et_password;
     Button loginButton;
-    TextView signUpText, callCenter,tv_error,tv_forgetPassword;
+    TextView signUpText,tv_error,tv_forgetPassword;
     ProgressBar loading;
 
     SharedPreferences sharedPreferences;
@@ -46,6 +46,8 @@ public class LoginActivity extends AppCompatActivity {
 
     ImageView iv_login_english,iv_login_japanese,iv_login_chinese;
     LinearLayout orContainer,loginContainer;
+
+    TextView tv_terms,tv_privacy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +63,11 @@ public class LoginActivity extends AppCompatActivity {
         loading = findViewById(R.id.pb_loading);
         loading.setVisibility(View.INVISIBLE);
 
-        callCenter = findViewById(R.id.tv_call_center);
         tv_error=findViewById(R.id.tv_error);
         tv_error.setVisibility(View.INVISIBLE);
         tv_forgetPassword=findViewById(R.id.tv_forget_password);
         postExecutor = ContextCompat.getMainExecutor(this);
+
 
         orContainer=findViewById(R.id.or_container);
         loginContainer=findViewById(R.id.login_with_container);
@@ -85,10 +87,7 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         });
 
-        callCenter.setOnClickListener(v -> {
-            Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse("https://m.me/easykoreancalamus"));
-            startActivity(intent);
-        });
+
 
         tv_forgetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,6 +139,27 @@ public class LoginActivity extends AppCompatActivity {
                     tv_error.setVisibility(View.VISIBLE);
                     tv_error.setText("Can't Login");
                 }
+            }
+        });
+
+        tv_terms=findViewById(R.id.tv_terms);
+        tv_privacy=findViewById(R.id.tv_privacy);
+
+        tv_terms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(LoginActivity.this, WebSiteActivity.class);
+                i.putExtra("link", Routing.TERMS_OF_USE);
+                startActivity(i);
+            }
+        });
+
+        tv_privacy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(LoginActivity.this, WebSiteActivity.class);
+                i.putExtra("link", Routing.PRIVACY_POLICY);
+                startActivity(i);
             }
         });
     }

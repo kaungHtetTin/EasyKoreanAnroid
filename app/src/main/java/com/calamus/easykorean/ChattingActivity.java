@@ -1,6 +1,10 @@
 package com.calamus.easykorean;
 
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -24,6 +28,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
@@ -64,7 +69,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.Executor;
-import me.myatminsoe.mdetect.MDetect;
 import static android.content.ContentValues.TAG;
 import static com.calamus.easykorean.app.AppHandler.changeFont;
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
@@ -127,8 +131,6 @@ public class ChattingActivity extends AppCompatActivity {
         fName=getIntent().getExtras().getString("fName");
         fri_token=getIntent().getExtras().getString("token");
         isChatting=FId;
-
-        MDetect.INSTANCE.init(this);
         chatImageRef= FirebaseStorage.getInstance().getReference().child("Chat Images");
         firebaseDatabase=FirebaseDatabase.getInstance();
 
@@ -156,6 +158,17 @@ public class ChattingActivity extends AppCompatActivity {
             fetchMessageFromLocal();
             swipe.setRefreshing(false);
         }
+
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                isChatting = "";
+                valueEventListener = null;
+                deleteMessageFromFIrebase(myId + FId);
+                setSeenOnLocalConservation();
+                finish();
+            }
+        });
 
     }
 
@@ -278,7 +291,11 @@ public class ChattingActivity extends AppCompatActivity {
         iv_insert_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openGallery();
+                if(isPermissionGranted()){
+                    pickImageFromGallery();
+                }else {
+                    takePermission();
+                }
             }
         });
 
@@ -303,6 +320,43 @@ public class ChattingActivity extends AppCompatActivity {
         });
 
     }
+
+    private boolean isPermissionGranted(){
+        int  readExternalStorage;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES);
+        }else{
+            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        return  readExternalStorage==PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void takePermission(){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_MEDIA_IMAGES},101);
+        }else{
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},101);
+        }
+
+    }
+
+    private void pickImageFromGallery(){
+        mGetContent.launch("image/*");
+    }
+
+    ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+            new ActivityResultCallback<Uri>() {
+                @Override
+                public void onActivityResult(Uri uri) {
+                    // Handle the returned Uri
+                    imageUri=uri;
+                    iv_msg.setVisibility(View.VISIBLE);
+                    iv_msg.setImageURI(imageUri);
+                    iv_cancel.setVisibility(View.VISIBLE);
+                    hasImage=imageUri.toString();
+                }
+            });
+
     private boolean isConservationExist(){
         String query="SELECT*FROM Conservations WHERE fri_id="+FId+" and my_id="+myId;
         Cursor cursor=dbLite.rawQuery(query,null);
@@ -630,13 +684,7 @@ public class ChattingActivity extends AppCompatActivity {
 
     }
 
-    private void openGallery() {
 
-        Intent galleryIntent=new Intent();
-        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-        galleryIntent.setType("image/*");
-        startActivityForResult(galleryIntent,galleryPick);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -644,31 +692,11 @@ public class ChattingActivity extends AppCompatActivity {
 
         if(requestCode==galleryPick && resultCode==RESULT_OK && data!=null){
             imageUri=data.getData();
-            iv_msg.setVisibility(View.VISIBLE);
-            iv_msg.setImageURI(imageUri);
-            iv_cancel.setVisibility(View.VISIBLE);
-            hasImage=imageUri.toString();
+
         }
     }
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
-    {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        int storageRequestCode = 123;
-        if(requestCode== storageRequestCode){
-            if(grantResults.length==2 && grantResults[0]== PackageManager.PERMISSION_GRANTED && grantResults[1]==PackageManager.PERMISSION_GRANTED){
-                
-            }else{
-                if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE) ||   ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) ){
-                    Toast.makeText(this,"Storage permission is required.",Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(this,"Allow storage permission in your phone setting.",Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
-    }
 
     private void sendingImage(String msg,long time){
         StorageReference filePath=chatImageRef.child(time+"");
@@ -820,15 +848,4 @@ public class ChattingActivity extends AppCompatActivity {
         cv.put("seen",2);
         dbLite.update("Conservations",cv,"fri_id="+FId,null);
     }
-
-    @Override
-    public void onBackPressed() {
-        isChatting="";
-        valueEventListener=null;
-        deleteMessageFromFIrebase(myId+FId);
-        super.onBackPressed();
-        setSeenOnLocalConservation();
-
-    }
-
 }

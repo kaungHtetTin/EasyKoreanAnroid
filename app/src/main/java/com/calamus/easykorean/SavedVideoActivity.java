@@ -1,5 +1,6 @@
 package com.calamus.easykorean;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -69,12 +70,14 @@ public class SavedVideoActivity extends AppCompatActivity {
         setUpView();
         setUpCustomAppBar();
 
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                back();
+            }
+        });
     }
 
-    @Override
-    public void onBackPressed() {
-        back();
-    }
 
     @Override
     protected void onResume() {
@@ -89,7 +92,7 @@ public class SavedVideoActivity extends AppCompatActivity {
             layoutFileManager.setVisibility(View.GONE);
             fab.setVisibility(View.VISIBLE);
         }else{
-            super.onBackPressed();
+             finish();
         }
     }
 
@@ -247,7 +250,7 @@ public class SavedVideoActivity extends AppCompatActivity {
                 loadDirectory(destPath);
                 destFolderNames.add(model.getFile().getName());
                 tv_path.setText(navigateCurrentFolder());
-                Log.e("destPath ", destPath);
+
             }
         });
 

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
-
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.calamus.easykorean.MainActivity;
@@ -79,6 +78,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String imageUrl = data.getString("image");
             String timestamp = data.getString("timestamp");
             JSONObject payload = data.getJSONObject("payload");
+            String payloadStr=data.getString("payload");
             String go=payload.getString("go");
 
             SharedPreferences sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
@@ -94,14 +94,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                    pushNotification.putExtra("sender", title);
                    pushNotification.putExtra("message",message);
                    LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
-
                }
-
             } else {
                 // app is in background, show the notification in notification tray
                 Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
                 resultIntent.putExtra("message",go);
-
+                resultIntent.putExtra("payload",payloadStr);
 
                 // check for image attachment
                 if (TextUtils.isEmpty(imageUrl)) {

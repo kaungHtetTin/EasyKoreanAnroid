@@ -19,7 +19,6 @@ import com.calamus.easykorean.models.DayItemModel;
 
 import java.util.ArrayList;
 
-import me.myatminsoe.mdetect.MDetect;
 
 public class DayItemAdapter extends RecyclerView.Adapter<DayItemAdapter.Holder> {
 
@@ -35,8 +34,6 @@ public class DayItemAdapter extends RecyclerView.Adapter<DayItemAdapter.Holder> 
         this.mInflater= LayoutInflater.from(c);
         sharedPreferences=c.getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         currentUserName=sharedPreferences.getString("userName",null);
-        MDetect.INSTANCE.init(c);
-
     }
 
 

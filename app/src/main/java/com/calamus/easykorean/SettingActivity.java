@@ -98,6 +98,14 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
+        //blocked users
+        findViewById(R.id.setting_blocked_user).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(SettingActivity.this,BlockUserActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
         //Sign Out

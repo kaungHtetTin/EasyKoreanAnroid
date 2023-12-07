@@ -1,6 +1,9 @@
 package com.calamus.easykorean;
 
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -29,13 +32,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -55,12 +51,8 @@ import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.models.ChatModel;
 import com.calamus.easykorean.models.ConservationModel;
 import com.calamus.easykorean.app.MyHttp;
-
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
-
-import me.myatminsoe.mdetect.MDetect;
-
 import static com.calamus.easykorean.ChattingActivity.fImage;
 import static com.calamus.easykorean.app.AppHandler.changeFont;
 
@@ -91,8 +83,6 @@ public class TeacherActivity extends AppCompatActivity {
     boolean isVip;
     String team;
 
-    private InterstitialAd interstitialAd;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,12 +94,10 @@ public class TeacherActivity extends AppCompatActivity {
         myName=sharedPreferences.getString("Username",null);
         my_token=sharedPreferences.getString("token","");
         isVip=sharedPreferences.getBoolean("isVIP",false);
-
         team=getIntent().getExtras().getString("team");
 
 
         fImage=getIntent().getExtras().getString("imageUrl");
-        MDetect.INSTANCE.init(this);
         chatImageRef= FirebaseStorage.getInstance().getReference().child("Chat Images");
         db= FirebaseDatabase.getInstance().getReference().child(Routing.MAJOR).child(team).child("ChatRoom");
         dbc=FirebaseDatabase.getInstance().getReference().child(Routing.MAJOR).child(team).child("Conservation");
@@ -132,23 +120,6 @@ public class TeacherActivity extends AppCompatActivity {
         fetchMessage();
         postExecutor = ContextCompat.getMainExecutor(this);
 
-        MobileAds.initialize(this, initializationStatus -> {});
-        if(!isVip){
-            Thread timer=new Thread(){
-                @Override
-                public void run() {
-                    super.run();
-                    try {
-                        sleep(4000);
-                        postExecutor.execute(() -> loadAds());
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-
-            timer.start();
-        }
 
     }
 
@@ -242,7 +213,11 @@ public class TeacherActivity extends AppCompatActivity {
         iv_insert_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openGallery();
+                if(isPermissionGranted()){
+                    pickImageFromGallery();
+                }else {
+                    takePermission();
+                }
             }
         });
 
@@ -392,99 +367,51 @@ public class TeacherActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void openGallery() {
-
-        Intent galleryIntent=new Intent();
-        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-        galleryIntent.setType("image/*");
-        startActivityForResult(galleryIntent,galleryPick);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode==galleryPick && resultCode==RESULT_OK && data!=null){
-            imageUri=data.getData();
-            iv_msg.setVisibility(View.VISIBLE);
-            iv_msg.setImageURI(imageUri);
-            iv_cancel.setVisibility(View.VISIBLE);
-            hasImage=imageUri.toString();
+    private boolean isPermissionGranted(){
+        int  readExternalStorage;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES);
+        }else{
+            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
         }
+        return  readExternalStorage==PackageManager.PERMISSION_GRANTED;
     }
 
+    private void takePermission(){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_MEDIA_IMAGES},101);
+        }else{
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},101);
+        }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
-    {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        int storageRequestCode = 123;
-        if(requestCode== storageRequestCode){
-            if(grantResults.length==2 && grantResults[0]== PackageManager.PERMISSION_GRANTED && grantResults[1]==PackageManager.PERMISSION_GRANTED){
+    }
 
+    private void pickImageFromGallery(){
+        mGetContent.launch("image/*");
+    }
 
-            }else{
-                if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE) ||   ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) ){
-                    Toast.makeText(this,"Storage permission is required.",Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(this,"Allow storage permission in your phone setting.",Toast.LENGTH_SHORT).show();
+    ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+            new ActivityResultCallback<Uri>() {
+                @Override
+                public void onActivityResult(Uri uri) {
+                    // Handle the returned Uri
+                    imageUri=uri;
+                    iv_msg.setVisibility(View.VISIBLE);
+                    iv_msg.setImageURI(imageUri);
+                    iv_cancel.setVisibility(View.VISIBLE);
+                    hasImage=imageUri.toString();
                 }
-            }
-        }
-    }
+            });
+
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
 
-            if (interstitialAd != null) {
-                interstitialAd.show(TeacherActivity.this);
-            } else {
-                // Proceed to the next level.
-                finish();
-            }
+            finish();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (interstitialAd != null) {
-            interstitialAd.show(TeacherActivity.this);
-        } else {
-
-            super.onBackPressed();
-
-        }
-    }
-
-    private void loadAds(){
-
-        FullScreenContentCallback fullScreenContentCallback = new FullScreenContentCallback() {
-            @Override
-            public void onAdDismissedFullScreenContent() {
-                interstitialAd = null;
-                // Proceed to the next level.
-                finish();
-            }
-        };
-
-        InterstitialAd.load(
-                this,
-                "ca-app-pub-2472405866346270/9132394579",
-                new AdRequest.Builder().build(),
-                new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd ad) {
-                        interstitialAd = ad;
-                        interstitialAd.setFullScreenContentCallback(fullScreenContentCallback);
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError adError) {
-                        // Code to be executed when an ad request fails.
-                    }
-                });
     }
 
 }

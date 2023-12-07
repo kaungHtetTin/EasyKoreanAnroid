@@ -64,6 +64,14 @@
             app:drawableStartCompat="@drawable/ic_setting_rate_us" />
 
         <TextView
+            android:id="@+id/setting_blocked_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/MenuText"
+            android:text=" Blocked users"
+            app:drawableStartCompat="@drawable/ic_menu_block_user" />
+
+        <TextView
             android:id="@+id/setting_sign_out"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

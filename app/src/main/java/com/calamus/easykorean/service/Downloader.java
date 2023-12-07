@@ -2,13 +2,18 @@ package com.calamus.easykorean.service;
 
 import static com.calamus.easykorean.ApplicationClass.CHANNEL_ID_3;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
 import com.calamus.easykorean.MainActivity;
 import com.calamus.easykorean.R;
 
@@ -21,7 +26,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Downloader extends Thread{
+public class Downloader extends Thread {
 
 
     String downloadUrl;
@@ -34,24 +39,24 @@ public class Downloader extends Thread{
     DownloadCompleteListener callBack;
     ReentrantLock lock;
     long threadId;
-    boolean pending=true,userCancel=false;
+    boolean pending = true, userCancel = false;
 
     Notification notification;
     NotificationManagerCompat notificationManagerCompat;
     NotificationCompat.Builder mBuilder;
 
     public Downloader(Context c, String downloadUrl, String dir, String filename, String intentMessage,
-                      ReentrantLock lock, DownloadCompleteListener callBack){
-        this.c=c;
-        this.downloadUrl=downloadUrl;
-        this.dir=dir;
-        this.filename=filename;
-        this.intentMessage=intentMessage;
-        this.lock=lock;
-        this.callBack=callBack;
+                      ReentrantLock lock, DownloadCompleteListener callBack) {
+        this.c = c;
+        this.downloadUrl = downloadUrl;
+        this.dir = dir;
+        this.filename = filename;
+        this.intentMessage = intentMessage;
+        this.lock = lock;
+        this.callBack = callBack;
 
-        Notify(c,"Downloading",filename);
-        threadId=getId();
+        Notify(c, "Downloading", filename);
+        threadId = getId();
     }
 
 
@@ -59,37 +64,47 @@ public class Downloader extends Thread{
     public void run() {
         super.run();
         int count;
-        Log.e("ThreadID "+threadId," Wait for downloading");
+        Log.e("ThreadID " + threadId, " Wait for downloading");
         this.lock.lock();
-        pending=false;
+        pending = false;
 
-        Log.e("ThreadID "+threadId," start downloading");
-        try{
-            URL url=new URL(downloadUrl);
-            URLConnection connection=url.openConnection();
+        Log.e("ThreadID " + threadId, " start downloading");
+        try {
+            URL url = new URL(downloadUrl);
+            URLConnection connection = url.openConnection();
             connection.connect();
 
-            InputStream input=new BufferedInputStream(url.openStream(),8192);
-            File folder=new File(dir);
-            if(!folder.exists()) folder.mkdirs();
-            File storagePath= new File(dir,filename);
+            InputStream input = new BufferedInputStream(url.openStream(), 8192);
+            File folder = new File(dir);
+            if (!folder.exists()) folder.mkdirs();
+            File storagePath = new File(dir, filename);
 
-            OutputStream output=new FileOutputStream(storagePath);
-            byte[] data =new byte[1024];
-            long total =0;
-            fileSize=connection.getContentLength();
-            while ((count=input.read(data))!=-1){
-                if(userCancel){
+            OutputStream output = new FileOutputStream(storagePath);
+            byte[] data = new byte[1024];
+            long total = 0;
+            fileSize = connection.getContentLength();
+            while ((count = input.read(data)) != -1) {
+                if (userCancel) {
                     this.lock.unlock();
-                    if(storagePath.exists())storagePath.delete();
+                    if (storagePath.exists()) storagePath.delete();
                     return;
                 }
-                total+=count;
-                progress=total*100/fileSize;
-                mBuilder.setProgress(100,(int)progress,false);
-                mBuilder.setContentTitle("Download : "+progress+" %");
-                callBack.onProgress(threadId,(int)progress);
-                notificationManagerCompat.notify(filename.length(),mBuilder.build());
+                total += count;
+                progress = total * 100 / fileSize;
+                mBuilder.setProgress(100, (int) progress, false);
+                mBuilder.setContentTitle("Download : " + progress + " %");
+                callBack.onProgress(threadId, (int) progress);
+                if (ActivityCompat.checkSelfPermission(c, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                notificationManagerCompat.notify(filename.length(), mBuilder.build());
                 output.write(data,0,count);
             }
 
@@ -128,7 +143,7 @@ public class Downloader extends Thread{
                 mContext,
                 0,
                 intent,
-                PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_UPDATE_CURRENT |PendingIntent.FLAG_MUTABLE
         );
 
         notification = mBuilder.setSmallIcon(R.mipmap.kommmainicon)

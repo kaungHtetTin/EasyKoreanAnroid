@@ -1,18 +1,22 @@
 package com.calamus.easykorean.adapters;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,12 +32,10 @@ import com.calamus.easykorean.app.MyHttp;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
-import me.myatminsoe.mdetect.MDetect;
 import static com.calamus.easykorean.LessonActivity.course_id;
 import static com.calamus.easykorean.LessonActivity.fragmentId;
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
-
-public class RelativeLessonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class RelativeLessonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private Activity c;
     private ArrayList<LessonModel> data;
@@ -47,6 +49,8 @@ public class RelativeLessonAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     long nowPlayingId;
     boolean isMember;
 
+    LessonModel clickedLesson;
+
     public RelativeLessonAdapter(Activity c, ArrayList<LessonModel> data,long nowPlayingId,boolean videoChannel,CallBack callBack) {
         this.data = data;
         this.c = c;
@@ -56,7 +60,6 @@ public class RelativeLessonAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         this.videoChannel=videoChannel;
         share=c.getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         currentUserId=share.getString("phone","901");
-        MDetect.INSTANCE.init(c);
         postExecutor= ContextCompat.getMainExecutor(c);
         isMember=share.getBoolean("course"+course_id,false);
 
@@ -114,8 +117,15 @@ public class RelativeLessonAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             if(model.isVideo()){
                 lessonHolder.iv_video_circle.setVisibility(View.VISIBLE);
-                lessonHolder.ibt_download.setVisibility(View.VISIBLE);
                 AppHandler.setPhotoFromRealUrl(lessonHolder.iv,model.getThumbnail());
+                if(model.isDownloaded()){
+                    lessonHolder.ibt_play.setVisibility(View.VISIBLE);
+                    lessonHolder.ibt_download.setVisibility(View.GONE);
+                }else{
+                    lessonHolder.ibt_download.setVisibility(View.VISIBLE);
+                }
+
+
             }else {
                 lessonHolder.iv_video_circle.setVisibility(View.GONE);
                 AppHandler.setPhotoFromRealUrl(lessonHolder.iv,model.getImage_url());
@@ -134,7 +144,7 @@ public class RelativeLessonAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public class Holder extends RecyclerView.ViewHolder {
         TextView tvTitle,tv_duration;
         ImageView iv,iv_learned,iv_video_circle,iv_lock;
-        ImageView ibt_download;
+        ImageView ibt_download,ibt_play;
         ConstraintLayout layout;
 
         public Holder(final View view) {
@@ -144,6 +154,7 @@ public class RelativeLessonAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             iv = view.findViewById(R.id.iv);
             iv_learned=view.findViewById(R.id.iv_learned);
             ibt_download=view.findViewById(R.id.ib_download);
+            ibt_play=view.findViewById(R.id.ibt_play);
             tv_duration=view.findViewById(R.id.tv_duration);
             iv_video_circle=view.findViewById(R.id.iv_video_circle);
             iv_lock=view.findViewById(R.id.iv_lock);
@@ -175,25 +186,35 @@ public class RelativeLessonAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
                 @Override
                 public void onClick(View p1) {
-                    LessonModel model =data.get(getAbsoluteAdapterPosition());
+                    clickedLesson =data.get(getAbsoluteAdapterPosition());
                     boolean isVip=share.getBoolean("isVIP",false);
 
-
                     if(fragmentId==1){
-                        if(!model.isVip()||isMember){
-                            go(model);
-                            model.setLearned(true);
+                        if(isMember){
+                            go(clickedLesson);
+                            clickedLesson.setLearned(true);
                         }else{
-                            String msg="This Lesson is only for VIP user.\n\nDo you want to contact the Calamus Education for VIP Registration";
-                            showVIPRegistrationDialog(msg);
+                            if(clickedLesson.isVip()){
+                                String msg="This Lesson is only for VIP user.\n\nDo you want to contact the Calamus Education for VIP Registration";
+                                showVIPRegistrationDialog(msg);
+                            }else{
+                                go(clickedLesson);
+                                clickedLesson.setLearned(true);
+                            }
                         }
+
                     }else{
-                        if(!model.isVip()||isVip){
-                            go(model);
-                            model.setLearned(true);
+                        if(isVip){
+                            go(clickedLesson);
+                            clickedLesson.setLearned(true);
                         }else{
-                            String msg="This Lesson is only for VIP user.\n\nDo you want to contact the Calamus Education for VIP Registration";
-                            showVIPRegistrationDialog(msg);
+                            if(clickedLesson.isVip()){
+                                String msg="This Lesson is only for VIP user.\n\nDo you want to contact the Calamus Education for VIP Registration";
+                                showVIPRegistrationDialog(msg);
+                            }else{
+                                go(clickedLesson);
+                                clickedLesson.setLearned(true);
+                            }
                         }
                     }
                 }
@@ -259,7 +280,6 @@ public class RelativeLessonAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         });
         myDialog.showMyDialog();
     }
-
 
 
     public interface CallBack{

@@ -28,10 +28,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.hbisoft.pickit.PickiT;
 import com.hbisoft.pickit.PickiTCallbacks;
 import com.calamus.easykorean.adapters.CommentAdapter;
@@ -94,13 +90,7 @@ public class CommentActivity extends AppCompatActivity implements PickiTCallback
         action="0";
         CorR=" commented on your post";
 
-        MobileAds.initialize(this, initializationStatus -> {});
-        AdView adView = findViewById(R.id.adview);
-        if(!b){
-            adView.setVisibility(View.VISIBLE);
-            AdRequest request=new AdRequest.Builder().build();
-            adView.loadAd(request);
-        }
+
     }
 
     private void setUpCustomAppBar(){

@@ -5,7 +5,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,22 +13,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdLoader;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.nativead.NativeAd;
-import com.google.android.gms.ads.nativead.NativeAdOptions;
 import com.calamus.easykorean.adapters.DayAdapter;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.models.DayModel;
 import com.calamus.easykorean.models.ExtraCourseModel;
 import com.calamus.easykorean.app.MyHttp;
-
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -38,7 +26,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.calamus.easykorean.app.AppHandler.AD_UNIT_ID;
 
 public class DayListActivity extends AppCompatActivity {
 
@@ -75,14 +62,6 @@ public class DayListActivity extends AppCompatActivity {
 
         startCourse();
 
-        MobileAds.initialize(this, initializationStatus -> {});
-        AdView adView = findViewById(R.id.adview);
-        if(!isVip){
-            adView.setVisibility(View.VISIBLE);
-            AdRequest request=new AdRequest.Builder().build();
-            adView.loadAd(request);
-        }
-
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -118,7 +97,7 @@ public class DayListActivity extends AppCompatActivity {
             @Override
             public int getSpanSize(int position) {
                 Object o=dayLists.get(position);
-                if(o instanceof String  || o instanceof NativeAd){
+                if(o instanceof String ){
                     return 4;
                 }else if(o instanceof DayModel)
                     return 2;
@@ -228,44 +207,11 @@ public class DayListActivity extends AppCompatActivity {
                 dayLists.add(new DayModel(day+"",course_id,jsonArray));
             }
             adapter.notifyDataSetChanged();
-            if(!isVip)loadNativeAds();
 
         }catch (Exception e){
 
             swipe.setRefreshing(false);
             // Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void loadNativeAds() {
-
-        AdLoader adLoader = new AdLoader.Builder(this, AD_UNIT_ID)
-                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
-                    @Override
-                    public void onNativeAdLoaded(@NotNull NativeAd nativeAd) {
-
-                        if(dayLists.size()>10){
-                            dayLists.add(10,nativeAd);
-                            adapter.notifyDataSetChanged();
-                        }
-
-                    }
-                })
-                .withAdListener(new AdListener() {
-                    @Override
-                    public void onAdFailedToLoad(LoadAdError adError) {
-
-                    }
-                })
-                .withNativeAdOptions(new NativeAdOptions.Builder()
-                        // Methods in the NativeAdOptions.Builder class can be
-                        // used here to specify individual options settings.
-                        .build())
-
-                .build();
-
-
-        adLoader.loadAd(new AdRequest.Builder().build());
-
     }
 }

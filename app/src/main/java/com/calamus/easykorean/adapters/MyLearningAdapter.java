@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,6 +120,11 @@ public class MyLearningAdapter extends   RecyclerView.Adapter<RecyclerView.ViewH
             pb_enroll=view.findViewById(R.id.progressBar);
             iv_cover=view.findViewById(R.id.iv_course_cover);
             mLayout=view.findViewById(R.id.layout_course_item);
+
+            tv_course_title.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+            tv_course_title.setMarqueeRepeatLimit(-1);
+            tv_course_title.setSingleLine(true);
+            tv_course_title.setSelected(true);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override

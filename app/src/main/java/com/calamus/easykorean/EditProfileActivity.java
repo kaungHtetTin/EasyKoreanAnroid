@@ -1,6 +1,9 @@
 package com.calamus.easykorean;
 
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -33,19 +36,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
 import java.util.concurrent.Executor;
-import me.myatminsoe.mdetect.MDetect;
 
 
 public class EditProfileActivity extends AppCompatActivity {
 
     EditText et_name,et_email,et_education,et_work,et_region;
-    ImageView iv;
+    ImageView iv,iv_profile_edit;
     ScrollView layout_edit_profile;
 
     ProgressBar pb;
     private final int galleryPick=1;
     private final int storageRequestCode=123;
-    Uri imageUri;
     String ivName="",imagePath="",userPhone,userName,userEmail,G_gender,born,month,day,bd_d,bd_m,bd_y,userWork,userEducation,userRegion,imageUrl;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -67,7 +68,6 @@ public class EditProfileActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).hide();
         sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         editor=sharedPreferences.edit();
-        MDetect.INSTANCE.init(this);
         postExecutor = ContextCompat.getMainExecutor(this);
         userPhone=sharedPreferences.getString("phone",null);
 
@@ -105,6 +105,7 @@ public class EditProfileActivity extends AppCompatActivity {
         tv_edit_bio=findViewById(R.id.tv_edit_bio);
         tv_bio=findViewById(R.id.tv_bio);
         layout_edit_profile=findViewById(R.id.layout_edit_profile);
+        iv_profile_edit=findViewById(R.id.iv_profile_edit);
 
         Spinner sp_birth_year = findViewById(R.id.sp_birth_year);
         Spinner sp_birth_month = findViewById(R.id.sp_birth_month);
@@ -238,6 +239,14 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
+        iv_profile_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(isPermissionGranted())openGallery();
+                else takePermission();
+            }
+        });
+
         tv_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -275,35 +284,42 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void takePermission(){
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},storageRequestCode);
+    private boolean isPermissionGranted(){
+        int  readExternalStorage;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES);
+        }else{
+            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        return  readExternalStorage==PackageManager.PERMISSION_GRANTED;
     }
 
-    private  boolean isPermissionGranted(){
-        int readExternalStorage=ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE);
-        return readExternalStorage==PackageManager.PERMISSION_GRANTED;
+    private void takePermission(){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_MEDIA_IMAGES},101);
+        }else{
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},101);
+        }
+
     }
 
 
     private void openGallery() {
-        Intent galleryIntent=new Intent();
-        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-        galleryIntent.setType("image/*");
-        startActivityForResult(galleryIntent,galleryPick);
+        mGetContent.launch("image/*");
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode==galleryPick && resultCode==RESULT_OK && data!=null){
-            imageUri=data.getData();
-            iv.setImageURI(imageUri);
-            imagePath= RealPathUtil.getRealPath(this,imageUri);
-            ivName=imagePath.substring(imagePath.lastIndexOf("/")+1);
-
-        }
-    }
+    ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+            new ActivityResultCallback<Uri>() {
+                @Override
+                public void onActivityResult(Uri uri) {
+                    // Handle the returned Uri
+                    if(uri!=null){
+                        imagePath= RealPathUtil.getRealPath(EditProfileActivity.this,uri);
+                        iv.setImageURI(uri);
+                        ivName=imagePath.substring(imagePath.lastIndexOf("/")+1);
+                    }
+                }
+            });
 
 
     private void getData(){

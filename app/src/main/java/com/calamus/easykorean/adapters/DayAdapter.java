@@ -16,8 +16,6 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.gms.ads.nativead.NativeAd;
 import com.calamus.easykorean.DayListActivity;
 import com.calamus.easykorean.LessonActivity;
 import com.calamus.easykorean.R;
@@ -32,8 +30,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import me.myatminsoe.mdetect.MDetect;
-
 public class DayAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Activity c;
@@ -46,7 +42,6 @@ public class DayAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.data=data;
         this.c=c;
         this.mInflater= LayoutInflater.from(c);
-        MDetect.INSTANCE.init(c);
         this.courseTitle=courseTitle;
         this.themeColor=themeColor;
     }
@@ -61,9 +56,6 @@ public class DayAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }else if(viewType==2){
             View view = mInflater.inflate(R.layout.item_lesson_category, parent, false);
             return new MainCategory(view);
-        }else if(viewType==3){
-            View view = mInflater.inflate(R.layout.item_native_ads, parent, false);
-            return new NativeAdsHolder(view,c);
         }else{
             View view = mInflater.inflate(R.layout.item_day, parent, false);
             return new DayHolder(view);
@@ -74,8 +66,7 @@ public class DayAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public int getItemViewType(int position) {
         if(data.get(position) instanceof  String) return 1;
         else  if (data.get(position) instanceof ExtraCourseModel) return 2;
-        else if(data.get(position) instanceof NativeAd)return 3;
-        else return 4;
+        else return 3;
     }
 
     @Override
@@ -91,14 +82,6 @@ public class DayAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             MainCategory mainCategory=(MainCategory)holder;
             mainCategory.tv.setText(model.getTitle());
             AppHandler.setPhotoFromRealUrl(mainCategory.iv,model.getImage_url());
-
-        }else if(data.get(position)instanceof NativeAd){
-            NativeAdsHolder nativeAdsHolder=(NativeAdsHolder)holder;
-            com.google.android.gms.ads.nativead.NativeAd nativeAd=(com.google.android.gms.ads.nativead.NativeAd)data.get(position);
-            nativeAdsHolder.populateNativeAdView(nativeAd, nativeAdsHolder.adView);
-            nativeAdsHolder.adView.setNativeAd(nativeAd);
-            nativeAdsHolder.frameLayout.removeAllViews();
-            nativeAdsHolder.frameLayout.addView(nativeAdsHolder.adView);
 
         }else {
             try{

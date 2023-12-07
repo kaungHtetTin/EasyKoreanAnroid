@@ -52,6 +52,7 @@ public class Routing {
     public static final String EDIT_POST=DOMAIN_API+"/posts/edit";
     public static final String GET_VIDEO_URL=DOMAIN_API+"/posts/videourl";
     public static final String GET_SHARE_CONTENT=DOMAIN_API+"/posts/share-content";
+    public static final String HIDE_POST=DOMAIN_API+"/posts/hide";
 
     //comment routing
     public static final String FETCH_COMMENT=DOMAIN_API+"/comments";
@@ -78,6 +79,8 @@ public class Routing {
 
     //user routing
     public static final String SEARCHING=DOMAIN_API+"/search?mCode="+MAJOR_CODE+"&search=";
+    public static final String BLOCK_USER=DOMAIN_API+"/learners/block";
+    public static final String UNBLOCK_USER=DOMAIN_API+"/learners/unblock";
 
 
     //app routing
@@ -123,4 +126,7 @@ public class Routing {
 
     public static final String STUDY_RECORD_A_LESSON=DOMAIN_API+"/studyalesson";
     public static final String RECORD_A_CLICK=DOMAIN_API+"/click/korean";
+
+    public static final String TERMS_OF_USE="https://www.calamuseducation.com/calamus-v2/terms-of-use";
+    public static final String PRIVACY_POLICY="https://www.calamuseducation.com/calamus-v2/privacy-policy";
 }

@@ -49,8 +49,6 @@ import com.calamus.easykorean.app.MyHttp;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
-import me.myatminsoe.mdetect.MDetect;
-
 import static com.calamus.easykorean.app.AppHandler.myAdClick;
 import static com.calamus.easykorean.app.AppHandler.setPhotoFromRealUrl;
 
@@ -74,7 +72,6 @@ public  class NewFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         NewFeedAdapter.data = data;
         this.c = c;
         this.mInflater = LayoutInflater.from(c);
-        MDetect.INSTANCE.init(c);
         sharedPreferences=c.getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         imagePath=sharedPreferences.getString("imageUrl",null);
         notiRedMark=sharedPreferences.getBoolean("notiRedMark",false);

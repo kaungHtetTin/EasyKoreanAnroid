@@ -7,14 +7,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,9 +28,13 @@ import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,15 +45,10 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+
+import com.calamus.easykorean.app.FileManager;
+import com.calamus.easykorean.models.FileModel;
+import com.calamus.easykorean.models.SavedVideoModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.hbisoft.pickit.PickiT;
@@ -64,10 +66,11 @@ import com.calamus.easykorean.service.MusicService;
 import com.calamus.easykorean.app.MyHttp;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.Executor;
-import me.myatminsoe.mdetect.MDetect;
 
 import static com.calamus.easykorean.app.AppHandler.changeUnicode;
 import static com.calamus.easykorean.app.AppHandler.formatTime;
@@ -77,6 +80,7 @@ import static com.calamus.easykorean.app.AppHandler.viewCountFormat;
 public class VimeoPlayerActivity extends AppCompatActivity implements PickiTCallbacks {
 
     WebView wv;
+    VideoView videoView;
     TextView tv_title,tv_mini_title,tv_react,tv_comment,tv_share,tv_view,tv_related_lesson,
             tv_description;
     RecyclerView recyclerViewLesson;
@@ -96,22 +100,26 @@ public class VimeoPlayerActivity extends AppCompatActivity implements PickiTCall
     String isLiked,postLikes;
     String timeCheck="";
 
-    InterstitialAd interstitialAd;
     int reactCount;
-    String videoUrl="";
+    String videoUrl="",folderName;
     Executor postExecutor;
     NotificationController notificationController;
     PickiT pickiT;
     String parentCommentID="0";
-    boolean iframeLoaded,postLoaded,videoChannel;
+    boolean iframeLoaded,postLoaded,videoChannel,isDownloadedVideo;
+
+    Uri localVideoUri;
+    MediaController mediaController;
+
+    String rootDir;
+    FileManager fileManager;
+    ArrayList<FileModel> downloadedVideoFiles =new ArrayList<>();
 
     @SuppressLint("StaticFieldLeak")
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_vimeo_player);
-
-        MDetect.INSTANCE.init(this);
         sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         currentUserName=sharedPreferences.getString("Username",null);
         isVIP=sharedPreferences.getBoolean("isVIP",false);
@@ -123,6 +131,21 @@ public class VimeoPlayerActivity extends AppCompatActivity implements PickiTCall
         relatedLesson=getIntent().getExtras().getString("lessonJSON",null);
         post_description=getIntent().getExtras().getString("post_description","");
         videoChannel=getIntent().getExtras().getBoolean("videoChannel");
+        isDownloadedVideo=getIntent().getBooleanExtra("downloaded",false);
+        folderName=getIntent().getExtras().getString("folderName","");
+
+        rootDir=getExternalFilesDir(Environment.DIRECTORY_MOVIES).getPath();
+        fileManager=new FileManager(this);
+        Log.e("Root dir",rootDir + "/" + folderName);
+        fileManager.loadFiles(new File(rootDir + "/" + folderName), new FileManager.OnFileLoading() {
+            @Override
+            public void onLoaded(ArrayList<FileModel> files) {
+                downloadedVideoFiles.addAll(files);
+                setRelatedLesson();
+            }
+        });
+
+
         a=getIntent().getExtras().getLong("time");
 
 
@@ -135,45 +158,11 @@ public class VimeoPlayerActivity extends AppCompatActivity implements PickiTCall
 
         getVideoData();
 
-
-        MobileAds.initialize(this,new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {}
-        });
-        AdView adView = findViewById(R.id.adview);
-        if(!isVIP){
-            adView.setVisibility(View.VISIBLE);
-            AdRequest request=new AdRequest.Builder().build();
-            adView.loadAd(request);
-
-        }
-
-
-//        card_reatCount.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                Intent intent=new Intent(VimeoPlayerActivity.this, LikeListActivity.class);
-//                intent.putExtra("contentId",a+"");
-//                intent.putExtra("fetch", Routing.FETCH_POST_LIKE);
-//                startActivity(intent);
-//            }
-//        });
-
         Intent intent=new Intent(this, MusicService.class);
         stopService(intent);
 
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        isTimeToShowAds=false;
-//        if (interstitialAd != null) {
-//            interstitialAd.show(VimeoPlayerActivity.this);
-//        } else {
-//            super.onBackPressed();
-//        }
-//    }
 
     private void setUpView(){
         wv=findViewById(R.id.wv_vimeo);
@@ -190,8 +179,15 @@ public class VimeoPlayerActivity extends AppCompatActivity implements PickiTCall
         vimeoLayout=findViewById(R.id.vimeo_layout);
         pb_vimeo=findViewById(R.id.pb_vimeo);
         pb_video_frame=findViewById(R.id.pb_video_frame);
+        videoView=findViewById(R.id.videoView);
+
         vimeoLayout.setVisibility(View.GONE);
         tv_description.setText(post_description);
+
+        mediaController = new MediaController(this);
+        mediaController.setAnchorView(videoView);
+        videoView.setMediaController(mediaController);
+
         wv.getSettings().setJavaScriptEnabled(true);
         wv.setWebViewClient(new WebViewClient() {
             public void onPageFinished(WebView view,String url){
@@ -199,11 +195,25 @@ public class VimeoPlayerActivity extends AppCompatActivity implements PickiTCall
                 loadVideoContent();
             }
         });
-        wv.setVisibility(View.VISIBLE);
-        wv.loadUrl(Routing.PLAY_VIDEO+"?post_id="+a);
+
+        if(isDownloadedVideo){
+            wv.setVisibility(View.GONE);
+            videoView.setVisibility(View.VISIBLE);
+            localVideoUri=(Uri)getIntent().getExtras().get("localVideoUri");
+            videoView.setVideoURI(localVideoUri);
+            defineVideoViewHeight();
+            videoView.start();
+            iframeLoaded=true;
+            postLoaded=true;
+            loadVideoContent();
+
+        }else{
+            videoView.setVisibility(View.GONE);
+            wv.setVisibility(View.VISIBLE);
+            wv.loadUrl(Routing.PLAY_VIDEO+"?post_id="+a);
+        }
 
 
-        setRelatedLesson();
 
         if(!timeCheck.equals("")&&!timeCheck.equals("0"))showCommentDialog();
 
@@ -243,16 +253,6 @@ public class VimeoPlayerActivity extends AppCompatActivity implements PickiTCall
             }
         });
 
-
-
-//        ib_dictionary.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                DictionaryHandler dictionaryHandler=new DictionaryHandler(VimeoPlayerActivity.this);
-//                dictionaryHandler.showDictionaryDialog();
-//            }
-//        });
-
         tv_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -263,6 +263,37 @@ public class VimeoPlayerActivity extends AppCompatActivity implements PickiTCall
 
     }
 
+
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        Log.d("tag", "config changed");
+        super.onConfigurationChanged(newConfig);
+
+        int orientation = newConfig.orientation;
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            Log.d("tag", "Portrait");
+            defineVideoViewHeight();
+        }
+
+        else if (orientation == Configuration.ORIENTATION_LANDSCAPE){
+            Log.d("tag", "Landscape");
+            defineVideoViewHeight();
+        }
+
+        else
+            Log.w("tag", "other: " + orientation);
+    }
+
+    private void defineVideoViewHeight(){
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels;
+        int height= (width*9)/16;
+        videoView.setLayoutParams(new RelativeLayout.LayoutParams(width,height));
+    }
 
     private void setRelatedLesson(){
         if(relatedLesson==null){
@@ -275,11 +306,26 @@ public class VimeoPlayerActivity extends AppCompatActivity implements PickiTCall
                 public void onClick(LessonModel model) {
                     iframeLoaded=false;
                     postLoaded=false;
+
+                    if(model.isDownloaded()){
+                        wv.setVisibility(View.GONE);
+                        videoView.setVisibility(View.VISIBLE);
+
+                        videoView.setVideoURI(model.getVideoModel().getUri());
+                        defineVideoViewHeight();
+                        videoView.start();
+                        iframeLoaded=true;
+                        postLoaded=true;
+                        loadVideoContent();
+                    }else{
+                        pb_video_frame.setVisibility(View.VISIBLE);
+                        wv.setVisibility(View.VISIBLE);
+                        videoView.setVisibility(View.GONE);
+                        wv.loadUrl(Routing.PLAY_VIDEO+"?post_id="+a);
+                    }
                     videoId=model.getLink();
                     a=model.getTime();
                     timeCheck="0";
-                    pb_video_frame.setVisibility(View.VISIBLE);
-                    wv.loadUrl(Routing.PLAY_VIDEO+"?post_id="+a);
                     getVideoData();
                 }
 
@@ -293,7 +339,6 @@ public class VimeoPlayerActivity extends AppCompatActivity implements PickiTCall
             recyclerViewLesson.setAdapter(lessonAdapter);
 
             try {
-                Log.e("RelatedLesson ",relatedLesson);
                 JSONArray ja=new JSONArray(relatedLesson);
                 for(int i=0;i<ja.length();i++){
                     JSONObject jo=ja.getJSONObject(i);
@@ -303,14 +348,33 @@ public class VimeoPlayerActivity extends AppCompatActivity implements PickiTCall
                     String title_mini=jo.getString("title_mini");
                     String image_url=jo.getString("image_url");
                     String thumbnail=jo.getString("thumbnail");
-                    String category=jo.getString("category");
                     boolean isVideo= jo.getString("isVideo").equals("1");
                     boolean isVip= jo.getString("isVip").equals("1");
                     boolean learned=jo.getString("learned").equals("1");
                     long time=jo.getLong("date");
                     int duration=jo.getInt("duration");
 
-                    relatedLessons.add(new LessonModel(id,link,title,title_mini,isVideo,isVip,time,learned,image_url,thumbnail,duration,category));
+                    LessonModel model=new LessonModel(id,link,title,title_mini,isVideo,isVip,time,learned,
+                            image_url,thumbnail,duration,folderName);
+
+                    if(isVideo){
+                        String checkTitle=title.replace("/"," ");
+                        checkTitle=checkTitle+".mp4";
+                        Log.e("downloadVideo list zie ",downloadedVideoFiles.size()+"");
+                        if(downloadedVideoFiles.size()>0){
+                            for(int j=0;j<downloadedVideoFiles.size();j++){
+                                FileModel file=downloadedVideoFiles.get(j);
+                                if(file.getFile().getName().equals(checkTitle)){
+                                    model.setDownloaded(true);
+                                    model.setVideoModel((SavedVideoModel) file);
+                                    Log.e("Downloaded ", checkTitle + " is downloaded");
+
+                                }
+                            }
+                        }
+                    }
+
+                    relatedLessons.add(model);
                 }
                 lessonAdapter.notifyDataSetChanged();
 
@@ -322,9 +386,8 @@ public class VimeoPlayerActivity extends AppCompatActivity implements PickiTCall
         }
     }
 
-
     public String setMyanmar(String s) {
-        return MDetect.INSTANCE.getText(s);
+        return s;
     }
 
     private void setSnackBar(String s){
@@ -399,35 +462,6 @@ public class VimeoPlayerActivity extends AppCompatActivity implements PickiTCall
 
     }
 
-    private void loadAds(){
-        FullScreenContentCallback fullScreenContentCallback = new FullScreenContentCallback() {
-            @Override
-            public void onAdDismissedFullScreenContent() {
-                interstitialAd = null;
-            }
-        };
-
-        InterstitialAd.load(
-                this,
-                "ca-app-pub-2472405866346270/9132394579",
-                new AdRequest.Builder().build(),
-                new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd ad) {
-                        interstitialAd = ad;
-                        interstitialAd.setFullScreenContentCallback(fullScreenContentCallback);
-                        if (interstitialAd != null) {
-                            interstitialAd.show(VimeoPlayerActivity.this);
-                        }
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError adError) {
-                        // Code to be executed when an ad request fails.
-                    }
-                });
-    }
-
 
     @Override
     public void PickiTonUriReturned() {
@@ -459,9 +493,6 @@ public class VimeoPlayerActivity extends AppCompatActivity implements PickiTCall
             pb_vimeo.setVisibility(View.GONE);
             pb_video_frame.setVisibility(View.GONE);
             vimeoLayout.setVisibility(View.VISIBLE);
-            if(!isVIP){
-                loadAds();
-            }
         }
     }
 
@@ -679,7 +710,6 @@ public class VimeoPlayerActivity extends AppCompatActivity implements PickiTCall
         builder.setView(v);
         final AlertDialog ad=builder.create();
         ad.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
 
         ad.show();
 

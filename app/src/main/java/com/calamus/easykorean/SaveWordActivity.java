@@ -16,9 +16,6 @@ import android.widget.TextView;
 
 import com.calamus.easykorean.adapters.SaveWordAdapter;
 import com.calamus.easykorean.models.SaveWordModel;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -44,15 +41,6 @@ public class SaveWordActivity extends AppCompatActivity {
 
         setUpView();
 
-        MobileAds.initialize(this, initializationStatus -> {});
-
-        AdView adView = findViewById(R.id.adview);
-        if(!isVip){
-            adView.setVisibility(View.VISIBLE);
-            AdRequest request=new AdRequest.Builder().build();
-            adView.loadAd(request);
-
-        }
 
         setUpCustomAppBar();
         Objects.requireNonNull(getSupportActionBar()).hide();

@@ -16,15 +16,11 @@ import com.calamus.easykorean.adapters.NotiAdapter;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.models.NotiModel;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.Executor;
-import me.myatminsoe.mdetect.MDetect;
 
 
 public class NotiListActivity extends AppCompatActivity {
@@ -44,7 +40,6 @@ public class NotiListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_noti_list);
 
-        MDetect.INSTANCE.init(this);
         recyclerView=findViewById(R.id.recycler);
         swipe=findViewById(R.id.swipe);
         sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
@@ -70,18 +65,6 @@ public class NotiListActivity extends AppCompatActivity {
             fetchNotification(currentUserId,true);
         });
 
-
-
-
-        MobileAds.initialize(this, initializationStatus -> {});
-
-        AdView adView = findViewById(R.id.adview);
-        if(!isVip){
-            adView.setVisibility(View.VISIBLE);
-            AdRequest request=new AdRequest.Builder().build();
-            adView.loadAd(request);
-
-        }
 
         setUpCustomAppBar();
         Objects.requireNonNull(getSupportActionBar()).hide();
@@ -150,8 +133,7 @@ public class NotiListActivity extends AppCompatActivity {
     }
 
     public String setMyanmar(String s) {
-
-        return MDetect.INSTANCE.getText(s);
+        return s;
     }
 
 }

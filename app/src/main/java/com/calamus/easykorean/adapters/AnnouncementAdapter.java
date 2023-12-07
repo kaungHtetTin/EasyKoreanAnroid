@@ -19,7 +19,6 @@ import com.calamus.easykorean.models.AnounceModel;
 
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
-import me.myatminsoe.mdetect.MDetect;
 
 
 public class AnnouncementAdapter extends RecyclerView.Adapter<AnnouncementAdapter.Holder>{
@@ -37,7 +36,6 @@ public class AnnouncementAdapter extends RecyclerView.Adapter<AnnouncementAdapte
         this.mInflater = LayoutInflater.from(c);
         sharedPreferences=c.getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         currentUserId=sharedPreferences.getString("phone",null);
-        MDetect.INSTANCE.init(c);
 
     }
 

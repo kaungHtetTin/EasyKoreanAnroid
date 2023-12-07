@@ -1,6 +1,5 @@
 package com.calamus.easykorean;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
@@ -20,16 +19,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.material.snackbar.Snackbar;
 import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.app.Downloader;
@@ -60,7 +49,6 @@ public class SongDetailActivity extends AppCompatActivity implements DownloadCom
 
     Animation animOut;
     Animation animIn;
-    private InterstitialAd interstitialAd;
     Executor postExecutor;
     boolean isVip,alreadyDownloaded;
     SharedPreferences sharedPreferences;
@@ -93,21 +81,8 @@ public class SongDetailActivity extends AppCompatActivity implements DownloadCom
 
         getSupportActionBar().hide();
 
-        MobileAds.initialize(this,new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {}
-        });
-
 
         setUpView();
-
-        AdView adView = findViewById(R.id.adview);
-        if(!isVip){
-            adView.setVisibility(View.VISIBLE);
-            AdRequest request=new AdRequest.Builder().build();
-            adView.loadAd(request);
-            loadAds();
-        }
 
         getSongLyrics();
         setMediaPlayer();
@@ -146,13 +121,7 @@ public class SongDetailActivity extends AppCompatActivity implements DownloadCom
                 mediaPlayer.stop();
                 mediaPlayer.release();
                 mediaPlayer=null;
-                if (interstitialAd != null) {
-                    interstitialAd.show(SongDetailActivity.this);
-                } else {
-                    // Proceed to the next level.
-                    finish();
-
-                }
+                finish();
             }
         });
 
@@ -285,46 +254,13 @@ public class SongDetailActivity extends AppCompatActivity implements DownloadCom
     }
 
 
-    private void loadAds(){
-
-        FullScreenContentCallback fullScreenContentCallback = new FullScreenContentCallback() {
-            @Override
-            public void onAdDismissedFullScreenContent() {
-                interstitialAd = null;
-                // Proceed to the next level.
-                finish();
-            }
-        };
-
-        InterstitialAd.load(
-                this,
-                "ca-app-pub-2472405866346270/9132394579",
-                new AdRequest.Builder().build(),
-                new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd ad) {
-                        interstitialAd = ad;
-                        interstitialAd.setFullScreenContentCallback(fullScreenContentCallback);
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError adError) {
-                        // Code to be executed when an ad request fails.
-                    }
-                });
-    }
-
     @Override
     public void onBackPressed() {
 
         mediaPlayer.stop();
         mediaPlayer.release();
         mediaPlayer=null;
-        if (interstitialAd != null) {
-            interstitialAd.show(SongDetailActivity.this);
-        } else {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
     }
 
     private void getSongLyrics(){

@@ -28,7 +28,6 @@ import com.calamus.easykorean.interfaces.ActionPlaying;
 import com.calamus.easykorean.service.MusicService;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
-import me.myatminsoe.mdetect.MDetect;
 import static com.calamus.easykorean.app.AppHandler.getFileByte;
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
 import static com.calamus.easykorean.fragments.SongFragmentTwo.songLocalLists;
@@ -57,7 +56,6 @@ public class PlayerActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
-        MDetect.INSTANCE.init(this);
         getSupportActionBar().hide();
         isActivityDestroy=false;
         animOut= AnimationUtils.loadAnimation(this, android.R.anim.fade_out);

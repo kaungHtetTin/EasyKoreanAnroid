@@ -55,7 +55,7 @@ public class MenuDialog {
         bottomSheetDialog.findViewById(R.id.menu_timer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                StudyTimeSetter studyTimeSetter=new StudyTimeSetter(  c);
+                StudyTimeSetter studyTimeSetter=new StudyTimeSetter(c);
                 studyTimeSetter.showTimePicker();
             }
         });

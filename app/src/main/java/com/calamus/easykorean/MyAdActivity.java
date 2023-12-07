@@ -39,11 +39,8 @@ public class MyAdActivity extends AppCompatActivity {
         settings.setJavaScriptEnabled(true);
         wv.addJavascriptInterface(new WebAppInterface(this), "Android");
         settings.setDomStorageEnabled(true);
-        settings.setAppCacheEnabled(true);
         settings.setDatabaseEnabled(true);
-        settings.setAppCachePath(getCacheDir().getAbsolutePath());
         settings.setAllowFileAccess(true);
-        settings.setAppCacheEnabled(true);
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
 
         wv.loadUrl("https://www.calamuseducation.com/calamus-v2/ads/korea");

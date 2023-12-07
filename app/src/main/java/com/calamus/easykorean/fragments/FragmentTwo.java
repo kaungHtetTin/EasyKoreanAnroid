@@ -29,7 +29,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
-import me.myatminsoe.mdetect.MDetect;
 
 public class FragmentTwo extends Fragment {
 
@@ -52,7 +51,6 @@ public class FragmentTwo extends Fragment {
         wordOfTheDayJson=share.getString("wordOfTheDay",null);
         kDramaJson=share.getString("kDramas","");
         music=share.getString("music",null);
-        MDetect.INSTANCE.init(getActivity());
         setUpView();
         setAppBar();
 

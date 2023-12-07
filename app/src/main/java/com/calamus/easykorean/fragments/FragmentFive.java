@@ -31,7 +31,6 @@ import com.calamus.easykorean.models.FunctionModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import me.myatminsoe.mdetect.MDetect;
 import java.util.ArrayList;
 
 
@@ -50,7 +49,6 @@ public class FragmentFive extends Fragment {
         v = inflater.inflate(R.layout.fragment_five, container, false);
 
         sharedPreferences = getActivity().getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
-        MDetect.INSTANCE.init(getActivity());
 
         functionJson=sharedPreferences.getString("functions",null);
         enrollJson=sharedPreferences.getString("enrollProgress",null);

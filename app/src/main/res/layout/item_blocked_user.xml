@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:background="@color/appBar"
+    android:layout_height="wrap_content">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_profile"
+        android:layout_width="40dp"
+        android:layout_margin="5dp"
+        android:src="@drawable/ic_baseline_account_circle_24"
+        android:layout_height="40dp"/>
+
+    <ImageView
+        android:id="@+id/iv_blueMark"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_alignBottom="@id/iv_profile"
+        android:layout_alignEnd="@id/iv_profile"
+        android:background="@drawable/bg_circle_white"
+        android:src="@drawable/ic_baseline_check_circle_24"
+        android:contentDescription="TODO" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:textColor="@color/textPrimary"
+        android:textStyle="bold"
+        android:layout_margin="5dp"
+        android:text="Kaung Htet Tin"
+        android:gravity="center_vertical"
+        android:layout_toEndOf="@id/iv_profile"/>
+
+    <TextView
+        android:id="@+id/tv_unblock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:text="UNBLOCK"
+        android:textColor="#f00"
+        android:fontFamily="@font/poppins_semibold"
+        android:textSize="14sp"
+        android:layout_marginEnd="10dp"/>
+
+</RelativeLayout>

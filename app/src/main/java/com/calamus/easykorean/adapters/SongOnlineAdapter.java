@@ -15,9 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.SongDetailActivity;
 import com.calamus.easykorean.app.AppHandler;
@@ -49,10 +46,6 @@ public class SongOnlineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         sharedPreferences=c.getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         currentUserId=sharedPreferences.getString("phone","000");
 
-        MobileAds.initialize(c,new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {}
-        });
     }
 
     @Override

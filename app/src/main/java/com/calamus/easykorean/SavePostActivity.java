@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,12 +12,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.calamus.easykorean.adapters.SaveAdapter;
 import com.calamus.easykorean.models.SaveModel;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -42,16 +37,6 @@ public class SavePostActivity extends AppCompatActivity {
         setUpView();
         setUpCustomAppBar();
         Objects.requireNonNull(getSupportActionBar()).hide();
-
-        MobileAds.initialize(this, initializationStatus -> {});
-
-        AdView adView = findViewById(R.id.adview);
-        if(!isVip){
-            adView.setVisibility(View.VISIBLE);
-            AdRequest request=new AdRequest.Builder().build();
-            adView.loadAd(request);
-
-        }
 
     }
 

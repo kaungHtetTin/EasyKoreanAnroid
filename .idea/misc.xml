@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
@@ -59,6 +58,7 @@
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.124" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/drawable/ic_baseline_add_circle_outline_24.xml" value="0.124" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/drawable/ic_baseline_add_to_photos_24.xml" value="0.1595" />
+        <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/drawable/ic_baseline_block_24.xml" value="0.1455" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/drawable/ic_baseline_calendar_today_24.xml" value="0.18" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/drawable/ic_baseline_camera_alt_24.xml" value="0.124" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/drawable/ic_baseline_cancel_24.xml" value="0.1595" />
@@ -94,6 +94,7 @@
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/drawable/ic_login_1.xml" value="0.12" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/drawable/ic_login_2.xml" value="0.2245" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/drawable/ic_menu.xml" value="0.18" />
+        <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/drawable/ic_menu_block_user.xml" value="0.1455" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/drawable/ic_menu_download_video.xml" value="0.124" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/drawable/ic_menu_downloading.xml" value="0.124" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/drawable/ic_menu_downloading_red_stroke.xml" value="0.124" />
@@ -137,12 +138,14 @@
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/drawable/ripple_circle.xml" value="0.1595" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/drawable/video.xml" value="0.124" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout-h750dp/activity_login.xml" value="0.264" />
-        <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout-h750dp/activity_sign_up.xml" value="0.19907407407407407" />
+        <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout-h750dp/activity_sign_up.xml" value="0.264" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout-sw600dp/item_appads.xml" value="0.16796875" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout-sw600dp/item_newfeed.xml" value="0.16796875" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout-sw600dp/item_wordday.xml" value="0.16796875" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_album_song.xml" value="0.19907407407407407" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_auth_checker.xml" value="0.21961184882533197" />
+        <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_block_user.xml" value="0.21979166666666666" />
+        <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_blocked.xml" value="0.21979166666666666" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_chatting.xml" value="0.19907407407407407" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_class_room.xml" value="0.19907407407407407" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_comment.xml" value="0.19907407407407407" />
@@ -153,13 +156,13 @@
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_edit_profile.xml" value="0.19907407407407407" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_forget_password.xml" value="0.1962962962962963" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_gamming.xml" value="0.19907407407407407" />
-        <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_lesson.xml" value="0.22395833333333334" />
+        <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_lesson.xml" value="0.176" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_like_list.xml" value="0.22395833333333334" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_login.xml" value="0.264" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_main.xml" value="0.22395833333333334" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_my_ad.xml" value="0.22395833333333334" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_my_discussion.xml" value="0.2" />
-        <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_noti_list.xml" value="0.22395833333333334" />
+        <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_noti_list.xml" value="0.2" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_photo.xml" value="0.22395833333333334" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_player.xml" value="0.19907407407407407" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_reset_password.xml" value="0.19444444444444445" />
@@ -168,7 +171,7 @@
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_saved_video.xml" value="0.19907407407407407" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_searching.xml" value="0.19907407407407407" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_setting.xml" value="0.19907407407407407" />
-        <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_sign_up.xml" value="0.22395833333333334" />
+        <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_sign_up.xml" value="0.264" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_song_detail.xml" value="0.19907407407407407" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_song_list.xml" value="0.19907407407407407" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/activity_splash_screen.xml" value="0.19907407407407407" />
@@ -185,6 +188,7 @@
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/bg_circle_light_gray.xml" value="0.19907407407407407" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/custom_comment_dialog.xml" value="0.1962962962962963" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/custom_playback_view.xml" value="0.22395833333333334" />
+        <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/diaglog_load_ads.xml" value="0.2" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/dialog_create_new_folder.xml" value="0.19907407407407407" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/dialog_directory_chooser.xml" value="0.19907407407407407" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/dialog_menu.xml" value="0.4" />
@@ -204,6 +208,7 @@
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/item_anounce.xml" value="0.19907407407407407" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/item_app.xml" value="0.264" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/item_appads.xml" value="0.19907407407407407" />
+        <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/item_blocked_user.xml" value="0.21979166666666666" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/item_comment.xml" value="0.19907407407407407" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/item_comment_child.xml" value="0.19907407407407407" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/item_conservation.xml" value="0.22395833333333334" />
@@ -227,7 +232,7 @@
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/item_my_learning_course.xml" value="0.19907407407407407" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/item_newfeed.xml" value="0.19907407407407407" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/item_notification.xml" value="0.19907407407407407" />
-        <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/item_profile.xml" value="0.19907407407407407" />
+        <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/item_profile.xml" value="0.152" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/item_question.xml" value="0.4" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/item_rating_counter.xml" value="0.19907407407407407" />
         <entry key="..\:/Users/Hp/AndroidStudioProjects/easykorean/app/src/main/res/layout/item_related_lesson.xml" value="0.19907407407407407" />
@@ -265,7 +270,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_16_PREVIEW" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

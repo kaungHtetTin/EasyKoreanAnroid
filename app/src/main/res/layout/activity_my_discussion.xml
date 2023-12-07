@@ -57,8 +57,7 @@
                     android:layout_marginBottom="15dp"
                     android:background="@drawable/bg_circle_white"
                     android:padding="7dp"
-                    android:visibility="invisible"
-                    android:src="@drawable/ic_baseline_camera_alt_24" />
+                    android:visibility="invisible"/>
 
             </RelativeLayout>
 

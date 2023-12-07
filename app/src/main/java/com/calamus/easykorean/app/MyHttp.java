@@ -233,7 +233,7 @@ public class MyHttp
                 }
             }
             int status = this.httpConn.getResponseCode();
-            if (status == 200)
+            if (status == 200||status==201)
             {
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(this.httpConn.getInputStream()));

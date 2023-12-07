@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.calamus.easykorean">
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
@@ -32,8 +40,13 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/kommmainicon"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true"
-        tools:targetApi="m">
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".BlockUserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BlockedActivity"
+            android:exported="false" />
         <activity
             android:name=".MyAdActivity"
             android:exported="false" />
@@ -42,6 +55,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="com.calamus.easykorean.AuthCheckerActivity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -69,7 +83,8 @@
             android:exported="false" />
         <activity
             android:name=".VimeoPlayerActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="screenSize|orientation|screenLayout|navigation"/>
         <activity android:name=".DayListActivity" />
         <activity android:name=".SearchingActivity" />
         <activity
@@ -161,10 +176,6 @@
             </intent-filter>
         </receiver>
         <receiver android:name=".recivers.AlarmReceiver" />
-
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-2472405866346270~3264377846" />
     </application>
 
 </manifest>

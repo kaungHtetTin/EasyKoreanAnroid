@@ -7,10 +7,8 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
-
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.VimeoPlayerActivity;
 import com.calamus.easykorean.WebSiteActivity;
@@ -25,14 +23,10 @@ import com.squareup.picasso.Picasso;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.util.*;
 import java.util.concurrent.Executor;
-
-import me.myatminsoe.mdetect.MDetect;
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
-
-public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> implements Filterable {
+public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> {
 
     private final Activity c;
     private final ArrayList<VideoModel> data;
@@ -43,6 +37,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> impl
     String currentUserId;
     Executor postExecutor;
     CallBack callBack;
+    VideoModel clickedLesson;
 
     public VideoAdapter(Activity c, ArrayList<VideoModel> data,CallBack callBack) {
         this.data = data;
@@ -53,7 +48,6 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> impl
         currentUserId=sharedPreferences.getString("phone","901");
         isVip=sharedPreferences.getBoolean("isVIP",false);
         postExecutor= ContextCompat.getMainExecutor(c);
-        MDetect.INSTANCE.init(c);
     }
 
     @Override
@@ -149,19 +143,12 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> impl
 
             view.setOnClickListener(p1 -> {
 
-                final VideoModel model = data.get(getAbsoluteAdapterPosition());
+                clickedLesson  = data.get(getAbsoluteAdapterPosition());
                 Log.e("videoJSON ",convertArrayToJSON());
-                if(model.getTime()!=0){
-                    final Intent i=new Intent(c, VimeoPlayerActivity.class);
-                    i.putExtra("videoTitle",model.getVideoTitle());
-                    i.putExtra("videoId",model.getVideoId());
-                    i.putExtra("time",model.getTime());
-                    i.putExtra("videoChannel",true);
-                    i.putExtra("lessonJSON",convertArrayToJSON());
-                    model.setLearned(true);
+                if(clickedLesson.getTime()!=0){
                     tv_watch.setTextColor(Color.GRAY);
                     tv_watch.setText("Watched");
-                    c.startActivity(i);
+                    go(clickedLesson);
                 }
 
             });
@@ -226,17 +213,23 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> impl
 
     }
 
+    private void go(VideoModel model){
+        final Intent i=new Intent(c, VimeoPlayerActivity.class);
+        i.putExtra("videoTitle",model.getVideoTitle());
+        i.putExtra("videoId",model.getVideoId());
+        i.putExtra("time",model.getTime());
+        i.putExtra("videoChannel",true);
+        i.putExtra("lessonJSON",convertArrayToJSON());
+        i.putExtra("folderName",model.getCategory());
+        model.setLearned(true);
+        c.startActivity(i);
+    }
+
     @Override
     public int getItemViewType(int position) {
         return position;
     }
 
-    @Override
-    public Filter getFilter() {
-        if (xFilter == null)
-            xFilter = new XFilter(data);
-        return xFilter;
-    }
 
 
     public class XFilter extends Filter {

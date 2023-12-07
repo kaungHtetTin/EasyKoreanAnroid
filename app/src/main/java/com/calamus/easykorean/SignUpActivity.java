@@ -17,13 +17,8 @@ import androidx.core.content.ContextCompat;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.app.UserInformation;
 import com.calamus.easykorean.app.MyHttp;
-
 import org.json.JSONObject;
-
-import java.util.Objects;
 import java.util.concurrent.Executor;
-
-import me.myatminsoe.mdetect.MDetect;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -57,7 +52,6 @@ public class SignUpActivity extends AppCompatActivity {
         animOut= AnimationUtils.loadAnimation(this, android.R.anim.fade_out);
         animIn= AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
 
-        MDetect.INSTANCE.init(Objects.requireNonNull(this));
         postExecutor = ContextCompat.getMainExecutor(this);
 
         bt=findViewById(R.id.bt_SignUp);

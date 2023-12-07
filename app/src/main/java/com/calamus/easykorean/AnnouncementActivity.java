@@ -19,9 +19,6 @@ import com.calamus.easykorean.adapters.AnnouncementAdapter;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.models.AnounceModel;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -51,14 +48,6 @@ public class AnnouncementActivity extends AppCompatActivity {
         postExecutor = ContextCompat.getMainExecutor(this);
         setUpView();
         getSupportActionBar().hide();
-
-        MobileAds.initialize(this, initializationStatus -> {});
-        AdView adView = findViewById(R.id.adview);
-        if(!isVip){
-            adView.setVisibility(View.VISIBLE);
-            AdRequest request=new AdRequest.Builder().build();
-            adView.loadAd(request);
-        }
 
         setUpMyActionBar();
     }

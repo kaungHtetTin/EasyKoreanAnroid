@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -14,8 +15,10 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.calamus.easykorean.BlockedActivity;
 import com.calamus.easykorean.ChattingActivity;
 import com.calamus.easykorean.EditProfileActivity;
+import com.calamus.easykorean.MyDiscussionActivity;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.UpdateBioActivity;
 import com.calamus.easykorean.adapters.CourseFinishAdapter;
@@ -33,7 +36,7 @@ import java.util.concurrent.Executor;
 
 public class ProfileHolders extends RecyclerView.ViewHolder {
 
-    CardView card_add_friend,card_confirm,card_requested,card_friend,card_message;
+    CardView card_add_friend,card_confirm,card_requested,card_friend,card_message,card_block;
     TextView tv_age,tv_education,tv_work,tv_address,tv_editProfile,tv_limit,
             tv_name,tv_bio ;
     LinearLayout layout_live_in,layout_born_in,layout_education,layout_work_at,layout_completed_course;
@@ -65,6 +68,7 @@ public class ProfileHolders extends RecyclerView.ViewHolder {
         card_requested=v.findViewById(R.id.card_requested);
         card_friend=v.findViewById(R.id.card_friend);
         card_message=v.findViewById(R.id.card_message);
+        card_block=v.findViewById(R.id.card_block);
         tv_editProfile=v.findViewById(R.id.tv_editProfile);
         tv_limit=v.findViewById(R.id.tv_limit);
         lv=v.findViewById(R.id.lv);
@@ -125,6 +129,13 @@ public class ProfileHolders extends RecyclerView.ViewHolder {
                 });
                 myDialog.showMyDialog();
 
+            }
+        });
+
+        card_block.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showBlockUserDialog();
             }
         });
 
@@ -191,6 +202,7 @@ public class ProfileHolders extends RecyclerView.ViewHolder {
 
             callBack.onLoaded(cover_image,imageUrl,bio,vip);
 
+
             for(int i=0;i<ja.length();i++){
                 JSONObject jo=ja.getJSONObject(i);
                 String title=jo.getString("title");
@@ -227,6 +239,7 @@ public class ProfileHolders extends RecyclerView.ViewHolder {
                 layout_born_in.setVisibility(View.GONE);
             }
             else {
+                layout_born_in.setVisibility(View.VISIBLE);
                 tv_age.setText("Born in " + birthday);
             }
 
@@ -234,6 +247,7 @@ public class ProfileHolders extends RecyclerView.ViewHolder {
                 layout_education.setVisibility(View.GONE);
             }
             else{
+                layout_education.setVisibility(View.VISIBLE);
                 tv_education.setText(education);
             }
 
@@ -241,6 +255,7 @@ public class ProfileHolders extends RecyclerView.ViewHolder {
                 layout_work_at.setVisibility(View.GONE);
             }
             else{
+                layout_work_at.setVisibility(View.VISIBLE);
                 tv_work.setText("Work at "+work);
             }
 
@@ -248,10 +263,26 @@ public class ProfileHolders extends RecyclerView.ViewHolder {
                 layout_live_in.setVisibility(View.GONE);
             }
             else {
+                layout_live_in.setVisibility(View.VISIBLE);
                 tv_address.setText("Live in "+region);
             }
 
             String friendship=joMain.getString("friendship");
+            if(friendship.equals("me")){
+                card_add_friend.setVisibility(View.GONE);
+                tv_editProfile.setVisibility(View.VISIBLE);
+                card_block.setVisibility(View.GONE);
+            }else{
+                boolean block=joMain.getBoolean("block");
+                if(block){
+                    Intent intent=new Intent(c, BlockedActivity.class);
+                    c.startActivity(intent);
+                    c.finish();
+                }
+                card_add_friend.setVisibility(View.VISIBLE);
+                card_block.setVisibility(View.VISIBLE);
+            }
+
             if(friendship.equals("request")){
                 card_add_friend.setVisibility(View.GONE);
                 card_requested.setVisibility(View.VISIBLE);
@@ -268,21 +299,16 @@ public class ProfileHolders extends RecyclerView.ViewHolder {
                 card_friend.setVisibility(View.VISIBLE);
             }
 
-            if(friendship.equals("me")){
-                card_add_friend.setVisibility(View.GONE);
-                tv_editProfile.setVisibility(View.VISIBLE);
-            }
-
             if(friendship.equals("reqLimit")){
                 card_add_friend.setVisibility(View.GONE);
                 tv_limit.setVisibility(View.VISIBLE);
-                tv_limit.setText(username+" is in maximum Request Limit");
+                tv_limit.setText("Request Limit");
             }
 
             if(friendship.equals("friLimit")){
                 card_add_friend.setVisibility(View.GONE);
                 tv_limit.setVisibility(View.VISIBLE);
-                tv_limit.setText(username+" is in maximum Friend Limit");
+                tv_limit.setText("Friend Limit");
             }
 
             card_message.setOnClickListener(new View.OnClickListener() {
@@ -335,5 +361,42 @@ public class ProfileHolders extends RecyclerView.ViewHolder {
         }).start();
     }
 
+    private void showBlockUserDialog(){
+        MyDialog myDialog=new MyDialog(c, "Block User!", "Do you really want to block this user", new MyDialog.ConfirmClick() {
+            @Override
+            public void onConfirmClick() {
+                blockUser();
+                friendShip(userId,Routing.UN_FRIEND,card_block);
+                Intent intent=new Intent(c,BlockedActivity.class);
+                c.startActivity(intent);
+                c.finish();
+            }
+        });
+        myDialog.showMyDialog();
+    }
+
+    private void blockUser(){
+        new Thread(() -> {
+            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.POST, new MyHttp.Response() {
+                @Override
+                public void onResponse(String response) {
+                    postExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(c,response,Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
+                @Override
+                public void onError(String msg) {
+                    Log.e("Post hide err ",msg);
+                }
+            }).url(Routing.BLOCK_USER)
+                    .field("blocked_user_id",userId)
+                    .field("user_id",currentUserId);
+            myHttp.runTask();
+        }).start();
+    }
 
 }

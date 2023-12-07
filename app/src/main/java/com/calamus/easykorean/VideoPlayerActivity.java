@@ -100,7 +100,6 @@ public class VideoPlayerActivity extends Activity implements AudioManager.OnAudi
 
         playVideo();
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             focusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
                     .setAudioAttributes(playbackAttributes)
@@ -134,7 +133,6 @@ public class VideoPlayerActivity extends Activity implements AudioManager.OnAudi
         }
 
     }
-
 
     private void autoRotateOnScreen(Uri videoUri){
         try{

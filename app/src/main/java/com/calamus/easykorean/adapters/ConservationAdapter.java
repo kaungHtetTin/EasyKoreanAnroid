@@ -34,8 +34,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import me.myatminsoe.mdetect.MDetect;
-
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
 
 import org.jetbrains.annotations.NotNull;
@@ -62,7 +60,6 @@ public class ConservationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.mInflater=LayoutInflater.from(c);
         sharedPreferences=c.getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         myId=Long.parseLong(sharedPreferences.getString("phone",null))+"";
-        MDetect.INSTANCE.init(c);
 
         dbdir= Objects.requireNonNull(c.getFilesDir()).getPath()+"/databases/";
         dbPath=dbdir+dbName;

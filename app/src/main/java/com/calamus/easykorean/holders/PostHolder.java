@@ -370,12 +370,50 @@ public class PostHolder extends RecyclerView.ViewHolder {
                     editPost(model.getPostBody(),model.getPostImage(),model.getPostId());
                 }else if(id==R.id.react){
                     showReact(model);
+                }else if(id==R.id.hide_post){
+                    showHidePostDialog(model.getPostId());
                 }
 
                 return true;
             }
         });
         popup.show();
+    }
+
+    private void showHidePostDialog(String postId){
+        MyDialog myDialog=new MyDialog(c, "Hide Post!", "Do you really want to hide this post", new MyDialog.ConfirmClick() {
+            @Override
+            public void onConfirmClick() {
+                hidePost(postId);
+            }
+        });
+        myDialog.showMyDialog();
+    }
+
+    private void hidePost(String postId){
+        callBack.onPostDelete();
+        Executor postExecutor= ContextCompat.getMainExecutor(c);
+        new Thread(() -> {
+            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.POST, new MyHttp.Response() {
+                @Override
+                public void onResponse(String response) {
+                    postExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(c,response,Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
+                @Override
+                public void onError(String msg) {
+                    Log.e("Post hide err ",msg);
+                }
+            }).url(Routing.HIDE_POST)
+                    .field("post_id",postId)
+                    .field("user_id",currentUserId);
+            myHttp.runTask();
+        }).start();
     }
 
     private void showReact(NewfeedModel model){
@@ -386,7 +424,6 @@ public class PostHolder extends RecyclerView.ViewHolder {
     }
 
     private void showDeleteDialog(String postId,int position){
-
 
         MyDialog myDialog=new MyDialog(c, "Delete Post!", "Do you really want to delete", new MyDialog.ConfirmClick() {
             @Override

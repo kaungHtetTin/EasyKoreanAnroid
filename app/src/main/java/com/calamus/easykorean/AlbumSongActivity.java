@@ -16,12 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.calamus.easykorean.adapters.SongOnlineAdapter;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.models.AdModel;
@@ -67,17 +61,6 @@ public class AlbumSongActivity extends AppCompatActivity {
 
         setUpView();
 
-        MobileAds.initialize(this,new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {}
-        });
-
-        AdView adView = findViewById(R.id.adview);
-        if(!isVip){
-            adView.setVisibility(View.VISIBLE);
-            AdRequest request=new AdRequest.Builder().build();
-            adView.loadAd(request);
-        }
 
     }
 

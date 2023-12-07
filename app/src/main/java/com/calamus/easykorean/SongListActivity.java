@@ -12,12 +12,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.tabs.TabLayout;
 import com.calamus.easykorean.fragments.SongArtistFragment;
 import com.calamus.easykorean.fragments.SongFragmentOne;
@@ -42,19 +36,6 @@ public class SongListActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         initViewPager();
-
-
-        MobileAds.initialize(this,new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {}
-        });
-
-        AdView adView = findViewById(R.id.adview);
-        if(!isVip){
-            adView.setVisibility(View.VISIBLE);
-            AdRequest request=new AdRequest.Builder().build();
-            adView.loadAd(request);
-        }
 
         iv_back=findViewById(R.id.iv_back);
         iv_back.setOnClickListener(new View.OnClickListener() {

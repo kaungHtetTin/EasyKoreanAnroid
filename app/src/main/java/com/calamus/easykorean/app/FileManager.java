@@ -20,6 +20,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.concurrent.Executor;
 
 public class FileManager extends Thread {
@@ -118,6 +120,44 @@ public class FileManager extends Thread {
         }
     }
 
+    public void searchVideo(String searchingFilename, File root,OnFileSearching onFileSearching){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                onFileSearching.onSearching();
+                searcher(searchingFilename,root,onFileSearching);
+
+            }
+        }).start();
+    }
+
+    private void searcher(String searchingFilename, File root,OnFileSearching onFileSearching){
+        File[] files =root.listFiles();
+        if(files==null){
+            onFileSearching.onFailure();
+            return;
+        }
+        for(File file : files){
+
+            if(file.isDirectory()){
+                Log.e("folderDir Search ",file.getName());
+                searcher(searchingFilename,file,onFileSearching);
+            }else{
+                Log.e("fileName search ",file.getName());
+                if(file.getName().equals(searchingFilename)){
+                    onFileSearching.onSuccess(file);
+                    return;
+                }
+            }
+        }
+    }
+
+    public interface  OnFileSearching{
+        void onSearching();
+        void onSuccess(File file);
+        void onFailure();
+    }
+
     public void deleteFiles(ArrayList<FileModel> fileLists,ArrayList<Integer> selectedIndex,FileDeletingListener mListener){
         new Thread(new Runnable() {
             @Override
@@ -175,6 +215,10 @@ public class FileManager extends Thread {
             public void run() {
                 File[] files =root.listFiles();
                 ArrayList<FileModel> dirLists=new ArrayList<>();
+                if(files==null){
+                    onFileLoading.onLoaded(dirLists);
+                    return;
+                }
                 for(File file : files){
                     if(file.isDirectory()){
                         Log.e("folderDir ",file.getName());
@@ -197,26 +241,29 @@ public class FileManager extends Thread {
             public void run() {
                 ArrayList<FileModel> fileLists=new ArrayList<>();
                 File[] files =rootDirectory.listFiles();
+
                 if(files==null){
                     onFileLoading.onLoaded(fileLists);
                     return;
                 }
-                if(files.length>0){
-                    for (File file : files) {
+                Arrays.sort(files, new Comparator<File>() {
+                    public int compare(File f1, File f2) {
+                        return Long.compare(f1.lastModified(), f2.lastModified());
+                    }
+                });
 
-                        Log.e("filename", file.getName());
-                        try {
-                            Uri uri=Uri.fromFile(file);
-                            MediaMetadataRetriever retriever=new MediaMetadataRetriever();
-                            retriever.setDataSource(c,uri);
+                for (File file : files) {
+                    try {
+                        Uri uri = Uri.fromFile(file);
+                        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                        retriever.setDataSource(c, uri);
 
-                            String duration=retriever.extractMetadata(METADATA_KEY_DURATION);
-                            if(duration!=null){
-                                fileLists.add(new SavedVideoModel(file,0,uri,file.getName(),Integer.parseInt(duration),400,null));
-                            }
-                        }catch (Exception e){
-                            fileLists.add(0,new FolderModel(file,0));
+                        String duration = retriever.extractMetadata(METADATA_KEY_DURATION);
+                        if (duration != null) {
+                            fileLists.add(new SavedVideoModel(file, 0, uri, file.getName(), Integer.parseInt(duration), 400, null));
                         }
+                    } catch (Exception e) {
+                        fileLists.add(0, new FolderModel(file, 0));
                     }
                 }
                 postExecutor.execute(new Runnable() {

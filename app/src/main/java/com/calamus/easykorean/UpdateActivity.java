@@ -30,7 +30,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.Executor;
-import me.myatminsoe.mdetect.MDetect;
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
 
 
@@ -55,9 +54,6 @@ public class UpdateActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update);
-
-        MDetect.INSTANCE.init(this);
-
         sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         isVip=sharedPreferences.getBoolean("isVIP",false);
         postExecutor= ContextCompat.getMainExecutor(this);

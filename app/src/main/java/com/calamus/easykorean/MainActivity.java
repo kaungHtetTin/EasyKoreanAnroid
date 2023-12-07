@@ -1,5 +1,6 @@
 package com.calamus.easykorean;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -15,6 +16,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.calamus.easykorean.app.Config;
@@ -35,6 +37,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import static com.calamus.easykorean.app.AppHandler.makeActiveNow;
 import static com.calamus.easykorean.app.AppHandler.makeOffline;
+
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -75,15 +79,33 @@ public class MainActivity extends AppCompatActivity {
         makeActiveNow(Long.parseLong(currentUserId)+"");
         //getRecommendation(currentUserId);
 
+        String goSomeWhere= getIntent().getStringExtra("message");
+        String payLoadStr=getIntent().getStringExtra("payload");
+        if(payLoadStr==null) payLoadStr="null value";
+        if(goSomeWhere==null)goSomeWhere="null value";
 
-        String goSomeWhere= Objects.requireNonNull(getIntent().getExtras()).getString("message",null);
         switch (goSomeWhere) {
             case "splash":
                 String version = share.getString("version", "");
-                if (!version.equals("3.2.3")) confirmUpdate(); //check the version in generaldata.php
+                if (!version.equals("3.2.9")) confirmUpdate(); //check the version in generaldata.php
                 break;
             case "login":
                 Toast.makeText(this, "Welcome!", Toast.LENGTH_SHORT).show();
+                break;
+            case "new_lesson":
+                try {
+                    JSONObject jo = new JSONObject(payLoadStr);
+                    Intent intent=new Intent(getApplicationContext(), DayListActivity.class);
+                    intent.putExtra("course_id",jo.getString("course_id"));
+                    intent.putExtra("course_title",jo.getString("course_title"));
+                    intent.putExtra("theme_color",jo.getString("theme_color"));
+                    startActivity(intent);
+                }catch (Exception e){
+                    Log.e("Lesson Noti Error",e.toString());
+                }
+
+                break;
+            case "cloud_message":
                 break;
             case "1":
             case "postFeed":
@@ -118,17 +140,15 @@ public class MainActivity extends AppCompatActivity {
                     String sender = intent.getStringExtra("sender");
                     final Snackbar sb=Snackbar.make(mainLayout,sender+" : "+message,Snackbar.LENGTH_INDEFINITE);
                     sb.setAction("View", v ->{
-                        Intent intent1 = new Intent(MainActivity.this, ClassRoomActivity.class);
-                        intent1.putExtra("action","");
-                        startActivity(intent1);
+                                Intent intent1 = new Intent(MainActivity.this, ClassRoomActivity.class);
+                                intent1.putExtra("action","");
+                                startActivity(intent1);
                             }
                     ).setActionTextColor(Color.WHITE).show();
                 }
             }
         };
-
         bnv.setItemIconTintList(null);
-
         if(inAppAds!=null){
             if(inAppAds.equals("on")){
                 if(!goSomeWhere.equals("login")&&!isVip){
@@ -136,7 +156,30 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                SplashScreenActivity.mListener=null;
+                try{
+                    if(FragmentFour.canExit()||pagerPosition){
+                        if(isHome){
+                            finish();
+                            makeOffline(Long.parseLong(currentUserId)+"");
+                        }else{
+                            viewPager.setCurrentItem(0);
+                        }
+                    }else {
+                        FragmentFour.goToFirst();
+                    }
+
+                }catch (Exception e){
+                    comfirm_exist();
+                }
+            }
+        });
     }
+
 
     private void setUpView(){
         fragmentOne =new FragmentOne();
@@ -256,28 +299,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public void onBackPressed() {
-        SplashScreenActivity.mListener=null;
-        try{
-            if(FragmentFour.canExit()||pagerPosition){
-                if(isHome){
-                    super.onBackPressed();
-                    makeOffline(Long.parseLong(currentUserId)+"");
-                }else{
-                    viewPager.setCurrentItem(0);
-
-                }
-            }else {
-                FragmentFour.goToFirst();
-            }
-
-        }catch (Exception e){
-            comfirm_exist();
-        }
-    }
-
-
     public void comfirm_exist(){
 
         MyDialog myDialog=new MyDialog(this, "Exit Confirmation", "Do you really want to exit?", () ->{
@@ -308,7 +329,7 @@ public class MainActivity extends AppCompatActivity {
         // register new push message receiver
         // by doing this, the activity will be notified each time a new message arrives
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-         new IntentFilter("MessageArrived"));
+                new IntentFilter("MessageArrived"));
 
         // clear the notification area when the app is opened
         NotificationUtils.clearNotifications(getApplicationContext());
@@ -339,7 +360,5 @@ public class MainActivity extends AppCompatActivity {
 //            myHttp.runTask();
 //        });
 //    }
-
-
 
 }

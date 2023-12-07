@@ -1,20 +1,24 @@
 package com.calamus.easykorean.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -39,15 +43,13 @@ import com.calamus.easykorean.models.AnounceModel;
 import com.calamus.easykorean.models.LoadingModel;
 import com.calamus.easykorean.models.NewfeedModel;
 import com.calamus.easykorean.app.MyHttp;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import me.myatminsoe.mdetect.MDetect;
 
 
 public class FragmentFour extends Fragment {
@@ -66,18 +68,18 @@ public class FragmentFour extends Fragment {
     LinearLayoutManager lm;
     Executor postExecutor;
     ExecutorService myExecutor;
-    String userId,username;
+    String userId,username,userProfile,userVIP;
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v=inflater.inflate(R.layout.fragment_four,container,false);
-        setHasOptionsMenu(true);
-        MDetect.INSTANCE.init(getActivity());
         share=getActivity().getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         userId=share.getString("phone",null);
         username=share.getString("Username",null);
+        userProfile=share.getString("imageUrl",null);
+        userVIP=share.getBoolean("isVIP",false)?"1":"0";
         setupViews();
 
         postExecutor = ContextCompat.getMainExecutor(getActivity());
@@ -187,7 +189,7 @@ public class FragmentFour extends Fragment {
                 i.putExtra("postBody","");
                 i.putExtra("postImage","");
                 i.putExtra("postId","");
-                startActivity(i);
+                mStartForResult.launch(i);
             }
         });
 
@@ -308,10 +310,12 @@ public class FragmentFour extends Fragment {
                 String isVideo=jo.getString("has_video");
                 String viewCount=jo.getString("viewCount");
                 String isLike=jo.getString("is_liked");
+                int blocked=jo.getInt("blocked");
+                int hidden=jo.getInt("hidden");
                 long share=jo.getLong("share");
                 int shareCount=jo.getInt("shareCount");
                 NewfeedModel model = new NewfeedModel(userName,userId,userToken,userImage,postId,postBody,posLikes,postComment,postImage,isVip,isVideo,viewCount,isLike,shareCount,share);
-                postList.add(model);
+                if(hidden!=1&blocked!=1)postList.add(model);
             }
             LoadApp();
             //  adapter.notifyDataSetChanged();
@@ -418,22 +422,75 @@ public class FragmentFour extends Fragment {
         });
     }
 
-    public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater){
-        menu.add("SEARCH")
-                .setIcon(R.drawable.ic_search)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+    ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent intent = result.getData();
+                        String body=intent.getStringExtra("body");
+                        String imagePath=intent.getStringExtra("imagePath");
+                        Toast.makeText(getActivity(),"Start Uploading",Toast.LENGTH_SHORT).show();
+                        uploadPost(userId,body,imagePath);
+                    }
+                }
+            });
 
 
-        super.onCreateOptionsMenu(menu,inflater);
-    }
+    private void uploadPost(String learner_id,String body,String imagePath) {
+        postList.add(0,new LoadingModel());
+        adapter.notifyDataSetChanged();
+        new Thread(() -> {
+            MyHttp myHttp = new MyHttp(MyHttp.RequesMethod.POST, new MyHttp.Response() {
+                @Override
+                public void onResponse(String response) {
+                    postExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.e("Post Upload Return",response);
+                            try {
+                                JSONObject jo=new JSONObject(response);
+                                String userId=jo.getString("learner_id");
+                                String postId=jo.getString("post_id");
+                                String postBody=jo.getString("body");
+                                String posLikes=jo.getString("post_like");
+                                String postComment=jo.getString("comments");
+                                String postImage=jo.getString("image");
+                                String isVideo=jo.getString("has_video");
+                                String viewCount=jo.getString("view_count");
+                                long share=jo.getLong("share");
+                                NewfeedModel model = new NewfeedModel(username,userId,"",userProfile,postId,postBody,posLikes,postComment,postImage,userVIP,isVideo,viewCount,"0",0,share);
+                                postList.remove(0);
+                                postList.add(0,model);
+                                adapter.notifyDataSetChanged();
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
-        if (item.getTitle().toString().equals("SEARCH")){
-            Intent intent=new Intent(getActivity(), SearchingActivity.class);
-            startActivity(intent);
-        }
-        return super.onOptionsItemSelected(item);
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    });
+                }
+
+                @Override
+                public void onError(String msg) {
+                    postExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }).url(Routing.ADD_POST)
+                    .field("learner_id", learner_id)
+                    .field("body", body)
+                    .field("major", Routing.MAJOR)
+                    .field("hasVideo", "0");
+            if (!imagePath.isEmpty()) myHttp.file("myfile", imagePath);
+            myHttp.runTask();
+        }).start();
+
     }
 
 }

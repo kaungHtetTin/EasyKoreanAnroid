@@ -18,8 +18,6 @@ import com.calamus.easykorean.service.Downloader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import me.myatminsoe.mdetect.MDetect;
-
 public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Holder> {
 
     private final Activity c;
@@ -33,7 +31,6 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Holder
         this.mInflater= LayoutInflater.from(c);
         sharedPreferences=c.getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         currentUserName=sharedPreferences.getString("userName",null);
-        MDetect.INSTANCE.init(c);
     }
 
 

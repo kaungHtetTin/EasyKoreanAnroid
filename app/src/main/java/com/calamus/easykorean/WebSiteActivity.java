@@ -10,20 +10,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.calamus.easykorean.app.WebAppInterface;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 
@@ -34,8 +25,7 @@ public class WebSiteActivity extends AppCompatActivity {
 
     private boolean isRedirected;
     String Current_url,address,check;
-    private InterstitialAd interstitialAd;
-    boolean isVip,isTimeToShowAds=true;
+    boolean isVip;
     SharedPreferences sharedPreferences;
     Executor postExecutor;
     @Override
@@ -56,11 +46,8 @@ public class WebSiteActivity extends AppCompatActivity {
         settings.setJavaScriptEnabled(true);
         wv.addJavascriptInterface(new WebAppInterface(this), "Android");
         settings.setDomStorageEnabled(true);
-        settings.setAppCacheEnabled(true);
         settings.setDatabaseEnabled(true);
-        settings.setAppCachePath(getCacheDir().getAbsolutePath());
         settings.setAllowFileAccess(true);
-        settings.setAppCacheEnabled(true);
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
 
         Current_url= Objects.requireNonNull(getIntent().getExtras()).getString("link");
@@ -71,33 +58,6 @@ public class WebSiteActivity extends AppCompatActivity {
 
         swipe.setOnRefreshListener(() -> startWebView(wv,Current_url));
 
-        MobileAds.initialize(this, initializationStatus -> {});
-
-        AdView adView = findViewById(R.id.adview);
-        if(!isVip){
-            adView.setVisibility(View.VISIBLE);
-            AdRequest request=new AdRequest.Builder().build();
-            adView.loadAd(request);
-
-            Thread timer=new Thread(){
-                @Override
-                public void run() {
-                    super.run();
-                    try {
-                        sleep(10000);
-                        postExecutor.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (isTimeToShowAds) loadAds();
-                            }
-                        });
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            timer.start();
-        }
 
     }
 
@@ -111,13 +71,7 @@ public class WebSiteActivity extends AppCompatActivity {
                 if (wv.canGoBack()&& !check.equals(address)) {
                     wv.goBack();
                 } else {
-                    isTimeToShowAds=false;
-                    if (interstitialAd != null) {
-                        interstitialAd.show(WebSiteActivity.this);
-                    } else {
-                        // Proceed to the next level.
-                        finish();
-                    }
+                    finish();
                 }
             }
         });
@@ -169,44 +123,9 @@ public class WebSiteActivity extends AppCompatActivity {
             wv.goBack();
 
         }else {
-            isTimeToShowAds=false;
-            if (interstitialAd != null) {
-                interstitialAd.show(WebSiteActivity.this);
-            } else {
-                // Proceed to the next level.
-                finish();
-            }
+            finish();
         }
 
-    }
-
-    private void loadAds(){
-
-        FullScreenContentCallback fullScreenContentCallback = new FullScreenContentCallback() {
-            @Override
-            public void onAdDismissedFullScreenContent() {
-                interstitialAd = null;
-                // Proceed to the next level.
-                finish();
-            }
-        };
-
-        InterstitialAd.load(
-                this,
-                "ca-app-pub-2472405866346270/9132394579",
-                new AdRequest.Builder().build(),
-                new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd ad) {
-                        interstitialAd = ad;
-                        interstitialAd.setFullScreenContentCallback(fullScreenContentCallback);
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError adError) {
-                        // Code to be executed when an ad request fails.
-                    }
-                });
     }
 }
 

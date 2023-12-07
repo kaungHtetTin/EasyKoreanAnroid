@@ -1,4 +1,5 @@
 package com.calamus.easykorean;
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -8,6 +9,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -34,7 +36,6 @@ import com.calamus.easykorean.models.NewfeedModel;
 import com.calamus.easykorean.app.MyHttp;
 import java.util.Objects;
 import java.util.concurrent.Executor;
-import me.myatminsoe.mdetect.MDetect;
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
 
 
@@ -66,7 +67,6 @@ public class WritePostActivity extends AppCompatActivity implements PickiTCallba
         phone=sharedPreferences.getString("phone",null);
         isVip=sharedPreferences.getBoolean("isVIP",false);
         postExecutor = ContextCompat.getMainExecutor(this);
-        MDetect.INSTANCE.init(Objects.requireNonNull(this));
         pickiT = new PickiT(this, this, this);
 
         cloudImageUrl=getIntent().getExtras().getString("postImage","");
@@ -77,6 +77,13 @@ public class WritePostActivity extends AppCompatActivity implements PickiTCallba
         Objects.requireNonNull(getSupportActionBar()).hide();
         setUpMyActionBar();
         setUpView();
+
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                showDiscardDialog();
+            }
+        });
 
     }
 
@@ -125,8 +132,13 @@ public class WritePostActivity extends AppCompatActivity implements PickiTCallba
             public void onClick(View v) {
                 pb.setVisibility(View.VISIBLE);
                 if(!TextUtils.isEmpty(et_post.getText().toString())||!imagePath.equals("")||!cloudImageUrl.equals("")){
-                    if(action)
-                        uploadPost(phone,AppHandler.changeUnicode(et_post.getText().toString()));
+                    if(action) {
+                        Intent intent=new Intent();
+                        intent.putExtra("body",et_post.getText().toString());
+                        intent.putExtra("imagePath",imagePath);
+                        setResult(Activity.RESULT_OK,intent);
+                        finish();
+                    }
                     else
                         editPost(oldPostId,AppHandler.changeUnicode(et_post.getText().toString()));
                 }else {
@@ -172,13 +184,22 @@ public class WritePostActivity extends AppCompatActivity implements PickiTCallba
     }
 
     private boolean isPermissionGranted(){
-        int  readExternalStorage=ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE);
+        int  readExternalStorage;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES);
+        }else{
+            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
         return  readExternalStorage==PackageManager.PERMISSION_GRANTED;
     }
 
-
     private void takePermission(){
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},101);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_MEDIA_IMAGES},101);
+        }else{
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},101);
+        }
+
     }
 
     private void pickImageFromGallery(){
@@ -238,8 +259,14 @@ public class WritePostActivity extends AppCompatActivity implements PickiTCallba
 
             pb.setVisibility(View.VISIBLE);
             if(!TextUtils.isEmpty(et_post.getText().toString())||!imagePath.equals("")||!cloudImageUrl.equals("")){
-                if(action)
-                    uploadPost(phone,AppHandler.changeUnicode(et_post.getText().toString()));
+                if(action){
+                    Intent intent=new Intent();
+                    intent.putExtra("body",et_post.getText().toString());
+                    intent.putExtra("imagePath",imagePath);
+                    setResult(Activity.RESULT_OK,intent);
+                    finish();
+                }
+
                 else
                     editPost(oldPostId,AppHandler.changeUnicode(et_post.getText().toString()));
             }else {
@@ -252,50 +279,6 @@ public class WritePostActivity extends AppCompatActivity implements PickiTCallba
         return super.onOptionsItemSelected(item);
     }
 
-
-    private void uploadPost(String learner_id,String body){
-        newPostId=System.currentTimeMillis()+"";
-        new Thread(() -> {
-            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.POST, new MyHttp.Response() {
-                @Override
-                public void onResponse(String response) {
-                    postExecutor.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            pb.setVisibility(View.INVISIBLE);
-                            NewfeedModel model;
-
-                            if(!ivName.equals("")){
-                                model = new NewfeedModel(userName,phone,"",imageProfile,newPostId,body,"0","0","https://www.calamuseducation.com/uploads/posts/"+ivName,"0","0","0","0",0,0);
-                            }else {
-                                model = new NewfeedModel(userName,phone,"",imageProfile,newPostId,body,"0","0","","0","0","0","0",0,0);
-                            }
-                            NewFeedAdapter.data.add(1,model);
-                            finish();
-                        }
-                    });
-                }
-                @Override
-                public void onError(String msg) {
-                    postExecutor.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            pb.setVisibility(View.INVISIBLE);
-                            Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }).url(Routing.ADD_POST)
-                    .field("learner_id",learner_id)
-                    .field("body",body)
-                    .field("major",Routing.MAJOR)
-                    .field("hasVideo","0");
-            if(!userName.isEmpty())myHttp .file("myfile",imagePath);
-            myHttp.runTask();
-        }).start();
-
-
-    }
 
     private void editPost(String post_id,String body){
 
@@ -337,11 +320,6 @@ public class WritePostActivity extends AppCompatActivity implements PickiTCallba
             myHttp.runTask();
         }).start();
 
-    }
-
-    @Override
-    public void onBackPressed() {
-        showDiscardDialog();
     }
 
     private void showDiscardDialog(){

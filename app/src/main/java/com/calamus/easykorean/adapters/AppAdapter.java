@@ -16,7 +16,6 @@ import com.calamus.easykorean.R;
 import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.models.AppModel;
 import java.util.ArrayList;
-import me.myatminsoe.mdetect.MDetect;
 
 public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
 
@@ -31,7 +30,6 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.Holder> {
         this.mInflater= LayoutInflater.from(c);
         sharedPreferences=c.getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         currentUserName=sharedPreferences.getString("userName",null);
-        MDetect.INSTANCE.init(c);
     }
 
 

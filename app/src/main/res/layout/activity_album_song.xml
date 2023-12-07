@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:background="@color/purple_700">
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:id="@+id/my_actionbar_container"
@@ -38,8 +37,7 @@
         android:id="@+id/swipeSong"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/my_actionbar_container"
-        android:layout_above="@id/adview">
+        android:layout_below="@id/my_actionbar_container">
 
         <androidx.recyclerview.widget.RecyclerView
             android:padding="7dp"
@@ -50,15 +48,5 @@
             android:scrollbars="none"/>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <com.google.android.gms.ads.AdView
-        xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/adview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        ads:adSize="SMART_BANNER"
-        ads:adUnitId="ca-app-pub-2472405866346270/2510952382"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>

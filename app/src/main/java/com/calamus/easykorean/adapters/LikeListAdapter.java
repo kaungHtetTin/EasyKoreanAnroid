@@ -15,7 +15,6 @@ import com.calamus.easykorean.R;
 import com.calamus.easykorean.models.LikeListModel;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
-import me.myatminsoe.mdetect.MDetect;
 import static com.calamus.easykorean.app.AppHandler.setMyanmar;
 import static com.calamus.easykorean.app.AppHandler.setPhotoFromRealUrl;
 
@@ -30,7 +29,6 @@ public class LikeListAdapter extends RecyclerView.Adapter<LikeListAdapter.Holder
         this.data = data;
         this.c = c;
         this.mInflater = LayoutInflater.from(c);
-        MDetect.INSTANCE.init(c);
 
     }
 

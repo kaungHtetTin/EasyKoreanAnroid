@@ -15,9 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.fragments.ChatOne;
@@ -49,18 +46,11 @@ public class ClassRoomActivity extends AppCompatActivity {
         isVip=sharedPreferences.getBoolean("isVIP",false);
         username=sharedPreferences.getString("Username",null);
         userId=sharedPreferences.getString("phone",null);
-        MobileAds.initialize(this, initializationStatus -> {});
-
 
         setUpActionBar();
         setUpView();
         Objects.requireNonNull(getSupportActionBar()).hide();
-        AdView adView = findViewById(R.id.adview);
-        if(!isVip){
-            adView.setVisibility(View.VISIBLE);
-            AdRequest request=new AdRequest.Builder().build();
-            adView.loadAd(request);
-        }
+
 
         String go=getIntent().getExtras().getString("action",null);
         if(go.equals("3")){

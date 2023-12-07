@@ -16,6 +16,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -76,8 +77,6 @@ public class FragmentOne extends Fragment {
         courseList.add(0,"vip");
 
         if(mainCourse!=null)setCourse();
-
-
 
         return v;
     }
@@ -288,6 +287,8 @@ public class FragmentOne extends Fragment {
                 }
                 courseList.add(new CourseModel(id,title,description,cover_url,colorCode,progress,duration,isVip));
             }
+
+
 
             adapter.notifyDataSetChanged();
 
