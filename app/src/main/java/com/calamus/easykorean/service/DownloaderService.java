@@ -144,7 +144,6 @@ public class DownloaderService extends Service {
                 .setSound(null)
                 .build();
         notificationManagerCompat= NotificationManagerCompat.from(mContext);
-        // notificationManagerCompat.notify(100,mBuilder.build());
         startForeground();
     }
 

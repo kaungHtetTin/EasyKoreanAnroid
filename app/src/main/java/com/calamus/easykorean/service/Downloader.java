@@ -54,8 +54,6 @@ public class Downloader extends Thread {
         this.intentMessage = intentMessage;
         this.lock = lock;
         this.callBack = callBack;
-
-        Notify(c, "Downloading", filename);
         threadId = getId();
     }
 
@@ -91,71 +89,22 @@ public class Downloader extends Thread {
                 }
                 total += count;
                 progress = total * 100 / fileSize;
-                mBuilder.setProgress(100, (int) progress, false);
-                mBuilder.setContentTitle("Download : " + progress + " %");
                 callBack.onProgress(threadId, (int) progress);
-                if (ActivityCompat.checkSelfPermission(c, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-                notificationManagerCompat.notify(filename.length(), mBuilder.build());
                 output.write(data,0,count);
             }
-
 
             output.flush();
             output.close();
             input.close();
             callBack.onDownloadComplete(threadId);
-            mBuilder.setProgress(100,100,false);
-            mBuilder.setContentTitle("Download : "+100+" % ");
-            mBuilder.setContentText(filename+" is completely downloaded");
-            notificationManagerCompat.notify(filename.length(),mBuilder.build());
 
         }catch (Exception e){
             Log.e("DownloadErr ",e.toString());
             callBack.onFail(this,e.toString());
-            mBuilder.setProgress(0,0,false);
-            mBuilder.setContentTitle("Download");
-            mBuilder.setContentText("Error downloading - "+filename);
-            notificationManagerCompat.notify(filename.length(),mBuilder.build());
-
         }
         this.lock.unlock();
     }
 
-
-    private void Notify(Context mContext, String title, String message){
-        mBuilder=new NotificationCompat.Builder(mContext,CHANNEL_ID_3);
-
-        Intent intent = new Intent(mContext, MainActivity.class);
-        intent.putExtra("message", intentMessage);
-
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        final PendingIntent resultPendingIntent;
-        resultPendingIntent = PendingIntent.getActivity(
-                mContext,
-                0,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT |PendingIntent.FLAG_MUTABLE
-        );
-
-        notification = mBuilder.setSmallIcon(R.mipmap.kommmainicon)
-                .setAutoCancel(true)
-                .setContentTitle(title)
-                .setContentIntent(resultPendingIntent)
-                .setSmallIcon(R.mipmap.kommmainicon)
-                .setContentText(message)
-                .setSound(null)
-                .build();
-        notificationManagerCompat=NotificationManagerCompat.from(mContext);
-    }
 
     public long getProgress() {
         return progress;

@@ -24,14 +24,23 @@
             <WebView
                 android:id="@+id/wv_vimeo"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
                 android:background="@color/black" />
-            <VideoView
-                android:id="@+id/videoView"
-                android:layout_width="160dp"
-                android:layout_height="90dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.exoplayer2.ui.PlayerView
+                android:id="@+id/exoplayer_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#000000"
+                android:layout_centerInParent="true"
+                app:controller_layout_id="@layout/custom_playback_view"
+                app:hide_on_touch="true"
+                app:player_layout_id="@layout/exo_player_view"
+                app:resize_mode="fit"
+                app:show_timeout="4000"
+                app:shutter_background_color="#000000"
+                app:surface_type="surface_view"
+                app:use_controller="true" />
 
         </RelativeLayout>
 
