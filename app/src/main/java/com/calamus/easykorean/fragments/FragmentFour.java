@@ -477,7 +477,6 @@ public class FragmentFour extends Fragment {
                     postExecutor.execute(new Runnable() {
                         @Override
                         public void run() {
-
                             Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
                         }
                     });

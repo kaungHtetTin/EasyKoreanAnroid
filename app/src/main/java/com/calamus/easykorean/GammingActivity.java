@@ -1,5 +1,6 @@
 package com.calamus.easykorean;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -82,7 +83,11 @@ public class GammingActivity extends AppCompatActivity {
 
         postExecutor = ContextCompat.getMainExecutor(this);
 
-
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+            }
+        });
 
     }
 
@@ -200,11 +205,6 @@ public class GammingActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onBackPressed() {
-
-
-    }
 
     private void checkAndLoad(String ansWord) {
         if (ansWord.equals(ans)) {

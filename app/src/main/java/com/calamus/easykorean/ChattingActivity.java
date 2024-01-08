@@ -70,8 +70,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import static android.content.ContentValues.TAG;
-import static com.calamus.easykorean.app.AppHandler.changeFont;
-import static com.calamus.easykorean.app.AppHandler.setMyanmar;
 
 
 public class ChattingActivity extends AppCompatActivity {
@@ -188,13 +186,13 @@ public class ChattingActivity extends AppCompatActivity {
         LayoutInflater inflator = (LayoutInflater) this .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflator.inflate(R.layout.my_action_bar_chat, null);
 
-        tv_name=v.findViewById(R.id.tv_username);
+        tv_name=v.findViewById(R.id.tv_username2);
         tv_status=v.findViewById(R.id.tv_status);
         iv_back=v.findViewById(R.id.iv_back);
         iv_profile=v.findViewById(R.id.iv_profile);
         iv_more=v.findViewById(R.id.iv_menuMore);
 
-        tv_name.setText(setMyanmar(fName));
+        tv_name.setText(fName);
 
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -260,7 +258,7 @@ public class ChattingActivity extends AppCompatActivity {
         ibtSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String msgBody=changeFont(et_chatInput.getText().toString());
+                String msgBody=et_chatInput.getText().toString();
                 Long time = System.currentTimeMillis();
                 if(!TextUtils.isEmpty(msgBody)) {
                     if(hasImage.equals(""))sendMessage(msgBody, time);
@@ -369,7 +367,7 @@ public class ChattingActivity extends AppCompatActivity {
         if(isConservationExist()){
             ContentValues cv=new ContentValues();
             cv.put("msg_body",msgBody);
-            cv.put("fri_name",setMyanmar(fName));
+            cv.put("fri_name",fName);
             cv.put("time",time+"");
             cv.put("senderId",senderId);
             cv.put("token",token);
@@ -378,7 +376,7 @@ public class ChattingActivity extends AppCompatActivity {
         }else{
             ContentValues cv=new ContentValues();
             cv.put("fri_id",FId);
-            cv.put("fri_name",setMyanmar(fName));
+            cv.put("fri_name",fName);
             cv.put("fri_image",fImage);
             cv.put("msg_body",msgBody);
             cv.put("time",time+"");

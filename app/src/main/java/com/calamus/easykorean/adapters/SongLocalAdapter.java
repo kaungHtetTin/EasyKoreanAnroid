@@ -1,6 +1,5 @@
 package com.calamus.easykorean.adapters;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -17,7 +16,6 @@ import com.calamus.easykorean.R;
 import com.calamus.easykorean.app.MyDialog;
 import com.calamus.easykorean.models.SongModel;
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class SongLocalAdapter extends RecyclerView.Adapter<SongLocalAdapter.Holder> {
@@ -25,8 +23,6 @@ public class SongLocalAdapter extends RecyclerView.Adapter<SongLocalAdapter.Hold
     private final Activity c;
     private final ArrayList<SongModel> data;
     private final LayoutInflater mInflater;
-    @SuppressLint("SimpleDateFormat")
-    SimpleDateFormat sdf= new SimpleDateFormat("MMMdd ,yyyy HH:mm");
 
     public SongLocalAdapter(Activity c, ArrayList<SongModel> data) {
         this.data = data;
@@ -107,7 +103,6 @@ public class SongLocalAdapter extends RecyclerView.Adapter<SongLocalAdapter.Hold
 
     }
 
-
     @Override
     public int getItemViewType(int position) {
         return position;
@@ -126,8 +121,6 @@ public class SongLocalAdapter extends RecyclerView.Adapter<SongLocalAdapter.Hold
         });
         myDialog.showMyDialog();
 
-
     }
-
 
 }

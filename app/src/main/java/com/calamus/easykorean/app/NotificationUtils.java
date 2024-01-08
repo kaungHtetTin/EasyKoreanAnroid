@@ -1,5 +1,6 @@
 package com.calamus.easykorean.app;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -7,6 +8,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -14,9 +16,14 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
+
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
+import com.calamus.easykorean.ApplicationClass;
 import com.calamus.easykorean.R;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -31,10 +38,6 @@ import java.util.List;
  * Created by Ravi on 31/03/15.
  */
 public class NotificationUtils {
-    public static final String CHANNEL_ID="kaung";
-    private static final String CHANNEL_NAME="kaung";
-    private static final String CHANNEL_DESC="kaung Notification";
-    private static final String TAG = NotificationUtils.class.getSimpleName();
 
     private final Context mContext;
 
@@ -45,7 +48,6 @@ public class NotificationUtils {
     public void showNotificationMessage(String title, String message, String timeStamp, Intent intent) {
         showNotificationMessage(title, message, timeStamp, intent, null);
     }
-
 
 
     public void showNotificationMessage(final String title, final String message, final String timeStamp, Intent intent, String imageUrl) {
@@ -62,11 +64,11 @@ public class NotificationUtils {
                         mContext,
                         0,
                         intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_MUTABLE
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE
                 );
 
 
-        NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(mContext,CHANNEL_ID);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext, ApplicationClass.CHANNEL_ID_1);
 
         if (!TextUtils.isEmpty(imageUrl)) {
 
@@ -82,7 +84,7 @@ public class NotificationUtils {
             }
         } else {
             showSmallNotification(mBuilder, icon, title, message, timeStamp, resultPendingIntent);
-           // playNotificationSound();
+            // playNotificationSound();
         }
     }
 
@@ -91,13 +93,6 @@ public class NotificationUtils {
 
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
         inboxStyle.addLine(message);
-
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
-            NotificationChannel channel=new NotificationChannel(CHANNEL_ID,CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription(CHANNEL_DESC);
-            NotificationManager manager=mContext.getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(channel);
-        }
 
         Notification notification;
         notification = mBuilder.setSmallIcon(icon).setTicker(title).setWhen(0)
@@ -111,23 +106,17 @@ public class NotificationUtils {
                 .setContentText(message)
                 .build();
 
-        NotificationManagerCompat notificationManagerCompat=NotificationManagerCompat.from(mContext);
-        notificationManagerCompat.notify(message.length(),notification);
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(mContext);
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        notificationManagerCompat.notify(message.length(), notification);
 
         //  NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         // notificationManager.notify(Config.NOTIFICATION_ID, notification);
     }
 
     private void showBigNotification(Bitmap bitmap, NotificationCompat.Builder mBuilder, int icon, String title, String message, String timeStamp, PendingIntent resultPendingIntent) {
-
-
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
-            NotificationChannel channel=new NotificationChannel(CHANNEL_ID,CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription(CHANNEL_DESC);
-            NotificationManager manager=mContext.getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(channel);
-        }
-
 
         NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle();
         bigPictureStyle.setBigContentTitle(title);
@@ -145,9 +134,9 @@ public class NotificationUtils {
                 .setContentText(message)
                 .build();
 
-        // NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        // notificationManager.notify(Config.NOTIFICATION_ID_BIG_IMAGE, notification);
-
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         NotificationManagerCompat notificationManagerCompat=NotificationManagerCompat.from(mContext);
         notificationManagerCompat.notify(1,notification);
     }
@@ -170,18 +159,6 @@ public class NotificationUtils {
             return null;
         }
     }
-
-    // Playing notification sound
-//    public void playNotificationSound() {
-//        try {
-//            Uri alarmSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
-//                    + "://" + mContext.getPackageName() + "/raw/notification");
-//            Ringtone r = RingtoneManager.getRingtone(mContext, alarmSound);
-//            r.play();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     /**
      * Method checks if the app is in background or not

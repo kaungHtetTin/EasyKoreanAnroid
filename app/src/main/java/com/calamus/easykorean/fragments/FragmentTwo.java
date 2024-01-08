@@ -77,7 +77,7 @@ public class FragmentTwo extends Fragment {
         adapter = new MainListAdapter(getActivity(), categoryList);
         recycler.setAdapter(adapter);
         categoryList.clear();
-        categoryList.add(0,"Word Of Thd Day");
+        categoryList.add(0,"Word Of The Day");
         categoryList.add(1,new WordOfTheDay(wordOfTheDayJson));
 
         if(music!=null){

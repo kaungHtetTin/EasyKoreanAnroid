@@ -332,6 +332,7 @@ public class MainActivity extends AppCompatActivity {
                 new IntentFilter("MessageArrived"));
 
         // clear the notification area when the app is opened
+
         NotificationUtils.clearNotifications(getApplicationContext());
     }
 

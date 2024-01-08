@@ -15,7 +15,6 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 public class AppHandler {
 
 
@@ -37,11 +36,6 @@ public class AppHandler {
 
                     }
                 });
-    }
-
-    public static String changeUnicode(String s){
-
-        return s;
     }
 
     public static String setMyanmar(String s) {
@@ -219,9 +213,6 @@ public class AppHandler {
         }).start();
     }
 
-    public static String changeFont(String s){
-        return s;
-    }
 
     public static void makeActiveNow(String userId){
         DatabaseReference dbA = FirebaseDatabase.getInstance().getReference().child(Routing.MAJOR).child("Active").child(userId);

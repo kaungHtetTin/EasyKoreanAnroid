@@ -140,7 +140,7 @@ public class WritePostActivity extends AppCompatActivity implements PickiTCallba
                         finish();
                     }
                     else
-                        editPost(oldPostId,AppHandler.changeUnicode(et_post.getText().toString()));
+                        editPost(oldPostId,et_post.getText().toString());
                 }else {
                     pb.setVisibility(View.INVISIBLE);
                     Toast.makeText(getApplicationContext(),"Discuss something about this post",Toast.LENGTH_SHORT).show();
@@ -268,7 +268,7 @@ public class WritePostActivity extends AppCompatActivity implements PickiTCallba
                 }
 
                 else
-                    editPost(oldPostId,AppHandler.changeUnicode(et_post.getText().toString()));
+                    editPost(oldPostId,et_post.getText().toString());
             }else {
                 pb.setVisibility(View.INVISIBLE);
                 Toast.makeText(getApplicationContext(),"Discuss something about this post",Toast.LENGTH_SHORT).show();

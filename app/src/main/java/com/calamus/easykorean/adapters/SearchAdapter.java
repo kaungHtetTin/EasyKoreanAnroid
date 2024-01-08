@@ -165,7 +165,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         public PeopleHolder(@NonNull View itemView) {
             super(itemView);
             iv=itemView.findViewById(R.id.iv_profile);
-            tv_name=itemView.findViewById(R.id.tv_username);
+            tv_name=itemView.findViewById(R.id.tv_username2);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

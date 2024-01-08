@@ -106,7 +106,7 @@ public class CourseRatingActivity extends AppCompatActivity {
 
         //my review;
         layout_my_review=findViewById(R.id.layout_my_review);
-        tv_username=findViewById(R.id.tv_username);
+        tv_username=findViewById(R.id.tv_username2);
         tv_my_review=findViewById(R.id.tv_review);
         my_rating_bar=findViewById(R.id.rating_bar);
         tv_review_date=findViewById(R.id.tv_date);

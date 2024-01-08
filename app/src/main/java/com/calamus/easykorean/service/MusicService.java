@@ -217,6 +217,9 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
 
     public void showNotification(int playPauseBtn,String p){
+
+
+
         Intent intent=new Intent(this, SongListActivity.class);
         PendingIntent contentIntent=PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_IMMUTABLE);
 

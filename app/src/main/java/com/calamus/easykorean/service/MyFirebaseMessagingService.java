@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import com.calamus.easykorean.MainActivity;
 import com.calamus.easykorean.app.Config;
 import com.calamus.easykorean.app.NotificationUtils;

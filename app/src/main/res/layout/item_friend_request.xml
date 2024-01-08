@@ -15,7 +15,7 @@
         android:src="@drawable/ic_baseline_account_circle_24" />
 
     <TextView
-        android:id="@+id/tv_username"
+        android:id="@+id/tv_username2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -30,8 +30,8 @@
         android:id="@+id/tv_mutual_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_username"
-        android:layout_alignStart="@id/tv_username"
+        android:layout_below="@id/tv_username2"
+        android:layout_alignStart="@id/tv_username2"
         android:fontFamily="@font/poppins_regular"
         android:textColor="@color/colorConversationMsg"
         android:textSize="11sp" />

@@ -80,6 +80,8 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> {
                     holder.tv_watch.setTextColor(Color.RED);
                 }
 
+
+
                 holder.iv.setVisibility(View.VISIBLE);
                 Picasso.get()
                         .load(model.getThumbnail())
@@ -105,18 +107,26 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> {
                 holder.ibt_download.setVisibility(View.VISIBLE);
                 holder.tv_watch.setVisibility(View.VISIBLE);
                 holder.iv_circle.setVisibility(View.VISIBLE);
+
+                if(model.isDownloaded()){
+                    holder.ibt_play.setVisibility(View.VISIBLE);
+                    holder.ibt_download.setVisibility(View.GONE);
+                }else{
+                    holder.ibt_download.setVisibility(View.VISIBLE);
+                    holder.ibt_play.setVisibility(View.GONE);
+                }
+
             }else{
                 holder.container.showShimmer(true);
                 holder.tv_lesson_category.setBackgroundResource(R.drawable.bg_shimmer_content);
                 holder.tvTitle.setBackgroundResource(R.drawable.bg_shimmer_content);
                 holder.ibt_download.setVisibility(View.GONE);
+                holder.ibt_play.setVisibility(View.GONE);
                 holder.iv.setImageResource(R.drawable.bg_shimmer_content);
                 holder.tv_watch.setVisibility(View.GONE);
                 holder.iv_circle.setVisibility(View.GONE);
 
             }
-
-
         } catch (Exception ignored) {
 
         }
@@ -127,7 +137,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> {
         TextView tvTime, tvTitle,tv_watch,tv_lesson_category;
         ImageView iv,iv_circle;
         ShimmerFrameLayout container;
-        ImageView ibt_download;
+        ImageView ibt_download,ibt_play;
 
         public Holder(final View view) {
             super(view);
@@ -138,6 +148,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> {
             container=view.findViewById(R.id.shimmer_view_container);
             ibt_download=view.findViewById(R.id.ib_download);
             tv_watch=view.findViewById(R.id.tv_watch);
+            ibt_play=view.findViewById(R.id.ibt_play);
             tv_lesson_category=view.findViewById(R.id.tv_lesson_category);
             tvTitle.setSelected(true);
 
@@ -221,6 +232,10 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> {
         i.putExtra("videoChannel",true);
         i.putExtra("lessonJSON",convertArrayToJSON());
         i.putExtra("folderName",model.getCategory());
+        if(model.isDownloaded()){
+            i.putExtra("downloaded",model.isDownloaded());
+            i.putExtra("localVideoUri",model.getVideoModel().getUri());
+        }
         model.setLearned(true);
         c.startActivity(i);
     }

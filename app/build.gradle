@@ -59,6 +59,4 @@ dependencies {
     implementation 'com.github.MikeOrtiz:TouchImageView:1.4.1'
     implementation 'com.google.android.exoplayer:exoplayer:2.18.1'
     implementation 'androidx.multidex:multidex:2.0.1'
-
-
 }

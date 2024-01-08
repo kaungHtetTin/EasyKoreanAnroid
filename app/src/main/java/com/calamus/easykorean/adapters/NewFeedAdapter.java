@@ -185,7 +185,7 @@ public  class NewFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             tv_time = view.findViewById(R.id.tv_time);
             tv_read_more=view.findViewById(R.id.tv_readmore);
             iv_profile = view.findViewById(R.id.iv_profile);
-            tv_userName=view.findViewById(R.id.tv_username);
+            tv_userName=view.findViewById(R.id.tv_username2);
             tv_body=view.findViewById(R.id.tv_body);
             iv_post=view.findViewById(R.id.iv_post_image);
             iv_blueMark=view.findViewById(R.id.iv_blueMark);

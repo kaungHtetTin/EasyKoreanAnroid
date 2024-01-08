@@ -1,5 +1,8 @@
 package com.calamus.easykorean;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -178,7 +181,7 @@ public class CommentActivity extends AppCompatActivity implements PickiTCallback
         ibt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String content=AppHandler.changeUnicode(et.getText().toString());
+                String content=et.getText().toString();
                 if(!TextUtils.isEmpty(content)||!commentImagePath.equals("")){
 
                     MyCommentController myCommentController=new MyCommentController(postId,currentUserName,CommentActivity.this);
@@ -231,41 +234,41 @@ public class CommentActivity extends AppCompatActivity implements PickiTCallback
 
 
     private boolean isPermissionGranted(){
-
-        int  readExternalStorage=ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        return  readExternalStorage== PackageManager.PERMISSION_GRANTED;
-
+        int  readExternalStorage;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES);
+        }else{
+            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        return  readExternalStorage==PackageManager.PERMISSION_GRANTED;
     }
 
     private void takePermission(){
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},101);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_MEDIA_IMAGES},101);
+        }else{
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},101);
+        }
+
     }
 
     private void pickImageFromGallery(){
-        Intent intent=new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
-        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        startActivityForResult(intent,102);
+        mGetContent.launch("image/*");
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==RESULT_OK){
-            if(requestCode==102){
-                if(data!=null){
-                    Uri uri=data.getData();
+    ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+            new ActivityResultCallback<Uri>() {
+                @Override
+                public void onActivityResult(Uri uri) {
+                    // Handle the returned Uri
                     iv_msg.setVisibility(View.VISIBLE);
                     iv_cancel.setVisibility(View.VISIBLE);
                     iv_msg.setImageURI(uri);
                     if(uri!=null){
-                        pickiT.getPath(data.getData(), Build.VERSION.SDK_INT);
+                        pickiT.getPath(uri, Build.VERSION.SDK_INT);
                     }
                 }
-            }
-        }
-    }
+            });
 
 
     private void fetchCommentFromHostinger(String time ,boolean isRefresh){

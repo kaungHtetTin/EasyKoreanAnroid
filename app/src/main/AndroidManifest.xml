@@ -23,7 +23,6 @@
         android:maxSdkVersion="28" />
 
     <queries>
-
         <!-- Explicit apps you know in advance about: -->
         <package android:name="com.qanda.learnroom" />
         <package android:name="com.calamus.easychinese" />

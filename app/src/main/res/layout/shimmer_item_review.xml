@@ -20,7 +20,7 @@
             android:src="@drawable/ic_baseline_account_circle_24"/>
 
         <TextView
-            android:id="@+id/tv_username"
+            android:id="@+id/tv_username2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/iv_profile"
@@ -34,7 +34,7 @@
             android:id="@+id/tv_review"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_username"
+            android:layout_below="@id/tv_username2"
             android:layout_toEndOf="@id/iv_profile"
             android:layout_margin="3dp"
             android:background="@drawable/bg_shimmer_content"/>
@@ -45,7 +45,7 @@
             style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@id/tv_username"
+            android:layout_alignTop="@id/tv_username2"
             android:layout_alignParentEnd="true"
             android:isIndicator="true"
             android:numStars="5"

@@ -153,7 +153,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<RecyclerView.View
             myExecutor= ContextCompat.getMainExecutor(c);
 
             iv=view.findViewById(R.id.iv_profile);
-            tv_name=view.findViewById(R.id.tv_username);
+            tv_name=view.findViewById(R.id.tv_username2);
             tv_confirm=view.findViewById(R.id.tv_confirm);
             tv_delete=view.findViewById(R.id.tv_delete);
             tv_mutual_count=view.findViewById(R.id.tv_mutual_count);
@@ -260,7 +260,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<RecyclerView.View
             super(view);
             myExecutor= ContextCompat.getMainExecutor(c);
             iv=view.findViewById(R.id.iv_profile);
-            tv_name=view.findViewById(R.id.tv_username);
+            tv_name=view.findViewById(R.id.tv_username2);
             tv_mutual_count=view.findViewById(R.id.tv_mutual_count);
             tv_add=view.findViewById(R.id.tv_confirm);
             tv_delete=view.findViewById(R.id.tv_delete);

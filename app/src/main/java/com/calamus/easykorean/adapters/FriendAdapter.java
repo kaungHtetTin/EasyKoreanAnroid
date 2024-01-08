@@ -112,7 +112,7 @@ public class FriendAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             myExecutor= ContextCompat.getMainExecutor(c);
 
             iv=view.findViewById(R.id.iv_profile);
-            tv_name=view.findViewById(R.id.tv_username);
+            tv_name=view.findViewById(R.id.tv_username2);
             tv_mutual=view.findViewById(R.id.tv_mutual);
 
             view.setOnClickListener(v -> {

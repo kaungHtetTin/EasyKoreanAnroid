@@ -22,7 +22,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/tv_course_title"
+            android:id="@+id/tv_username2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_semibold"
@@ -41,7 +41,7 @@
             android:textSize="12sp"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toEndOf="@+id/iv_course_cover"
-            app:layout_constraintTop_toBottomOf="@+id/tv_course_title" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_username2" />
 
 
         <androidx.constraintlayout.widget.Guideline
@@ -153,17 +153,17 @@
 
                 <Button
                     android:id="@+id/bt_post"
+                    android:text="POST"
+                    android:background="@drawable/bg_login_button"
                     android:layout_width="120dp"
                     android:layout_height="40dp"
-                    android:layout_below="@id/et_post"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/bg_post_review_button"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:paddingTop="3dp"
-                    android:text="POST"
                     android:textColor="@color/white"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    android:paddingTop="3dp"
+                    android:layout_below="@id/et_post"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:layout_marginTop="10dp"/>
 
             </RelativeLayout>
 
@@ -190,7 +190,7 @@
                     android:layout_below="@id/your_review" />
 
                 <TextView
-                    android:id="@+id/tv_username"
+                    android:id="@+id/tv_username2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@id/iv_profile"
@@ -204,8 +204,8 @@
                     android:id="@+id/tv_review"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/tv_username"
-                    android:layout_alignStart="@id/tv_username"
+                    android:layout_below="@id/tv_username2"
+                    android:layout_alignStart="@id/tv_username2"
                     android:fontFamily="@font/poppins_medium"
                     android:textColor="@color/textPrimary" />
 
@@ -215,7 +215,7 @@
                     style="?android:attr/ratingBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignTop="@id/tv_username"
+                    android:layout_alignTop="@id/tv_username2"
                     android:layout_alignParentEnd="true"
                     android:isIndicator="true"
                     android:numStars="5"

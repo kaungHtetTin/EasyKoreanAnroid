@@ -43,6 +43,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -91,8 +95,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.Executor;
-
-import static com.calamus.easykorean.app.AppHandler.changeUnicode;
 import static com.calamus.easykorean.app.AppHandler.formatTime;
 import static com.calamus.easykorean.app.AppHandler.reactFormat;
 import static com.calamus.easykorean.app.AppHandler.viewCountFormat;
@@ -176,9 +178,13 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
         videoChannel = getIntent().getExtras().getBoolean("videoChannel");
         isDownloadedVideo = getIntent().getBooleanExtra("downloaded", false);
         folderName = getIntent().getExtras().getString("folderName", "");
+        a = getIntent().getExtras().getLong("time");
 
         rootDir = getExternalFilesDir(Environment.DIRECTORY_MOVIES).getPath();
         fileManager = new FileManager(this);
+
+        setUpView();
+
         Log.e("Root dir", rootDir + "/" + folderName);
         fileManager.loadFiles(new File(rootDir + "/" + folderName), new FileManager.OnFileLoading() {
             @Override
@@ -189,20 +195,30 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
         });
 
 
-        a = getIntent().getExtras().getLong("time");
+
 
 
         pickiT = new PickiT(this, this, this);
         postExecutor = ContextCompat.getMainExecutor(this);
         notificationController = new NotificationController(this);
 
-        setUpView();
+
         if (isVIP) isVip = "1";
 
         getVideoData();
 
         Intent intent = new Intent(this, MusicService.class);
         stopService(intent);
+
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (player.isPlaying()) {
+                    player.stop();
+                }
+                finish();
+            }
+        });
 
     }
 
@@ -640,7 +656,7 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
         card_share_now.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sharePost(currentUserId, AppHandler.changeUnicode(et_share.getText().toString()), shareId);
+                sharePost(currentUserId, et_share.getText().toString(), shareId);
                 bottomSheetDialog.dismiss();
             }
         });
@@ -734,14 +750,6 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
         });
 
         player.setPlayWhenReady(true);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if (player.isPlaying()) {
-            player.stop();
-        }
     }
 
     @Override
@@ -900,7 +908,7 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String content = changeUnicode(et.getText().toString());
+                String content = et.getText().toString();
                 if (!TextUtils.isEmpty(content) || !commentImagePath.equals("")) {
 
                     MyCommentController myCommentController = new MyCommentController("" + a, currentUserName, VimeoPlayerActivity.this);
@@ -965,46 +973,47 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
 
     }
 
-    private boolean isPermissionGranted() {
+    private boolean isPermissionGranted(){
+        int  readExternalStorage;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES);
+        }else{
+            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        return  readExternalStorage==PackageManager.PERMISSION_GRANTED;
+    }
 
-        int readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        return readExternalStorage == PackageManager.PERMISSION_GRANTED;
+    private void takePermission(){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_MEDIA_IMAGES},101);
+        }else{
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},101);
+        }
 
     }
 
-    private void takePermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 101);
+    private void pickImageFromGallery(){
+        mGetContent.launch("image/*");
     }
 
-    private void pickImageFromGallery() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
-        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        startActivityForResult(intent, 102);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == 102) {
-                if (data != null) {
-                    Uri uri = data.getData();
+    ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+            new ActivityResultCallback<Uri>() {
+                @Override
+                public void onActivityResult(Uri uri) {
+                    // Handle the returned Uri
                     iv_msg.setVisibility(View.VISIBLE);
                     iv_cancel.setVisibility(View.VISIBLE);
                     iv_msg.setImageURI(uri);
-                    if (uri != null) {
-                        pickiT.getPath(data.getData(), Build.VERSION.SDK_INT);
-                    } else {
+                    if(uri!=null){
+                        pickiT.getPath(uri, Build.VERSION.SDK_INT);
+                    }else {
                         iv_msg.setImageBitmap(null);
                         iv_msg.setVisibility(View.GONE);
                         iv_cancel.setVisibility(View.GONE);
                         commentImagePath = "";
                     }
                 }
-            }
-        }
-    }
+            });
 
     private void fetchPost(String time) {
 

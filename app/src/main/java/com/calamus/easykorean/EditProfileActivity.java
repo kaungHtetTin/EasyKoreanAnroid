@@ -378,7 +378,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 }
             }).url(Routing.EDIT_PROFILE)
                     .field("phone",userPhone)
-                    .field("name",AppHandler.changeUnicode(userName))
+                    .field("name",userName)
                     .field("email",userEmail)
                     .field("bd_day",bd_d)
                     .field("bd_month",bd_m)

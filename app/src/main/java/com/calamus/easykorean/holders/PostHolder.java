@@ -83,7 +83,7 @@ public class PostHolder extends RecyclerView.ViewHolder {
         tv_time = view.findViewById(R.id.tv_time);
         tv_read_more=view.findViewById(R.id.tv_readmore);
         iv_profile = view.findViewById(R.id.iv_profile);
-        tv_userName=view.findViewById(R.id.tv_username);
+        tv_userName=view.findViewById(R.id.tv_username2);
         tv_body=view.findViewById(R.id.tv_body);
         iv_post=view.findViewById(R.id.iv_post_image);
         iv_blueMark=view.findViewById(R.id.iv_blueMark);
@@ -625,7 +625,7 @@ public class PostHolder extends RecyclerView.ViewHolder {
         card_share_now.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sharePost(currentUserId,AppHandler.changeUnicode(et_share.getText().toString()),shareId);
+                sharePost(currentUserId,et_share.getText().toString(),shareId);
                 bottomSheetDialog.dismiss();
             }
         });

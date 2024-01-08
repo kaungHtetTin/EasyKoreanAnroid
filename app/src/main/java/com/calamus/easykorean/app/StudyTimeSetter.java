@@ -64,7 +64,7 @@ public class StudyTimeSetter {
 
     public void cancelAlarm(){
         Intent intent=new Intent(c, AlarmReceiver.class);
-        pendingIntent=PendingIntent.getBroadcast(c,5241,intent,0);
+        pendingIntent=PendingIntent.getBroadcast(c,5241,intent, PendingIntent.FLAG_IMMUTABLE);
         if(alarmManager==null){
             alarmManager=(AlarmManager)c.getSystemService(Context.ALARM_SERVICE);
         }

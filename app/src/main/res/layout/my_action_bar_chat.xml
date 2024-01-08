@@ -16,7 +16,7 @@
         android:src="@drawable/ic_back"/>
 
     <TextView
-        android:id="@+id/tv_username"
+        android:id="@+id/tv_username2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/iv_profile"
@@ -31,11 +31,11 @@
     <TextView
         android:id="@+id/tv_status"
         android:layout_width="wrap_content"
-        android:layout_below="@id/tv_username"
+        android:layout_below="@id/tv_username2"
         android:textSize="13sp"
         android:text="Online"
         android:fontFamily="@font/poppins_regular"
-        android:layout_alignStart="@id/tv_username"
+        android:layout_alignStart="@id/tv_username2"
         android:layout_height="wrap_content"/>
 
 

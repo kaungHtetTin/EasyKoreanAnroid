@@ -92,7 +92,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         public Holder(View view) {
             super(view);
             iv_profile=view.findViewById(R.id.iv_profile);
-            tv_username=view.findViewById(R.id.tv_username);
+            tv_username=view.findViewById(R.id.tv_username2);
             tv_review=view.findViewById(R.id.tv_review);
             tv_date=view.findViewById(R.id.tv_date);
             ratingBar=view.findViewById(R.id.rating_bar);

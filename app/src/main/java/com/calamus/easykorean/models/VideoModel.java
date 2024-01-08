@@ -8,6 +8,8 @@ public class VideoModel {
     boolean learned;
     String thumbnail;
     int duration;
+    boolean downloaded;
+    SavedVideoModel model;
 
     public VideoModel(String videoTitle,String videoId,long time,String category,  boolean learned,String thumbnail,int duration){
         this.videoTitle=videoTitle;
@@ -50,5 +52,21 @@ public class VideoModel {
 
     public String getThumbnail() {
         return thumbnail;
+    }
+
+    public void setDownloaded(boolean downloaded) {
+        this.downloaded=downloaded;
+    }
+
+    public boolean isDownloaded() {
+        return downloaded;
+    }
+
+    public SavedVideoModel getVideoModel() {
+        return model;
+    }
+
+    public void setVideoModel(SavedVideoModel model) {
+        this.model = model;
     }
 }

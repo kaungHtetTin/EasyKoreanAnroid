@@ -47,7 +47,7 @@ public class CommentHolder extends RecyclerView.ViewHolder{
         super(itemView);
         this.c=c;
         iv=itemView.findViewById(R.id.iv_small_profile);
-        tv_name=itemView.findViewById(R.id.tv_username);
+        tv_name=itemView.findViewById(R.id.tv_username2);
         tv_comment=itemView.findViewById(R.id.tv_comment);
         tv_time=itemView.findViewById(R.id.tv_time);
         Rlayout=itemView.findViewById(R.id.bubble_layout_part);
@@ -75,7 +75,7 @@ public class CommentHolder extends RecyclerView.ViewHolder{
 
     private void bindData(CommentModel cModel){
         if(cModel.getTime().equals(checkTime)){
-            Rlayout.setBackgroundColor(Color.parseColor("#E7F3FF"));
+            Rlayout.setBackgroundResource(R.drawable.bg_notification);
         }
 
         tv_readingMore.setVisibility(View.GONE);

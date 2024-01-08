@@ -111,7 +111,6 @@ public class LessonActivity extends AppCompatActivity
     }
 
 
-
     private void setupViews()
     {
         tv_title=findViewById(R.id.tv_info_header);

@@ -1,5 +1,6 @@
 package com.calamus.easykorean;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import android.os.Bundle;
@@ -27,6 +28,12 @@ public class MyAdActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         postExecutor= ContextCompat.getMainExecutor(this);
         setUpView();
+
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+            }
+        });
     }
 
     private void setUpView(){
@@ -92,7 +99,4 @@ public class MyAdActivity extends AppCompatActivity {
             }
         }).start();
     }
-
-    @Override
-    public void onBackPressed() { }
 }

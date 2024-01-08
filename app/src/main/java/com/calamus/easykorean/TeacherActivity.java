@@ -5,7 +5,6 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -14,10 +13,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -54,7 +51,7 @@ import com.calamus.easykorean.app.MyHttp;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import static com.calamus.easykorean.ChattingActivity.fImage;
-import static com.calamus.easykorean.app.AppHandler.changeFont;
+
 
 public class TeacherActivity extends AppCompatActivity {
 
@@ -138,7 +135,7 @@ public class TeacherActivity extends AppCompatActivity {
         LayoutInflater inflator = (LayoutInflater) this .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflator.inflate(R.layout.my_action_bar_chat, null);
 
-        tv_name=v.findViewById(R.id.tv_username);
+        tv_name=v.findViewById(R.id.tv_username2);
         tv_status=v.findViewById(R.id.tv_status);
         iv_back=v.findViewById(R.id.iv_back);
         iv_profile=v.findViewById(R.id.iv_profile);
@@ -185,7 +182,7 @@ public class TeacherActivity extends AppCompatActivity {
         ibtSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String msgBody=changeFont(et_chatInput.getText().toString());
+                String msgBody=et_chatInput.getText().toString();
                 Long time = System.currentTimeMillis();
                 if(!TextUtils.isEmpty(msgBody)) {
                     if(hasImage.equals(""))sendMessage(msgBody, time);

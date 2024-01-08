@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.calamus.easykorean.app.FileManager;
+import com.calamus.easykorean.models.FileModel;
+import com.calamus.easykorean.models.SavedVideoModel;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.snackbar.Snackbar;
@@ -37,6 +42,8 @@ import com.calamus.easykorean.models.VideoCategoryModel;
 import com.calamus.easykorean.models.VideoModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 
@@ -61,7 +68,9 @@ public class FragmentThree extends Fragment {
     public int pastVisibleItems;
     Executor postExecutor;
 
-
+    String rootDir;
+    FileManager fileManager;
+    ArrayList<FileModel> downloadedVideoFiles =new ArrayList<>();
 
     @Nullable
     @Override
@@ -72,8 +81,14 @@ public class FragmentThree extends Fragment {
         videoCategoryForm=sharedPreferences.getString("videoChannels","");
         currentUserId=sharedPreferences.getString("phone","");
         postExecutor = ContextCompat.getMainExecutor(getActivity());
-        setUpView();
 
+        rootDir=getActivity().getExternalFilesDir(Environment.DIRECTORY_MOVIES).getPath();
+        fileManager=new FileManager(getActivity());
+
+
+
+
+        setUpView();
         setUpAppBar();
 
         return v;
@@ -169,6 +184,7 @@ public class FragmentThree extends Fragment {
                 currentCategory=category;
                 loading=true;
                 page=1;
+                loadDownloadedVideo();
                 addLoadingItem();
                 fetchLesson(1,currentCategoryID,true);
             }
@@ -205,6 +221,16 @@ public class FragmentThree extends Fragment {
             }
         });
 
+    }
+
+    private void loadDownloadedVideo(){
+        fileManager.loadFiles(new File(rootDir + "/" + currentCategory), new FileManager.OnFileLoading() {
+            @Override
+            public void onLoaded(ArrayList<FileModel> files) {
+                downloadedVideoFiles.clear();
+                downloadedVideoFiles.addAll(files);
+            }
+        });
     }
 
     private void addLoadingItem(){
@@ -253,7 +279,23 @@ public class FragmentThree extends Fragment {
                 long time=Long.parseLong(jo.getString("date"));
                 String thumbnail=jo.getString("thumbnail");
                 int duration=jo.getInt("duration");
-                lessonList.add(new VideoModel(title,link,time,currentCategory,learned,thumbnail,duration));
+
+                VideoModel model =new VideoModel(title,link,time,currentCategory,learned,thumbnail,duration);
+                String checkTitle=title.replace("/"," ");
+                checkTitle=checkTitle+".mp4";
+                if(downloadedVideoFiles.size()>0){
+                    for(int j=0;j<downloadedVideoFiles.size();j++){
+                        FileModel file=downloadedVideoFiles.get(j);
+                        if(file.getFile().getName().equals(checkTitle)){
+                            model.setDownloaded(true);
+                            model.setVideoModel((SavedVideoModel) file);
+                            Log.e("Downloaded ", checkTitle + " is downloaded");
+
+                        }
+                    }
+                }
+
+                lessonList.add(model);
             }
 
             adapter.notifyDataSetChanged();
@@ -282,6 +324,7 @@ public class FragmentThree extends Fragment {
             currentCategoryID=firstCategory;
             currentCategory=ja.getJSONObject(0).getString("category");
             addLoadingItem();
+            loadDownloadedVideo();
             fetchLesson(1,firstCategory,true);
 
         }catch (Exception ignored){

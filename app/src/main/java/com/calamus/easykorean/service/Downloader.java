@@ -1,22 +1,10 @@
 package com.calamus.easykorean.service;
 
-import static com.calamus.easykorean.ApplicationClass.CHANNEL_ID_3;
-
-import android.Manifest;
 import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.util.Log;
-
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-
-import com.calamus.easykorean.MainActivity;
-import com.calamus.easykorean.R;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
