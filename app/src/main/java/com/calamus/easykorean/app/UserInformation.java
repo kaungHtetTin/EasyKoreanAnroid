@@ -76,6 +76,7 @@ public class UserInformation {
             editor.putString("version",version);
             editor.putInt("GameScore",Integer.parseInt(gameScore));
             editor.putBoolean("isVIP", user.getString("isVip").equals("1"));
+            editor.putBoolean("isGoldPlan",user.getString("gold_plan").equals("1"));
             if(!imageUrl.equals("")){
                 editor.putString("imageUrl",imageUrl);
             }

@@ -77,7 +77,7 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
 
-        if(position==0){
+        if(data.get(position) instanceof Banner ){
             return 0;
         }else{
             return 1;
@@ -89,12 +89,7 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(@NotNull RecyclerView.ViewHolder holder, final int p) {
 
-        if(p==0){
-            VipPurchaseHolder vipPurchaseHolder=(VipPurchaseHolder) holder;
-            String url="https://www.calamuseducation.com/uploads/icons/easykoreanvipbanner.png";
-            AppHandler.setPhotoFromRealUrl(vipPurchaseHolder.iv,url);
-
-        }else if(data.get(p) instanceof CourseModel) {
+        if(data.get(p) instanceof CourseModel) {
             try {
 
                 Holder courseHolder=(Holder)holder;
@@ -141,6 +136,10 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             } catch (Exception e) {
                 Toast.makeText(c, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
+        }else{
+            VipPurchaseHolder vipPurchaseHolder = (VipPurchaseHolder) holder;
+            String url = "https://www.calamuseducation.com/uploads/icons/easykoreanvipbanner.png";
+            AppHandler.setPhotoFromRealUrl(vipPurchaseHolder.iv, url);
         }
     }
 
@@ -325,5 +324,9 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }).url(Routing.GET_COURSE_RATING+"?user_id="+currentUserId+"&course_id="+model.getCourse_id());
             myHttp.runTask();
         }).start();
+    }
+
+    public static class  Banner{
+
     }
 }

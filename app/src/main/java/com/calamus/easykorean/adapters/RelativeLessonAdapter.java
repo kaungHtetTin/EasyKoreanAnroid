@@ -269,7 +269,10 @@ public class RelativeLessonAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
-
+    public void setNowPlayingId(long nowPlayingId) {
+        this.nowPlayingId = nowPlayingId;
+        notifyDataSetChanged();
+    }
 
     private  void showVIPRegistrationDialog(String msg){
         String title="VIP Registration";

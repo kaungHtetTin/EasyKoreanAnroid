@@ -6,7 +6,6 @@
     android:orientation="vertical"
     android:background="@color/appBar">
 
-
     <ImageView
         android:id="@+id/iv_back"
         android:layout_width="33dp"
@@ -56,7 +55,7 @@
             </RelativeLayout>
 
             <TextView
-                android:id="@id/tv_username"
+                android:id="@+id/tv_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -74,7 +73,6 @@
                 android:textSize="17sp"
                 android:textColor="@color/colorNameBlack"/>
 
-
             <TextView
                 android:id="@+id/tv_bio"
                 android:layout_width="match_parent"
@@ -84,7 +82,6 @@
                 android:textSize="17sp"
                 android:layout_marginTop="15dp"
                 android:textColor="@color/colorNameBlack"/>
-
 
             <TextView
                 android:id="@+id/tv_edit_bio"
@@ -216,7 +213,6 @@
                     android:layout_width="wrap_content"
                     android:layout_below="@id/tv_gender_edit"
                     android:layout_height="45dp"/>
-
             </RelativeLayout>
 
             <TextView

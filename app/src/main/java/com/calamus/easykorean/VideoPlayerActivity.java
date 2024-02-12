@@ -1,5 +1,7 @@
 package com.calamus.easykorean;
 
+import static com.calamus.easykorean.adapters.SavedVideoAdapter.relatedVideos;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +21,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.calamus.easykorean.models.LessonModel;
+import com.calamus.easykorean.models.SavedVideoModel;
 import com.calamus.easykorean.service.MusicService;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.MediaItem;
@@ -92,13 +97,13 @@ public class VideoPlayerActivity extends Activity implements AudioManager.OnAudi
         root=findViewById(R.id.root_layout);
         scaling=findViewById(R.id.scaling);
 
-        title.setText(videoTitle);
+
         videoBack.setOnClickListener(this);
         lock.setOnClickListener(this);
         unlock.setOnClickListener(this);
         scaling.setOnClickListener(firstListener);
 
-        playVideo();
+        playVideo(videoTitle,videoUri);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             focusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
@@ -156,8 +161,9 @@ public class VideoPlayerActivity extends Activity implements AudioManager.OnAudi
     }
 
 
-    private void playVideo() {
-
+    private void playVideo(String titleStr,Uri videoUri) {
+        title.setText(titleStr);
+        videoTitle=titleStr;
         player=new SimpleExoPlayer.Builder(this)
                 .setSeekBackIncrementMs(10000)
                 .setSeekForwardIncrementMs(10000)
@@ -176,6 +182,32 @@ public class VideoPlayerActivity extends Activity implements AudioManager.OnAudi
         player.prepare(concatenatingMediaSource);
         player.seekTo(0, C.TIME_UNSET);
         playError();
+
+
+        player.addListener(new Player.Listener() {
+            @Override
+            public void onPlaybackStateChanged(int playbackState) {
+                Player.Listener.super.onPlaybackStateChanged(playbackState);
+                if(playbackState== SimpleExoPlayer.STATE_ENDED){
+                    int nextIndex=getCurrentIndex()+1;
+                    if(nextIndex>=0&&nextIndex<relatedVideos.size()){
+                        SavedVideoModel model=relatedVideos.get(nextIndex);
+                        playVideo(model.getName(),model.getUri());
+                    }
+                }
+            }
+        });
+    }
+
+    private int getCurrentIndex(){
+        for(int i=0;i<relatedVideos.size();i++){
+            SavedVideoModel model=relatedVideos.get(i);
+            if(model.getName().equals(videoTitle)){
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     private void playError() {

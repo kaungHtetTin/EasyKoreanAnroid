@@ -101,8 +101,6 @@ public class PostHolder extends RecyclerView.ViewHolder {
         iv_post.setClipToOutline(true);
 
 
-
-
     }
 
 
@@ -139,7 +137,6 @@ public class PostHolder extends RecyclerView.ViewHolder {
 
             }
             iv_blueMark.setVisibility(View.GONE);
-            iv_post.setVisibility(View.GONE);
 
             if(!model.getPostImage().equals("")){
                 iv_post.setVisibility(View.VISIBLE);
@@ -188,7 +185,6 @@ public class PostHolder extends RecyclerView.ViewHolder {
             if(model.getIsLike().equals("1")){
                 tv_react.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_react_love, 0, 0, 0);
             }
-
 
 
             tv_react.setOnClickListener(new View.OnClickListener() {

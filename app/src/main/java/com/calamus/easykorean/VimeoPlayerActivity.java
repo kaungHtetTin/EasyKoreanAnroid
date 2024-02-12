@@ -59,9 +59,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.calamus.easykorean.app.FileManager;
+import com.calamus.easykorean.app.WebAppInterface;
 import com.calamus.easykorean.models.FileModel;
 import com.calamus.easykorean.models.SavedVideoModel;
 import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.Player;
@@ -159,7 +161,9 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
     boolean landscape;
 
     RelativeLayout player_container;
+    ArrayList<LessonModel> relatedLessons = new ArrayList<>();
 
+    RelativeLessonAdapter lessonAdapter;
     @SuppressLint("StaticFieldLeak")
     @Override
     protected void onCreate(Bundle bundle) {
@@ -178,6 +182,7 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
         videoChannel = getIntent().getExtras().getBoolean("videoChannel");
         isDownloadedVideo = getIntent().getBooleanExtra("downloaded", false);
         folderName = getIntent().getExtras().getString("folderName", "");
+
         a = getIntent().getExtras().getLong("time");
 
         rootDir = getExternalFilesDir(Environment.DIRECTORY_MOVIES).getPath();
@@ -252,6 +257,24 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
                 loadVideoContent();
             }
         });
+        wv.addJavascriptInterface(new WebAppInterface(this, new WebAppInterface.CallBack() {
+            @Override
+            public void onEvent() {
+                postExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        int nextIndex=getCurrentIndex()+1;
+                        if(nextIndex>=0&&nextIndex<relatedLessons.size()){
+                            LessonModel model=relatedLessons.get(nextIndex);
+                            if(model.isVideo()){
+                                lessonAdapter.setNowPlayingId(model.getTime());
+                                playNext(model);
+                            }
+                        }
+                    }
+                });
+            }
+        }), "Android");
 
         defineVideoViewHeight();
         if (isDownloadedVideo) {
@@ -392,6 +415,28 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
                 player.getPlaybackState();
             }
         }
+
+         player.addListener(new Player.Listener() {
+             @Override
+             public void onPlaybackStateChanged(int playbackState) {
+                 Player.Listener.super.onPlaybackStateChanged(playbackState);
+                 if(playbackState== SimpleExoPlayer.STATE_ENDED){
+                     postExecutor.execute(new Runnable() {
+                         @Override
+                         public void run() {
+                             int nextIndex=getCurrentIndex()+1;
+                             if(nextIndex>=0&&nextIndex<relatedLessons.size()){
+                                 LessonModel model=relatedLessons.get(nextIndex);
+                                 if(model.isVideo()){
+                                     lessonAdapter.setNowPlayingId(model.getTime());
+                                     playNext(model);
+                                 }
+                             }
+                         }
+                     });
+                 }
+             }
+         });
     }
 
     @Override
@@ -437,31 +482,11 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
             recyclerViewLesson.setVisibility(View.GONE);
             tv_related_lesson.setVisibility(View.GONE);
         } else {
-            ArrayList<LessonModel> relatedLessons = new ArrayList<>();
-            RelativeLessonAdapter lessonAdapter = new RelativeLessonAdapter(this, relatedLessons, a, videoChannel, new RelativeLessonAdapter.CallBack() {
+
+            lessonAdapter = new RelativeLessonAdapter(this, relatedLessons, a, videoChannel, new RelativeLessonAdapter.CallBack() {
                 @Override
                 public void onClick(LessonModel model) {
-                    iframeLoaded = false;
-                    postLoaded = false;
-                    if (model.isDownloaded()) {
-                        wv.setVisibility(View.GONE);
-                        playerView.setVisibility(View.VISIBLE);
-                        videoUri=model.getVideoModel().getUri();
-                        iframeLoaded = true;
-                        postLoaded = true;
-                        playVideo();
-                        loadVideoContent();
-                    } else {
-                        player.stop();
-                        pb_video_frame.setVisibility(View.VISIBLE);
-                        wv.setVisibility(View.VISIBLE);
-                        playerView.setVisibility(View.GONE);
-                        wv.loadUrl(Routing.PLAY_VIDEO + "?post_id=" + a);
-                    }
-                    videoId = model.getLink();
-                    a = model.getTime();
-                    timeCheck = "0";
-                    getVideoData();
+                    playNext(model);
                 }
 
                 @Override
@@ -519,6 +544,34 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
             }
 
         }
+    }
+
+
+    private void playNext(LessonModel model){
+        iframeLoaded = false;
+        postLoaded = false;
+        videoId = model.getLink();
+        a = model.getTime();
+        timeCheck = "0";
+
+        if (model.isDownloaded()) {
+            wv.setVisibility(View.GONE);
+            wv.loadUrl("");
+            playerView.setVisibility(View.VISIBLE);
+            videoUri=model.getVideoModel().getUri();
+            iframeLoaded = true;
+            postLoaded = true;
+            playVideo();
+            loadVideoContent();
+        } else {
+            player.stop();
+            pb_video_frame.setVisibility(View.VISIBLE);
+            wv.setVisibility(View.VISIBLE);
+            playerView.setVisibility(View.GONE);
+            wv.loadUrl(Routing.PLAY_VIDEO + "?post_id=" + a);
+        }
+
+        getVideoData();
     }
 
     public String setMyanmar(String s) {
@@ -596,6 +649,16 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
             myHttp.runTask();
         }).start();
 
+    }
+
+    private int getCurrentIndex(){
+        for(int i=0;i<relatedLessons.size();i++){
+            LessonModel model=relatedLessons.get(i);
+            if(model.getTime()==a){
+                return i;
+            }
+        }
+        return -1;
     }
 
 
@@ -737,6 +800,9 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
         playerView.setKeepScreenOn(true);
         player.prepare(concatenatingMediaSource);
         player.seekTo(0, C.TIME_UNSET);
+
+
+
         playError();
     }
 

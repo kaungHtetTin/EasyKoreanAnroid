@@ -31,13 +31,15 @@ public class SavedVideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     boolean directoryChoosing;
     CallBack callBack;
 
+    public static ArrayList<SavedVideoModel> relatedVideos=new ArrayList<>();
+
     public SavedVideoAdapter(ArrayList<FileModel> dataLists, Activity c,boolean directoryChoosing,CallBack callBack) {
         this.dataLists = dataLists;
         this.c = c;
         this.callBack=callBack;
         this.directoryChoosing=directoryChoosing;
         this.mInflater = LayoutInflater.from(c);
-
+        relatedVideos.clear();
     }
 
 
@@ -68,6 +70,7 @@ public class SavedVideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if(dataLists.get(position) instanceof SavedVideoModel){
             SavedVideoModel model=(SavedVideoModel) dataLists.get(position);
+            relatedVideos.add(model);
             VideoHolder videoHolder=(VideoHolder)holder;
             videoHolder.tvVideoName.setText(model.getName());
             if(model.getThumbnail()!=null){
@@ -92,6 +95,8 @@ public class SavedVideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 animateOnSelected(videoHolder.card_videoThumb,120,1);
                 animateOnSelected(videoHolder.tvVideoName,120,1);
             }
+
+
 
         }else{
             FolderModel folderModel=(FolderModel) dataLists.get(position);

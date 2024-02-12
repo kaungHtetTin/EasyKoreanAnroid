@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.calamus.easykorean.DownloadingListActivity;
@@ -54,7 +55,7 @@ public class FragmentOne extends Fragment {
     MainAdapter adapter;
     Executor postExecutor;
     ImageView iv_downloading;
-    boolean isVip;
+    boolean isVip,isGoldPlan;
     Thread animateThread;  // for downloading icon
     boolean onLifeCyclePause=false;
 
@@ -69,12 +70,13 @@ public class FragmentOne extends Fragment {
         username=sharedPreferences.getString("Username",null);
         phone=sharedPreferences.getString("phone",null);
         isVip=sharedPreferences.getBoolean("isVIP",false);
+        isGoldPlan=sharedPreferences.getBoolean("isGoldPlan",false);
         postExecutor= ContextCompat.getMainExecutor(getActivity());
 
         setAppBar();
         setupViews();
 
-        courseList.add(0,"vip");
+        if(!isGoldPlan)courseList.add(0,new MainAdapter.Banner());
 
         if(mainCourse!=null)setCourse();
 
@@ -85,30 +87,15 @@ public class FragmentOne extends Fragment {
         RecyclerView recycler;
         recycler = v.findViewById(R.id.recycler_frag_one);
 
-        GridLayoutManager gm = new GridLayoutManager(getActivity(), 3){
-            @Override
-            public boolean canScrollVertically() {
-                return true;
-            }
-        };
+        LinearLayoutManager lm=new LinearLayoutManager(getActivity());
 
-        gm.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if(courseList.get(position) instanceof  FunctionModel){
-                    return  1;
-                }
-                else{
-                    return 3;
-                }
-            }
-        });
-
-        recycler.setLayoutManager(gm);
+        recycler.setLayoutManager(lm);
         recycler.setItemAnimator(new DefaultItemAnimator());
 
         adapter = new MainAdapter(getActivity(), courseList);
         recycler.setAdapter(adapter);
+
+
 
     }
 
@@ -130,7 +117,6 @@ public class FragmentOne extends Fragment {
                 startActivity(new Intent(getActivity(),DownloadingListActivity.class));
             }
         });
-
 
 
         if(username!=null)tv_name.setText(getFistName(username));
@@ -287,8 +273,6 @@ public class FragmentOne extends Fragment {
                 }
                 courseList.add(new CourseModel(id,title,description,cover_url,colorCode,progress,duration,isVip));
             }
-
-
 
             adapter.notifyDataSetChanged();
 

@@ -267,7 +267,6 @@ public class LessonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
             if(lessonJSON!=null)i.putExtra("lessonJSON",lessonJSON);
 
-
         }else {
             i = new Intent(c, DetailActivity.class);
             i.putExtra("link",model.getLink());
@@ -275,7 +274,6 @@ public class LessonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             i.putExtra("lessonId",model.getId());
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
-
         c.startActivity(i);
     }
 

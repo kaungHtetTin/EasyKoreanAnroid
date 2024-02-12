@@ -78,7 +78,7 @@ public class TeacherActivity extends AppCompatActivity {
     LinearLayoutManager lm;
     Executor postExecutor;
     boolean isVip;
-    String team;
+    String team,pushNotificationToAdmin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,9 +105,11 @@ public class TeacherActivity extends AppCompatActivity {
         if(team.equals("Developer")){
             dbn.child(myId).child("developer_message").removeValue();
             SplashScreenActivity.DEVELOPER_MESSAGE=false;
+            pushNotificationToAdmin=Routing.PUSH_NOTIFICATION_TO_DEVELOPER;
         }else{
             dbn.child(myId).child("teacher_message").removeValue();
             SplashScreenActivity.TEACHER_MESSAGE=false;
+            pushNotificationToAdmin=Routing.PUSH_NOTIFICATION_TO_TEACHER;
         }
 
 
@@ -359,7 +361,7 @@ public class TeacherActivity extends AppCompatActivity {
             }).url(Routing.PUSH_NOTIFICATION_TOPIC)
                     .field("title",myName)
                     .field("message",team+" : "+message)
-                    .field("to",Routing.ADMIN_TOPIC);
+                    .field("to",pushNotificationToAdmin);
             myHttp.runTask();
         }).start();
     }

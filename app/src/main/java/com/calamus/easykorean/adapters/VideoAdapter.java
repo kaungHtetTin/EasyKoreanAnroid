@@ -80,8 +80,6 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> {
                     holder.tv_watch.setTextColor(Color.RED);
                 }
 
-
-
                 holder.iv.setVisibility(View.VISIBLE);
                 Picasso.get()
                         .load(model.getThumbnail())
@@ -104,7 +102,6 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> {
 
                 holder.tv_lesson_category.setBackgroundColor(c.getResources().getColor(R.color.appBar));
                 holder.tvTitle.setBackgroundColor(c.getResources().getColor(R.color.appBar));
-                holder.ibt_download.setVisibility(View.VISIBLE);
                 holder.tv_watch.setVisibility(View.VISIBLE);
                 holder.iv_circle.setVisibility(View.VISIBLE);
 
@@ -115,7 +112,6 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> {
                     holder.ibt_download.setVisibility(View.VISIBLE);
                     holder.ibt_play.setVisibility(View.GONE);
                 }
-
             }else{
                 holder.container.showShimmer(true);
                 holder.tv_lesson_category.setBackgroundResource(R.drawable.bg_shimmer_content);

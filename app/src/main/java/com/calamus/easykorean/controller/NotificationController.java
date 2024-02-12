@@ -49,7 +49,7 @@ public class NotificationController {
             }).url(Routing.PUSH_NOTIFICATION_TOPIC)
                     .field("title","Hey Admin")
                     .field("message",message)
-                    .field("to",Routing.ADMIN_TOPIC);
+                    .field("to",Routing.PUSH_NOTIFICATION_TO_TEACHER);
             myHttp.runTask();
         }).start();
     }

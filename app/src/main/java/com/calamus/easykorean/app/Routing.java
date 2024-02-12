@@ -6,7 +6,8 @@ public class Routing {
     public static final String MAJOR="korea";
     public static final String APP_NAME="Easy Korean";
     public static final String MAJOR_CODE="ko";
-    public static final String ADMIN_TOPIC="adminKorea";
+    public static final String PUSH_NOTIFICATION_TO_TEACHER="ekTeacher";
+    public static final String PUSH_NOTIFICATION_TO_DEVELOPER="ekDeveloper";
     public static final String timerMessage="It's time to learn Korean! Easy Korean is ready for you.";
     public static final String subscribeToTopic="koreaUsers";
 

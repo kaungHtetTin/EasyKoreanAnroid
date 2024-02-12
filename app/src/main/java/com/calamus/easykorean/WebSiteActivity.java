@@ -10,6 +10,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -58,6 +60,17 @@ public class WebSiteActivity extends AppCompatActivity {
 
         swipe.setOnRefreshListener(() -> startWebView(wv,Current_url));
 
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if(wv.canGoBack() && !check.equals(address)){
+                    wv.goBack();
+
+                }else {
+                    finish();
+                }
+            }
+        });
 
     }
 
@@ -112,20 +125,6 @@ public class WebSiteActivity extends AppCompatActivity {
 
         wv.loadUrl(url);
         swipe.setRefreshing(false);
-    }
-
-
-
-    @Override
-    public void onBackPressed() {
-
-        if(wv.canGoBack() && !check.equals(address)){
-            wv.goBack();
-
-        }else {
-            finish();
-        }
-
     }
 }
 
