@@ -1,6 +1,5 @@
 package com.calamus.easykorean;
 
-
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -143,7 +142,12 @@ public class TeacherActivity extends AppCompatActivity {
         iv_profile=v.findViewById(R.id.iv_profile);
         iv_more=v.findViewById(R.id.iv_menuMore);
 
-        tv_name.setText(team);
+        if(team.equals("Developer")){
+            tv_name.setText("Customer Service");
+        }else{
+           tv_name.setText(team);
+        }
+
 
         tv_status.setText(Html.fromHtml("<small><font color=\"#00ff00\">" +"Active now"+ "</font></small>"));
 

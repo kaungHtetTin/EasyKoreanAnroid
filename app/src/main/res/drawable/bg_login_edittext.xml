@@ -15,10 +15,10 @@
                         android:color="@color/white"/>
 
                     <corners
-                        android:radius="30dp"/>
+                        android:radius="10dp"/>
 
                     <stroke
-                        android:width="4dp"
+                        android:width="2dp"
                         android:color="#363636"/>
                 </shape>
             </item>
@@ -30,10 +30,10 @@
                     android:shape="rectangle">
 
                     <stroke
-                        android:width="4dp"
+                        android:width="2dp"
                         android:color="#363636"/>
                     <corners
-                        android:radius="30dp"/>
+                        android:radius="10dp"/>
                 </shape>
             </item>
         </selector>

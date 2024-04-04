@@ -1,6 +1,7 @@
 package com.calamus.easykorean;
 
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -11,10 +12,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.calamus.easykorean.app.Routing;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.fragments.ChatOne;
@@ -36,6 +50,7 @@ public class ClassRoomActivity extends AppCompatActivity {
     String profileUrl,userId,username;
     TextView tv_title;
 
+    private InterstitialAd mInterstitialAd=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +74,84 @@ public class ClassRoomActivity extends AppCompatActivity {
             viewPager.setCurrentItem(2);
         }
 
+        if(!isVip){
+            MobileAds.initialize(this, new OnInitializationCompleteListener() {
+                @Override
+                public void onInitializationComplete(InitializationStatus initializationStatus) {
+                    loadAd();
+                }
+            });
+        }
+
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (mInterstitialAd != null) {
+                    mInterstitialAd.show(ClassRoomActivity.this);
+                } else {
+                    Log.d("TAG", "The interstitial ad wasn't ready yet.");
+                    finish();
+                }
+            }
+        });
+
+    }
+
+    private void loadAd(){
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        InterstitialAd.load(this, Routing.ADMOB_INTERSTITIAL, adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+                        Toast.makeText(getApplicationContext(),"Ad loaded",Toast.LENGTH_SHORT).show();
+                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+                            @Override
+                            public void onAdClicked() {
+                                // Called when a click is recorded for an ad.
+
+                            }
+
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                // Called when ad is dismissed.
+                                // Set the ad reference to null so you don't show the ad a second time.
+                                mInterstitialAd = null;
+                                finish();
+                            }
+
+                            @Override
+                            public void onAdFailedToShowFullScreenContent(AdError adError) {
+                                // Called when ad fails to show.
+                                mInterstitialAd = null;
+                            }
+
+                            @Override
+                            public void onAdImpression() {
+                                // Called when an impression is recorded for an ad.
+
+                            }
+
+                            @Override
+                            public void onAdShowedFullScreenContent() {
+                                // Called when ad is shown.
+
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        Log.e("ad loading ",loadAdError.toString());
+                        mInterstitialAd = null;
+                        Toast.makeText(getApplicationContext(),"Ad fail",Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void setUpView() {
@@ -136,7 +229,12 @@ public class ClassRoomActivity extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                if (mInterstitialAd != null) {
+                    mInterstitialAd.show(ClassRoomActivity.this);
+                } else {
+                    Log.d("TAG", "The interstitial ad wasn't ready yet.");
+                    finish();
+                }
             }
         });
 

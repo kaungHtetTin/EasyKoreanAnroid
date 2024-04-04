@@ -21,15 +21,12 @@ import com.calamus.easykorean.R;
 import com.calamus.easykorean.VimeoPlayerActivity;
 import com.calamus.easykorean.WebSiteActivity;
 import com.calamus.easykorean.app.AppHandler;
-import com.calamus.easykorean.app.FileManager;
 import com.calamus.easykorean.app.MyDialog;
 import com.calamus.easykorean.app.Routing;
-import com.calamus.easykorean.models.FileModel;
 import com.calamus.easykorean.models.LessonModel;
 import com.calamus.easykorean.service.DownloaderService;
 import com.calamus.easykorean.app.MyHttp;
 import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;

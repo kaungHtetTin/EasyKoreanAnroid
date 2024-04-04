@@ -47,10 +47,10 @@ public class FragmentTwo extends Fragment {
         v=inflater.inflate(R.layout.fragment_two,container,false);
 
         share= requireActivity().getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
-        categoryJson=share.getString("additionalLessons",null);
-        wordOfTheDayJson=share.getString("wordOfTheDay",null);
+        categoryJson=share.getString("additionalLessons","");
+        wordOfTheDayJson=share.getString("wordOfTheDay","");
         kDramaJson=share.getString("kDramas","");
-        music=share.getString("music",null);
+        music=share.getString("music","");
         setUpView();
         setAppBar();
 

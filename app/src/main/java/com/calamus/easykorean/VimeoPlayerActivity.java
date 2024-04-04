@@ -27,8 +27,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
@@ -36,19 +34,15 @@ import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
-
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -57,13 +51,11 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.calamus.easykorean.app.FileManager;
 import com.calamus.easykorean.app.WebAppInterface;
 import com.calamus.easykorean.models.FileModel;
 import com.calamus.easykorean.models.SavedVideoModel;
 import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.Player;
@@ -71,10 +63,15 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.hbisoft.pickit.PickiT;
@@ -100,6 +97,10 @@ import java.util.concurrent.Executor;
 import static com.calamus.easykorean.app.AppHandler.formatTime;
 import static com.calamus.easykorean.app.AppHandler.reactFormat;
 import static com.calamus.easykorean.app.AppHandler.viewCountFormat;
+
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
 public class VimeoPlayerActivity extends AppCompatActivity implements AudioManager.OnAudioFocusChangeListener,PickiTCallbacks,View.OnClickListener {
 
@@ -159,11 +160,11 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
     boolean playbackNowAuthorized = false;
 
     boolean landscape;
-
     RelativeLayout player_container;
     ArrayList<LessonModel> relatedLessons = new ArrayList<>();
-
     RelativeLessonAdapter lessonAdapter;
+    private InterstitialAd mInterstitialAd=null;
+
     @SuppressLint("StaticFieldLeak")
     @Override
     protected void onCreate(Bundle bundle) {
@@ -188,6 +189,15 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
         rootDir = getExternalFilesDir(Environment.DIRECTORY_MOVIES).getPath();
         fileManager = new FileManager(this);
 
+        if(!isVIP){
+            MobileAds.initialize(this, new OnInitializationCompleteListener() {
+                @Override
+                public void onInitializationComplete(InitializationStatus initializationStatus) {
+                    loadAd();
+                }
+            });
+
+        }
         setUpView();
 
         Log.e("Root dir", rootDir + "/" + folderName);
@@ -198,9 +208,6 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
                 setRelatedLesson();
             }
         });
-
-
-
 
 
         pickiT = new PickiT(this, this, this);
@@ -221,12 +228,17 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
                 if (player.isPlaying()) {
                     player.stop();
                 }
-                finish();
+
+                if (mInterstitialAd != null) {
+                    mInterstitialAd.show(VimeoPlayerActivity.this);
+                } else {
+                    Log.d("TAG", "The interstitial ad wasn't ready yet.");
+                    finish();
+                }
             }
         });
 
     }
-
 
     private void setUpView() {
         setUpExoPlayer();
@@ -248,7 +260,6 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
 
         vimeoLayout.setVisibility(View.GONE);
         tv_description.setText(post_description);
-
 
         wv.getSettings().setJavaScriptEnabled(true);
         wv.setWebViewClient(new WebViewClient() {
@@ -292,7 +303,6 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
             wv.loadUrl(Routing.PLAY_VIDEO + "?post_id=" + a);
         }
 
-
         if (!timeCheck.equals("") && !timeCheck.equals("0")) showCommentDialog();
 
         tv_comment.setOnClickListener(new View.OnClickListener() {
@@ -301,7 +311,6 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
                 showCommentDialog();
             }
         });
-
 
         tv_react.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -338,7 +347,63 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
                 showSharePostDialog(info, a + "");
             }
         });
+    }
 
+    private void loadAd(){
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        InterstitialAd.load(this,Routing.ADMOB_INTERSTITIAL, adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+                        Toast.makeText(getApplicationContext(),"Ad loaded",Toast.LENGTH_SHORT).show();
+                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+                            @Override
+                            public void onAdClicked() {
+                                // Called when a click is recorded for an ad.
+
+                            }
+
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                // Called when ad is dismissed.
+                                // Set the ad reference to null so you don't show the ad a second time.
+                                mInterstitialAd = null;
+                                finish();
+                            }
+
+                            @Override
+                            public void onAdFailedToShowFullScreenContent(AdError adError) {
+                                // Called when ad fails to show.
+                                mInterstitialAd = null;
+                            }
+
+                            @Override
+                            public void onAdImpression() {
+                                // Called when an impression is recorded for an ad.
+
+                            }
+
+                            @Override
+                            public void onAdShowedFullScreenContent() {
+                                // Called when ad is shown.
+
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+
+                        mInterstitialAd = null;
+                        Toast.makeText(getApplicationContext(),"Ad fail"+ loadAdError.toString(),Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 

@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#FEE68C">
+    android:background="#fff"
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="wrap_content"
-        android:layout_height="150dp"
-        android:src="@drawable/ic_login_2"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="50dp"
+        android:src="@mipmap/kommmainicon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
-
+        app:layout_constraintTop_toTopOf="parent" />
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="0dp"
@@ -25,26 +26,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/et_phone" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/poppins_bold"
-        android:text="Welcome!"
-        android:textColor="#363636"
-        android:textSize="38sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toTopOf="@+id/textView7" />
 
     <EditText
         android:id="@+id/et_phone"
         android:layout_width="333dp"
-        android:layout_height="55dp"
+        android:layout_height="50dp"
         android:background="@drawable/bg_login_edittext"
         android:ems="10"
         android:fontFamily="@font/poppins_semibold"
@@ -58,13 +45,13 @@
         android:textColorHint="#403F3F"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/or_container" />
+        app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
     <EditText
         android:id="@+id/et_password"
         android:layout_width="333dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="10dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
         android:background="@drawable/bg_login_edittext"
         android:ems="10"
         android:fontFamily="@font/poppins_semibold"
@@ -84,7 +71,7 @@
         android:id="@+id/tv_forget_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/poppins_semibold"
         android:text="@string/forget_password"
         android:textColor="#403F3F"
@@ -94,18 +81,19 @@
 
     <Button
         android:id="@+id/bt_log_in"
-        android:layout_width="167dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="333dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/bg_login_button"
         android:fontFamily="@font/poppins_semibold"
         android:gravity="center"
         android:paddingTop="5dp"
-        android:text="Login"
+        android:text="Log  in"
+        android:textColor="#fff"
+        android:textSize="18sp"
         android:textAllCaps="false"
-        android:textColor="#363636"
-        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_forget_password" />
 
@@ -131,7 +119,7 @@
         android:text="Create"
         android:textColor="#4B93FF"
         android:textColorLink="@color/colorPrimary"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
@@ -142,15 +130,16 @@
         android:layout_height="40dp"
         android:background="@drawable/bg_circle_white"
         android:padding="7dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
     <TextView
         android:id="@+id/tv_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:fontFamily="@font/poppins_bold"
         android:gravity="center"
         android:textColor="#F00"
@@ -166,63 +155,66 @@
         android:fontFamily="@font/poppins_bold"
         android:text="Log In"
         android:textColor="#363636"
-        android:textSize="25sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+        app:layout_constraintTop_toBottomOf="@+id/pb_loading" />
 
     <LinearLayout
-        android:visibility="gone"
+
         android:id="@+id/login_with_container"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView7">
+        app:layout_constraintTop_toBottomOf="@+id/or_container">
 
         <ImageView
+            android:visibility="gone"
             android:id="@+id/login_english"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:src="@drawable/easyenglish_icon"
-            android:visibility="gone"/>
+            android:src="@drawable/easyenglish_icon" />
 
         <ImageView
+            android:visibility="gone"
             android:id="@+id/login_chinese"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:src="@drawable/easy_chinese_icon"
-            android:visibility="gone"/>
+            android:src="@drawable/easy_chinese_icon" />
 
         <ImageView
+            android:visibility="gone"
             android:id="@+id/login_japanese"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:src="@drawable/easyjapanese_icon"
-            android:visibility="gone" />
+            android:src="@drawable/easyjapanese_icon" />
 
     </LinearLayout>
+
 
     <LinearLayout
         android:visibility="gone"
         android:id="@+id/or_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_with_container">
+        app:layout_constraintTop_toBottomOf="@+id/tv_error">
 
         <View
             android:layout_width="100dp"
@@ -234,7 +226,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:fontFamily="@font/poppins_semibold"
-            android:text="or"
+            android:text="Or log in using"
             android:textColor="#363636"
             android:textSize="14sp" />
 
@@ -265,6 +257,7 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
@@ -298,4 +291,5 @@
             android:textColor="#403F3F" />
 
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

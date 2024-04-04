@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         switch (goSomeWhere) {
             case "splash":
                 String version = share.getString("version", "");
-                if (!version.equals("3.2.9")) confirmUpdate(); //check the version in generaldata.php
+                if (!version.equals("3.3.30")) confirmUpdate(); //check the version in generaldata.php
                 break;
             case "login":
                 Toast.makeText(this, "Welcome!", Toast.LENGTH_SHORT).show();

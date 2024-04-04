@@ -7,11 +7,12 @@
     android:orientation="horizontal">
     <RelativeLayout
         android:id="@+id/layout_teacher"
-        android:layout_width="84dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/iv_teacher"
             android:layout_width="84dp"
+            android:layout_centerHorizontal="true"
             android:layout_height="84dp"/>
 
         <TextView
@@ -40,21 +41,23 @@
 
     <RelativeLayout
         android:id="@+id/layout_developer"
-        android:layout_width="84dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@id/layout_teacher">
         <ImageView
             android:id="@+id/iv_developer"
             android:layout_width="84dp"
+            android:layout_centerHorizontal="true"
             android:layout_height="84dp"/>
 
         <TextView
             android:id="@+id/tv_developer"
-            android:text="Developer"
+            android:text="Customer Service"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="7dp"
+            android:gravity="center"
             android:textColor="#4B93FF"
             android:layout_below="@id/iv_developer"
             android:layout_centerHorizontal="true"

@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.calamus.easykorean.SplashScreenActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -50,6 +49,7 @@ public class ChatOne extends Fragment {
     ConservationModel Developer;
     private DatabaseReference dbn;
     FirebaseDatabase firebaseDatabase;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -60,14 +60,14 @@ public class ChatOne extends Fragment {
         db=SQLiteDatabase.openDatabase(dbPath,null,SQLiteDatabase.OPEN_READWRITE);
         sharedPreferences=getActivity().getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         phone=Long.parseLong(sharedPreferences.getString("phone",null))+"";
-
         firebaseDatabase=FirebaseDatabase.getInstance();
         dbn=firebaseDatabase.getReference().child(Routing.MAJOR).child("notification");
         dbn.child(phone).child("message_arrive").removeValue();
         SplashScreenActivity.MESSAGE_ARRIVE=false;
 
+
+        Developer=new ConservationModel("10000","Customer Service","file:///android_asset/developer.png","Ask a developer for help",null,"10000","",0);
         Teacher=new ConservationModel("10000","Teacher","file:///android_asset/teacher.png","Ask a teacher for lessons",null,"10000","",0);
-        Developer=new ConservationModel("10000","Developer","file:///android_asset/developer.png","Ask a developer for help",null,"10000","",0);
 
         setUpView();
 
@@ -147,8 +147,6 @@ public class ChatOne extends Fragment {
                 String senderId=cursor.getString(6);
                 int seen=cursor.getInt(7);
                 String token=cursor.getString(8);
-
-
 
                 conservationList.add(new ConservationModel(fri_Id,friName,friImage,msgBody,time,senderId,token,seen));
 

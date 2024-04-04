@@ -72,6 +72,15 @@
             app:drawableStartCompat="@drawable/ic_menu_block_user" />
 
         <TextView
+            android:id="@+id/setting_delete_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/MenuText"
+            android:text=" Delete Account"
+            app:drawableStartCompat="@drawable/ic_setting_delete_account" />
+
+
+        <TextView
             android:id="@+id/setting_sign_out"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

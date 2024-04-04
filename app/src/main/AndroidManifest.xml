@@ -18,11 +18,13 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
 
     <queries>
+
         <!-- Explicit apps you know in advance about: -->
         <package android:name="com.qanda.learnroom" />
         <package android:name="com.calamus.easychinese" />
@@ -40,6 +42,9 @@
         android:roundIcon="@mipmap/kommmainicon"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".AccountDeleteActivity"
+            android:exported="false" />
         <activity
             android:name=".BlockUserActivity"
             android:exported="false" />
@@ -82,8 +87,8 @@
             android:exported="false" />
         <activity
             android:name=".VimeoPlayerActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:configChanges="screenSize|orientation|screenLayout|navigation"/>
+            android:configChanges="screenSize|orientation|screenLayout|navigation"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".DayListActivity" />
         <activity android:name=".SearchingActivity" />
         <activity
@@ -175,6 +180,10 @@
             </intent-filter>
         </receiver>
         <receiver android:name=".recivers.AlarmReceiver" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2472405866346270~3264377846" />
     </application>
 
 </manifest>

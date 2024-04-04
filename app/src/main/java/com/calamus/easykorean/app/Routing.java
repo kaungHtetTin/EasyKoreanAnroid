@@ -2,6 +2,7 @@ package com.calamus.easykorean.app;
 
 public class Routing {
 
+    public static final String ADMOB_INTERSTITIAL="ca-app-pub-2472405866346270/8307853906";
     public static final String DOMAIN_API="https://www.calamuseducation.com/calamus-v2/api/korea";
     public static final String MAJOR="korea";
     public static final String APP_NAME="Easy Korean";
@@ -30,6 +31,7 @@ public class Routing {
     public static final String SET_STUDY_TIME=DOMAIN_API+"/setstudytime";
     public static final String CHANGE_COVER_PHOTO=DOMAIN_API+"/coverphoto";
     public static final String CHANGE_BIO=DOMAIN_API+"/updatebio";
+    public static final String DELETE_ACCOUNT=DOMAIN_API+"/delete-account";
 
     //lesson routing
     public static final String FETCH_LESSONS=DOMAIN_API+"/lessons";

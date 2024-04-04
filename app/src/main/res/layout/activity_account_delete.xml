@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/my_action_bar" />
+
+
+    <RelativeLayout
+        android:id="@+id/content_layout"
+        android:layout_width="match_parent"
+        android:layout_below="@id/app_bar"
+        android:layout_height="match_parent">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_profile"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_margin="15dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_baseline_account_circle_24"/>
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Kaung Htet Tin"
+            android:fontFamily="@font/poppins_bold"
+            android:layout_below="@id/iv_profile"
+            android:gravity="center"
+            android:padding="10dp"
+            />
+
+        <TextView
+            android:id="@+id/tv"
+            android:fontFamily="@font/poppins_regular"
+            android:text="By deleting your account, all of the records and data associated to this application will permanently be deleted and cannot be undone!"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_name"
+            android:padding="15dp"/>
+
+
+
+        <Button
+            android:id="@+id/bt_delete"
+            android:text="Delete Account"
+            android:background="@drawable/bg_login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:padding="10dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:layout_margin="10dp"
+            android:layout_below="@id/tv"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/loading_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#CC888888">
+        <TextView
+            android:id="@+id/tv_deleting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Deleting Account..."
+            android:textColor="@color/white"
+            android:layout_below="@id/pb_loading"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"/>
+
+        <ProgressBar
+            android:id="@+id/pb_loading"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/bg_circle_white"
+            android:padding="7dp"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

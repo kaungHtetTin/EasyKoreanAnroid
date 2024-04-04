@@ -22,6 +22,9 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.calamus.easykorean.SplashScreenActivity;
+import com.calamus.easykorean.WebSiteActivity;
+import com.calamus.easykorean.app.MyDialog;
+import com.calamus.easykorean.app.Routing;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.calamus.easykorean.ChattingActivity;
 import com.calamus.easykorean.R;
@@ -53,13 +56,14 @@ public class ConservationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     final String dbName="conservation.db";
     final String dbPath;
     final String dbdir;
-
+    boolean isVIP;
     public ConservationAdapter(Activity c,ArrayList<ConservationModel> data){
         this.data=data;
         this.c=c;
         this.mInflater=LayoutInflater.from(c);
         sharedPreferences=c.getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         myId=Long.parseLong(sharedPreferences.getString("phone",null))+"";
+        isVIP=sharedPreferences.getBoolean("isVIP",false);
 
         dbdir= Objects.requireNonNull(c.getFilesDir()).getPath()+"/databases/";
         dbPath=dbdir+dbName;
@@ -287,11 +291,22 @@ public class ConservationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             layoutTeacher.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent=new Intent(c, TeacherActivity.class);
-                    intent.putExtra("team","Teacher");
-                    intent.putExtra("imageUrl","file:///android_asset/teacher.png");
-                    iv_teacher_noti.setVisibility(View.GONE);
-                    c.startActivity(intent);
+                   if(isVIP){
+                       Intent intent=new Intent(c, TeacherActivity.class);
+                       intent.putExtra("team","Teacher");
+                       intent.putExtra("imageUrl","file:///android_asset/teacher.png");
+                       iv_teacher_noti.setVisibility(View.GONE);
+                       c.startActivity(intent);
+                   }else{
+                       new MyDialog(c, "Sorry! Only for VIP members", "Please contact customer service if you need a help.", new MyDialog.ConfirmClick() {
+                           @Override
+                           public void onConfirmClick() {
+                               Intent intent=new Intent(c, WebSiteActivity.class);
+                               intent.putExtra("link", Routing.PAYMENT);
+                               c.startActivity(intent);
+                           }
+                       }).showMyDialog();
+                   }
                 }
             });
 

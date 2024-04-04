@@ -152,8 +152,8 @@ public class SignUpActivity extends AppCompatActivity {
                 if (confirmPassword.equals(password)) {
                     tv_4.setBackgroundResource(R.drawable.bg_signup_info_complete);
                     infoSetter("Ready To Sign Up!");
-                    tv_info.setText("Ready To Sign Up!");
-                    bt.setText("Sign Up");
+                    tv_info.setText("Ready To Sign up!");
+                    bt.setText("Sign up");
                 } else {
                     infoCount--;
                     showTextViewError("Passwords did not match!");

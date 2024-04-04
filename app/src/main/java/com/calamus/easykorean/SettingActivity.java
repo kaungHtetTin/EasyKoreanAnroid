@@ -107,6 +107,13 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.setting_delete_account).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(SettingActivity.this,AccountDeleteActivity.class);
+                startActivity(intent);
+            }
+        });
 
         //Sign Out
         findViewById(R.id.setting_sign_out).setOnClickListener(new View.OnClickListener() {
