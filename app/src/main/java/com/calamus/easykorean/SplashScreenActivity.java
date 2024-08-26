@@ -40,7 +40,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     SQLiteDatabase db;
     String dbdir;
     String dbName="post.db";
-    String phone;
+    String phone,auth_token;
 
     String dbName2="conservation.db";
     public static ValueEventListener mListener=null;
@@ -69,7 +69,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         if(autoLogin&&phone!=null){
             UserInformation userInformation=new UserInformation(SplashScreenActivity.this);
-            userInformation.getGeneralData(phone);
+            userInformation.getGeneralData(phone,auth_token);
         }
 
     }
@@ -79,6 +79,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         editor=sharedPreferences.edit();
         phone=sharedPreferences.getString("phone",null);
         autoLogin=sharedPreferences.getBoolean("AlreadyLogin",false);
+        auth_token=sharedPreferences.getString("auth_token","abcd");
 
     }
 
@@ -151,8 +152,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void checkLoging(){
-
-        if(autoLogin){
+        if(sharedPreferences.getBoolean("AlreadyLogin",false)){
             Intent i=new Intent(SplashScreenActivity.this, MainActivity.class);
             i.putExtra("message","splash");
             startActivity(i);
@@ -234,7 +234,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                         if (!msg.equals("") && !image.equals("")) {
                             makeConservation(msg, senderId, time, name, image, myId, token, (int) seen);
                         }
-
                     }
 
                 } catch (Exception e) {

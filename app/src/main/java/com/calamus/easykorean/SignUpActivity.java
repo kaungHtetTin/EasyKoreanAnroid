@@ -238,6 +238,7 @@ public class SignUpActivity extends AppCompatActivity {
                     postExecutor.execute(new Runnable() {
                         @Override
                         public void run() {
+                            editor.putString("password",password);
                             doAsResult(response,phone);
                         }
                     });
@@ -259,6 +260,7 @@ public class SignUpActivity extends AppCompatActivity {
                     .field("phone",phone)
                     .field("password",password);
 
+
             myHttp.runTask();
         }).start();
 
@@ -270,12 +272,15 @@ public class SignUpActivity extends AppCompatActivity {
             String response=jo.getString("result");
 
             if(response.equals("go")){
+                String auth_token=jo.getString("auth_token");
                 editor.putBoolean("AlreadyLogin", true);
                 editor.putString("phone",phone);
+                editor.putString("auth_token",auth_token);
+
                 editor.apply();
 
                 UserInformation userInformation=new UserInformation(SignUpActivity.this);
-                userInformation.getGeneralData(phone);
+                userInformation.getGeneralData(phone,auth_token);
 
                 Intent intent=new Intent(SignUpActivity.this,StartCourseActivity.class);
                 intent.putExtra("name",name);

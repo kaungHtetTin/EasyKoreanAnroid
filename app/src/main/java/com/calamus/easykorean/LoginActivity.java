@@ -104,6 +104,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 try {
                     Intent intent=new Intent("com.qanda.learnroom.AuthCheckerActivity");
+                    intent.putExtra("request_app",Routing.MAJOR);
                     mStartForResult.launch(intent);
                     tv_error.setVisibility(View.INVISIBLE);
                 }catch (Exception e){
@@ -118,6 +119,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 try {
                     Intent intent=new Intent("com.calamus.easyjapanese.AuthCheckerActivity");
+                    intent.putExtra("request_app",Routing.MAJOR);
                     mStartForResult.launch(intent);
                     tv_error.setVisibility(View.INVISIBLE);
                 }catch (Exception e){
@@ -133,6 +135,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 try {
                     Intent intent=new Intent("com.calamus.easychinese.AuthCheckerActivity");
+                    intent.putExtra("request_app",Routing.MAJOR);
                     mStartForResult.launch(intent);
                     tv_error.setVisibility(View.INVISIBLE);
                 }catch (Exception e){
@@ -171,10 +174,12 @@ public class LoginActivity extends AppCompatActivity {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         Intent intent = result.getData();
                         boolean success=intent.getBooleanExtra("success",false);
+
                         Log.e("success ",success+"");
                         if(success){
                             String phone=intent.getStringExtra("userid");
-                            if(phone!=null)gotoApp(phone);
+                            String auth_token=intent.getStringExtra("auth_token");
+                            if(phone!=null&&auth_token!=null)gotoApp(phone,auth_token);
                             else  {
                                 tv_error.setVisibility(View.VISIBLE);
                                 tv_error.setText("Can't login! Please try again");
@@ -187,7 +192,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
             });
-
 
 
     private void logInValidate(final String phone, String password){
@@ -222,6 +226,7 @@ public class LoginActivity extends AppCompatActivity {
                 MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.POST, new MyHttp.Response() {
                     @Override
                     public void onResponse(String response) {
+                        editor.putString("password",password);
                         postExecutor.execute(() -> doAsResult(response,phone));
                     }
                     @Override
@@ -233,7 +238,9 @@ public class LoginActivity extends AppCompatActivity {
                             tv_error.setText("An unexpected error! Connect to help center");
                         });
                     }
-                }).url(Routing.LOGIN).field("phone",phone).field("password",password);
+                }).url(Routing.LOGIN)
+                        .field("phone",phone)
+                        .field("password",password);
 
                 myHttp.runTask();
             }).start();
@@ -244,9 +251,11 @@ public class LoginActivity extends AppCompatActivity {
         try {
             JSONObject jo=new JSONObject(result);
             String response=jo.getString("result");
-
             if(response.equals("go")){
-                gotoApp(phone);
+                String authToken=jo.getString("auth_token");
+                editor.putString("auth_token",authToken);
+                gotoApp(phone,authToken);
+
             }else{
                 loading.setVisibility(View.INVISIBLE);
                 loginButton.setEnabled(true);
@@ -257,13 +266,14 @@ public class LoginActivity extends AppCompatActivity {
         }catch (Exception ignored){}
     }
 
-    private void gotoApp(String phone){
+    private void gotoApp(String phone,String auth_token){
         editor.putBoolean("AlreadyLogin", true);
         editor.putString("phone",phone);
+        editor.putString("auth_token",auth_token);
         editor.apply();
 
         UserInformation userInformation=new UserInformation(LoginActivity.this);
-        userInformation.getGeneralData(phone);
+        userInformation.getGeneralData(phone,auth_token);
 
         Intent intent=new Intent(LoginActivity.this,MainActivity.class);
         intent.putExtra("message","login");

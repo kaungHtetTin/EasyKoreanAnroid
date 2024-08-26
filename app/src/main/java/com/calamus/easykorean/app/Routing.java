@@ -32,6 +32,7 @@ public class Routing {
     public static final String CHANGE_COVER_PHOTO=DOMAIN_API+"/coverphoto";
     public static final String CHANGE_BIO=DOMAIN_API+"/updatebio";
     public static final String DELETE_ACCOUNT=DOMAIN_API+"/delete-account";
+    public static final String REQUEST_TOKEN=DOMAIN_API+"/request-auth-token";
 
     //lesson routing
     public static final String FETCH_LESSONS=DOMAIN_API+"/lessons";
@@ -126,10 +127,8 @@ public class Routing {
     public static final String CLICK_AD=DOMAIN_API+"/appads/click";
     public static final String APP_UPDATE="https://www.calamuseducation.com/easykorean/versioncontrol.php";
 
-
     public static final String STUDY_RECORD_A_LESSON=DOMAIN_API+"/studyalesson";
     public static final String RECORD_A_CLICK=DOMAIN_API+"/click/korean";
-
     public static final String TERMS_OF_USE="https://www.calamuseducation.com/calamus-v2/terms-of-use";
     public static final String PRIVACY_POLICY="https://www.calamuseducation.com/calamus-v2/privacy-policy";
 }

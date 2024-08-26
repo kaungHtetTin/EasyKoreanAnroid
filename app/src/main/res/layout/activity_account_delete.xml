@@ -38,10 +38,37 @@
             android:text="By deleting your account, all of the records and data associated to this application will permanently be deleted and cannot be undone!"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:layout_below="@id/tv_name"
             android:padding="15dp"/>
 
+        <TextView
+            android:id="@+id/tv_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#f00"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_alignStart="@id/et_password"
+            android:layout_below="@id/tv"/>
 
+        <EditText
+            android:id="@+id/et_password"
+            android:layout_width="333dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/bg_login_edittext"
+            android:ems="10"
+            android:fontFamily="@font/poppins_semibold"
+            android:gravity="center_vertical"
+            android:hint="Enter Password"
+            android:inputType="textPassword"
+            android:paddingStart="20dp"
+            android:paddingTop="4dp"
+            android:layout_centerHorizontal="true"
+            android:textColor="#363636"
+            android:textColorHint="#403F3F"
+            android:layout_below="@id/tv_error"/>
 
         <Button
             android:id="@+id/bt_delete"
@@ -49,13 +76,13 @@
             android:background="@drawable/bg_login_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:layout_alignEnd="@id/et_password"
             android:textColor="@color/white"
             android:textSize="15sp"
             android:padding="10dp"
             android:fontFamily="@font/poppins_semibold"
-            android:layout_margin="10dp"
-            android:layout_below="@id/tv"/>
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/et_password"/>
     </RelativeLayout>
 
     <RelativeLayout

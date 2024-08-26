@@ -8,10 +8,15 @@ and save the information in the local storage;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 import androidx.core.content.ContextCompat;
+
+import com.calamus.easykorean.SettingActivity;
+import com.calamus.easykorean.SplashScreenActivity;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.concurrent.Executor;
@@ -33,7 +38,7 @@ public class UserInformation {
 
     }
 
-    public void getGeneralData(String phone){
+    public void getGeneralData(String phone,String auth_token){
 
         new Thread(() -> {
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.POST, new MyHttp.Response() {
@@ -48,7 +53,10 @@ public class UserInformation {
 
                     });
                 }
-            }).url(Routing.GET_LOGIN_USERDATA).field("phone",phone).field("token",myToken);
+            }).url(Routing.GET_LOGIN_USERDATA)
+                    .field("phone",phone)
+                    .field("token",myToken)
+                    .field("auth_token",auth_token);
 
             myHttp.runTask();
         }).start();
@@ -57,9 +65,22 @@ public class UserInformation {
 
     public void doAsResult(String response){
 
+        Log.e("login response ",response);
         try {
 
             JSONObject jsonObject=new JSONObject(response);
+            boolean auth=jsonObject.getBoolean("auth");
+            if(!auth) {
+                editor.putBoolean("AlreadyLogin",false);
+                editor.apply();
+                SharedPreferences sharedPreferences1 = c.getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor1 = sharedPreferences1.edit();
+                editor1.clear();
+                editor1.apply();
+
+                return;
+            }
+
             String userJson=jsonObject.getString("user");
             JSONObject user=new JSONObject(userJson);
             String email=user.getString("email");
@@ -97,5 +118,6 @@ public class UserInformation {
             Toast.makeText(c,e.toString(),Toast.LENGTH_SHORT).show();
         }
     }
+
 
 }

@@ -327,6 +327,7 @@ public class MyDiscussionActivity extends AppCompatActivity {
                             if (isRefresh){
                                 postList.clear();
                                 postList.add(0,"kaung");
+                                pb.setVisibility(View.GONE);
 
                             }
                             doAsResult(response);

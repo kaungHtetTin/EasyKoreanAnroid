@@ -219,12 +219,14 @@ public class ForgetPasswordActivity extends AppCompatActivity {
             String response=jo.getString("result");
 
             if(response.equals("go")){
+                String auth_token=jo.getString("auth_token");
                 editor.putBoolean("AlreadyLogin", true);
                 editor.putString("phone",phone);
+                editor.putString("auth_token",auth_token);
                 editor.apply();
 
                 UserInformation userInformation=new UserInformation(ForgetPasswordActivity.this);
-                userInformation.getGeneralData(phone);
+                userInformation.getGeneralData(phone,auth_token);
 
                 Intent intent=new Intent(ForgetPasswordActivity.this,MainActivity.class);
                 intent.putExtra("message","login");
