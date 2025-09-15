@@ -28,6 +28,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.calamus.easykorean.app.AppHandler;
+import com.calamus.easykorean.app.MyImagePicker;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.RealPathUtil;
@@ -43,10 +44,7 @@ public class EditProfileActivity extends AppCompatActivity {
     EditText et_name,et_email,et_education,et_work,et_region;
     ImageView iv,iv_profile_edit;
     ScrollView layout_edit_profile;
-
     ProgressBar pb;
-    private final int galleryPick=1;
-    private final int storageRequestCode=123;
     String ivName="",imagePath="",userPhone,userName,userEmail,G_gender,born,month,day,bd_d,bd_m,bd_y,userWork,userEducation,userRegion,imageUrl;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -60,6 +58,7 @@ public class EditProfileActivity extends AppCompatActivity {
     RelativeLayout bd_layout;
     Button bt_cancel,bt_done;
     String bio;
+    MyImagePicker myImagePicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +69,7 @@ public class EditProfileActivity extends AppCompatActivity {
         editor=sharedPreferences.edit();
         postExecutor = ContextCompat.getMainExecutor(this);
         userPhone=sharedPreferences.getString("phone",null);
+        myImagePicker = new MyImagePicker(this);
 
         ImageView iv=findViewById(R.id.iv_back);
         iv.setOnClickListener(new View.OnClickListener() {
@@ -234,16 +234,32 @@ public class EditProfileActivity extends AppCompatActivity {
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isPermissionGranted())openGallery();
-                else takePermission();
+                myImagePicker.pick(new MyImagePicker.Callback() {
+                    @Override
+                    public void onResult(Uri uri) {
+                        if(uri!=null){
+                            imagePath= RealPathUtil.getRealPath(EditProfileActivity.this,uri);
+                            iv.setImageURI(uri);
+                            ivName=imagePath.substring(imagePath.lastIndexOf("/")+1);
+                        }
+                    }
+                });
             }
         });
 
         iv_profile_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isPermissionGranted())openGallery();
-                else takePermission();
+                myImagePicker.pick(new MyImagePicker.Callback() {
+                    @Override
+                    public void onResult(Uri uri) {
+                        if(uri!=null){
+                            imagePath= RealPathUtil.getRealPath(EditProfileActivity.this,uri);
+                            iv.setImageURI(uri);
+                            ivName=imagePath.substring(imagePath.lastIndexOf("/")+1);
+                        }
+                    }
+                });
             }
         });
 
@@ -283,43 +299,6 @@ public class EditProfileActivity extends AppCompatActivity {
             days.add(i);
         }
     }
-
-    private boolean isPermissionGranted(){
-        int  readExternalStorage;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES);
-        }else{
-            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        }
-        return  readExternalStorage==PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void takePermission(){
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_MEDIA_IMAGES},101);
-        }else{
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},101);
-        }
-
-    }
-
-
-    private void openGallery() {
-        mGetContent.launch("image/*");
-    }
-
-    ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
-            new ActivityResultCallback<Uri>() {
-                @Override
-                public void onActivityResult(Uri uri) {
-                    // Handle the returned Uri
-                    if(uri!=null){
-                        imagePath= RealPathUtil.getRealPath(EditProfileActivity.this,uri);
-                        iv.setImageURI(uri);
-                        ivName=imagePath.substring(imagePath.lastIndexOf("/")+1);
-                    }
-                }
-            });
 
 
     private void getData(){
@@ -449,20 +428,6 @@ public class EditProfileActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
         }
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
-    {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode==storageRequestCode){
-            if(grantResults.length==1 && grantResults[0]== PackageManager.PERMISSION_GRANTED){
-                openGallery();
-            }else{
-                takePermission();
-            }
-        }
-    }
-
 
 
     final String[] gender={

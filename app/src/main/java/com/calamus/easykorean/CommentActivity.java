@@ -2,6 +2,7 @@ package com.calamus.easykorean;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,6 +32,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.calamus.easykorean.app.MyImagePicker;
 import com.hbisoft.pickit.PickiT;
 import com.hbisoft.pickit.PickiTCallbacks;
 import com.calamus.easykorean.adapters.CommentAdapter;
@@ -67,6 +70,7 @@ public class CommentActivity extends AppCompatActivity implements PickiTCallback
     String postOwnerToken,action,CorR;
     PickiT pickiT;
     String parentCommentID="0";
+    MyImagePicker myImagePicker;
 
 
     @Override
@@ -81,7 +85,7 @@ public class CommentActivity extends AppCompatActivity implements PickiTCallback
         currentUserName=sharedPreferences.getString("Username",null);
         imagePath=sharedPreferences.getString("imageUrl","");
         boolean b=sharedPreferences.getBoolean("isVIP",false);
-
+        myImagePicker = new MyImagePicker(this);
         postExecutor= ContextCompat.getMainExecutor(this);
 
         if(b)isVip="1";
@@ -156,11 +160,17 @@ public class CommentActivity extends AppCompatActivity implements PickiTCallback
         iv_pickup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isPermissionGranted()){
-                    pickImageFromGallery();
-                }else {
-                    takePermission();
-                }
+                myImagePicker.pick(new MyImagePicker.Callback() {
+                    @Override
+                    public void onResult(Uri uri) {
+                        if(uri!=null){
+                            iv_msg.setVisibility(View.VISIBLE);
+                            iv_cancel.setVisibility(View.VISIBLE);
+                            iv_msg.setImageURI(uri);
+                            pickiT.getPath(uri, Build.VERSION.SDK_INT);
+                        }
+                    }
+                });
             }
         });
 
@@ -231,45 +241,6 @@ public class CommentActivity extends AppCompatActivity implements PickiTCallback
         });
 
     }
-
-
-    private boolean isPermissionGranted(){
-        int  readExternalStorage;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES);
-        }else{
-            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        }
-        return  readExternalStorage==PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void takePermission(){
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_MEDIA_IMAGES},101);
-        }else{
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},101);
-        }
-
-    }
-
-    private void pickImageFromGallery(){
-        mGetContent.launch("image/*");
-    }
-
-    ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
-            new ActivityResultCallback<Uri>() {
-                @Override
-                public void onActivityResult(Uri uri) {
-                    // Handle the returned Uri
-                    iv_msg.setVisibility(View.VISIBLE);
-                    iv_cancel.setVisibility(View.VISIBLE);
-                    iv_msg.setImageURI(uri);
-                    if(uri!=null){
-                        pickiT.getPath(uri, Build.VERSION.SDK_INT);
-                    }
-                }
-            });
-
 
     private void fetchCommentFromHostinger(String time ,boolean isRefresh){
         new Thread(() -> {

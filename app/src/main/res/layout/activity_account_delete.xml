@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent"
+    android:background="@color/appBar"
+    android:fitsSystemWindows="true">
     <include
         android:id="@+id/app_bar"
         layout="@layout/my_action_bar" />
-
-
     <RelativeLayout
         android:id="@+id/content_layout"
         android:layout_width="match_parent"
@@ -25,7 +24,6 @@
             android:id="@+id/tv_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Kaung Htet Tin"
             android:fontFamily="@font/poppins_bold"
             android:layout_below="@id/iv_profile"
             android:gravity="center"
@@ -57,17 +55,13 @@
             android:layout_width="333dp"
             android:layout_height="50dp"
             android:layout_marginTop="5dp"
-            android:background="@drawable/bg_login_edittext"
-            android:ems="10"
-            android:fontFamily="@font/poppins_semibold"
+            android:background="@drawable/bg_comment_enter_text"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:gravity="center_vertical"
             android:hint="Enter Password"
             android:inputType="textPassword"
-            android:paddingStart="20dp"
-            android:paddingTop="4dp"
+            android:padding="7dp"
             android:layout_centerHorizontal="true"
-            android:textColor="#363636"
-            android:textColorHint="#403F3F"
             android:layout_below="@id/tv_error"/>
 
         <Button

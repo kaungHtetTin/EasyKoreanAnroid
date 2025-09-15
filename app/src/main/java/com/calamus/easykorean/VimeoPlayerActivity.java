@@ -1,13 +1,11 @@
 package com.calamus.easykorean;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -39,33 +37,24 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.media3.common.MediaItem;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.calamus.easykorean.app.FileManager;
+import com.calamus.easykorean.app.MyImagePicker;
 import com.calamus.easykorean.app.WebAppInterface;
 import com.calamus.easykorean.models.FileModel;
 import com.calamus.easykorean.models.SavedVideoModel;
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.PlaybackException;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.ProgressiveMediaSource;
-import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.util.Util;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -86,7 +75,6 @@ import com.calamus.easykorean.controller.NotificationController;
 import com.calamus.easykorean.models.CommentModel;
 import com.calamus.easykorean.models.LessonModel;
 import com.calamus.easykorean.service.MusicService;
-import com.calamus.easykorean.app.MyHttp;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -101,22 +89,24 @@ import static com.calamus.easykorean.app.AppHandler.viewCountFormat;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.calamus.easykorean.app.MyHttp;
 
 public class VimeoPlayerActivity extends AppCompatActivity implements AudioManager.OnAudioFocusChangeListener,PickiTCallbacks,View.OnClickListener {
 
     WebView wv;
-    TextView tv_title, tv_mini_title, tv_react, tv_comment, tv_share, tv_view, tv_related_lesson,
+    TextView tv_title, tv_mini_title, tv_react, tv_comment, tv_share, tv_view, tv_related_lesson,tv_fullscreen,
             tv_description;
     RecyclerView recyclerViewLesson;
     ConstraintLayout vimeoLayout;
     ProgressBar pb_vimeo, pb_video_frame;
 
-    String videoId, videoTitle, relatedLesson, post_description;
+    String videoId1, videoTitle, relatedLesson, post_description;
     String currentUserId, currentUserName;
     SharedPreferences sharedPreferences;
     ProgressBar pb;
     ViewGroup main;
-    boolean isVIP;
+    boolean isVIP,portrait_video=false;
+    ImageView iv_fullscreen;
 
     long a;
     String isVip = "0";
@@ -125,7 +115,7 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
     String timeCheck = "";
 
     int reactCount;
-    String videoUrl = "", folderName;
+    String videoUrl1 = "", folderName;
     Executor postExecutor;
     NotificationController notificationController;
     PickiT pickiT;
@@ -138,18 +128,8 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
     ArrayList<FileModel> downloadedVideoFiles = new ArrayList<>();
 
 
-    //Offline Exo Player
-    PlayerView playerView;
-    SimpleExoPlayer player;
-    TextView title;
-    ConcatenatingMediaSource concatenatingMediaSource;
-    ImageView videoBack, lock, unlock, scaling;
-    RelativeLayout root;
-    private VideoPlayerActivity.ControlsMode controlsMode;
-
-    public enum ControlsMode {
-        LOCK, FULLSCREEN
-    }
+    private PlayerView playerView;
+    private ExoPlayer player;
 
     Uri videoUri;
     AudioManager audioManager;
@@ -159,24 +139,27 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
     boolean playbackDelayed = false;
     boolean playbackNowAuthorized = false;
 
-    boolean landscape;
+    boolean landscape,fullscreenMode;
     RelativeLayout player_container;
     ArrayList<LessonModel> relatedLessons = new ArrayList<>();
     RelativeLessonAdapter lessonAdapter;
     private InterstitialAd mInterstitialAd=null;
-
+    MyImagePicker myImagePicker;
+    long playbackPosition;
+    boolean playWhenReady;
     @SuppressLint("StaticFieldLeak")
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_vimeo_player);
         sharedPreferences = getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
+        postExecutor = ContextCompat.getMainExecutor(this);
         currentUserName = sharedPreferences.getString("Username", null);
         isVIP = sharedPreferences.getBoolean("isVIP", false);
         imagePath = sharedPreferences.getString("imageUrl", null);
         currentUserId = sharedPreferences.getString("phone", null);
 
-        videoId = Objects.requireNonNull(getIntent().getExtras()).getString("videoId");
+        // videoId = Objects.requireNonNull(getIntent().getExtras()).getString("videoId");
         timeCheck = getIntent().getExtras().getString("cmtTime", "0");
         relatedLesson = getIntent().getExtras().getString("lessonJSON", null);
         post_description = getIntent().getExtras().getString("post_description", "");
@@ -184,7 +167,18 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
         isDownloadedVideo = getIntent().getBooleanExtra("downloaded", false);
         folderName = getIntent().getExtras().getString("folderName", "");
 
+        myImagePicker = new MyImagePicker(VimeoPlayerActivity.this);
+
         a = getIntent().getExtras().getLong("time");
+        videoUri=(Uri)getIntent().getExtras().get("localVideoUri");
+
+        if (bundle != null) {
+            playbackPosition = bundle.getLong("playbackPosition", 0);
+            playWhenReady = bundle.getBoolean("playWhenReady", true);
+            a = bundle.getLong("time",getIntent().getExtras().getLong("time"));
+            String sUri = bundle.getString("video_uri","");
+            videoUri = Uri.parse(sUri);
+        }
 
         rootDir = getExternalFilesDir(Environment.DIRECTORY_MOVIES).getPath();
         fileManager = new FileManager(this);
@@ -199,6 +193,8 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
 
         }
         setUpView();
+        if(bundle != null)  wv.restoreState(bundle);  // only after setUpView()
+
 
         Log.e("Root dir", rootDir + "/" + folderName);
         fileManager.loadFiles(new File(rootDir + "/" + folderName), new FileManager.OnFileLoading() {
@@ -211,7 +207,6 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
 
 
         pickiT = new PickiT(this, this, this);
-        postExecutor = ContextCompat.getMainExecutor(this);
         notificationController = new NotificationController(this);
 
 
@@ -225,6 +220,16 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
         getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
+
+                if(fullscreenMode){
+                    if(portrait_video){
+                        player_container.setLayoutParams(new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                        defineVideoViewHeight();
+                    }
+                    fullscreenMode = false;
+                    return;
+                }
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                 if (player.isPlaying()) {
                     player.stop();
                 }
@@ -238,6 +243,19 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
             }
         });
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (player != null) {
+            outState.putLong("playbackPosition", player.getCurrentPosition());
+            outState.putBoolean("playWhenReady", player.getPlayWhenReady());
+            outState.putInt("currentWindowIndex", player.getCurrentMediaItemIndex());
+        }
+        wv.saveState(outState);
+        outState.putLong("time",a);
+        if(videoUri != null)  outState.putString("video_uri",videoUri.toString());
     }
 
     private void setUpView() {
@@ -257,6 +275,8 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
         pb_vimeo = findViewById(R.id.pb_vimeo);
         pb_video_frame = findViewById(R.id.pb_video_frame);
         player_container=findViewById(R.id.player_container);
+        iv_fullscreen = findViewById(R.id.iv_fullscreen);
+        tv_fullscreen = findViewById(R.id.tv_fullscreen);
 
         vimeoLayout.setVisibility(View.GONE);
         tv_description.setText(post_description);
@@ -280,28 +300,36 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
                             if(model.isVideo()){
                                 lessonAdapter.setNowPlayingId(model.getTime());
                                 playNext(model);
+
                             }
                         }
                     }
                 });
             }
+
+            @Override
+            public void onVideoPortrait(String mode) {
+                setLayoutParameterForVideoPlayer(mode.equals("p"));
+            }
         }), "Android");
 
-        defineVideoViewHeight();
+
         if (isDownloadedVideo) {
             wv.setVisibility(View.GONE);
             playerView.setVisibility(View.VISIBLE);
-            videoUri=(Uri)getIntent().getExtras().get("localVideoUri");
             playVideo();
             iframeLoaded=true;
             postLoaded=true;
             loadVideoContent();
 
         } else {
+            videoUri = null;
             playerView.setVisibility(View.GONE);
             wv.setVisibility(View.VISIBLE);
             wv.loadUrl(Routing.PLAY_VIDEO + "?post_id=" + a);
         }
+        defineVideoViewHeight();
+
 
         if (!timeCheck.equals("") && !timeCheck.equals("0")) showCommentDialog();
 
@@ -345,6 +373,20 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
             public void onClick(View view) {
                 String info = "Share this video lesson";
                 showSharePostDialog(info, a + "");
+            }
+        });
+
+        iv_fullscreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makeFullScreen();
+            }
+        });
+
+        tv_fullscreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makeFullScreen();
             }
         });
     }
@@ -399,7 +441,6 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
                     @Override
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                         // Handle the error
-
                         mInterstitialAd = null;
                         Toast.makeText(getApplicationContext(),"Ad fail"+ loadAdError.toString(),Toast.LENGTH_SHORT).show();
                     }
@@ -407,6 +448,7 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
     }
 
 
+    @OptIn(markerClass = UnstableApi.class)
     private void setUpExoPlayer() {
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         playbackAttributes = new AudioAttributes.Builder()
@@ -416,7 +458,7 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
 
 
         videoTitle = "";
-      //  autoRotateOnScreen(videoUri);
+        //  autoRotateOnScreen(videoUri);
 
         AudioManager mAudioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 
@@ -431,24 +473,13 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
 
 
         playerView = findViewById(R.id.exoplayer_view);
-        title = findViewById(R.id.video_title);
-        videoBack = findViewById(R.id.video_back);
-        lock = findViewById(R.id.lock);
-        unlock = findViewById(R.id.unlock);
-        root = findViewById(R.id.root_layout);
-        scaling = findViewById(R.id.scaling);
-        scaling.setOnClickListener(changeLandscapeListener);
 
-        title.setText(videoTitle);
-        videoBack.setOnClickListener(this);
-        lock.setOnClickListener(this);
-        unlock.setOnClickListener(this);
-
-        player = new SimpleExoPlayer.Builder(this)
+        player = new ExoPlayer.Builder(this)
                 .setSeekBackIncrementMs(10000)
                 .setSeekForwardIncrementMs(10000)
                 .build();
-
+        player.seekTo(playbackPosition);
+        player.setPlayWhenReady(playWhenReady);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             focusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
@@ -481,27 +512,31 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
             }
         }
 
-         player.addListener(new Player.Listener() {
-             @Override
-             public void onPlaybackStateChanged(int playbackState) {
-                 Player.Listener.super.onPlaybackStateChanged(playbackState);
-                 if(playbackState== SimpleExoPlayer.STATE_ENDED){
-                     postExecutor.execute(new Runnable() {
-                         @Override
-                         public void run() {
-                             int nextIndex=getCurrentIndex()+1;
-                             if(nextIndex>=0&&nextIndex<relatedLessons.size()){
-                                 LessonModel model=relatedLessons.get(nextIndex);
-                                 if(model.isVideo()){
-                                     lessonAdapter.setNowPlayingId(model.getTime());
-                                     playNext(model);
-                                 }
-                             }
-                         }
-                     });
-                 }
-             }
-         });
+        player.addListener(new androidx.media3.common.Player.Listener() {
+            @Override
+            public void onPlaybackStateChanged(int playbackState) {
+                if (playbackState == androidx.media3.common.Player.STATE_ENDED) {
+                    postExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            int nextIndex=getCurrentIndex()+1;
+                            if(nextIndex>=0&&nextIndex<relatedLessons.size()){
+                                LessonModel model=relatedLessons.get(nextIndex);
+                                if(model.isVideo()){
+                                    lessonAdapter.setNowPlayingId(model.getTime());
+                                    playNext(model);
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onPlayerError(androidx.media3.common.PlaybackException error) {
+                Toast.makeText(VimeoPlayerActivity.this, "Video playback error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -517,28 +552,82 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
             player_container.setLayoutParams(new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             defineVideoViewHeight();
             landscape=false;
-            scaling.setOnClickListener(changeLandscapeListener);
-            scaling.setImageResource(R.drawable.fullscreen);
+            //   scaling.setOnClickListener(changeLandscapeListener);
+            //  scaling.setImageResource(R.drawable.fullscreen);
         } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             Log.d("tag", "Landscape");
             player_container.setLayoutParams(new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             defineVideoViewHeight();
             landscape=true;
-            scaling.setOnClickListener(changePortraitListener);
-            scaling.setImageResource(R.drawable.baseline_close_fullscreen_24);
+            // scaling.setOnClickListener(changePortraitListener);
+            // scaling.setImageResource(R.drawable.baseline_close_fullscreen_24);
         } else
             Log.w("tag", "other: " + orientation);
     }
 
+
     private void defineVideoViewHeight() {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width = displayMetrics.widthPixels;
-        int height = (width * 9) / 16;
-        RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(width,height);
-        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT,RelativeLayout.TRUE);
-        playerView.setLayoutParams(layoutParams);
-        wv.setLayoutParams(layoutParams);
+
+        if(isDownloadedVideo){
+            try {
+                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                retriever.setDataSource(this, videoUri);
+                Bitmap bmp = retriever.getFrameAtTime();
+                int videoWidth = bmp.getWidth();
+                int videoHeight = bmp.getHeight();
+                setLayoutParameterForVideoPlayer(videoWidth <= videoHeight);
+
+            } catch (Exception e) {
+                Log.e("VideoFrame", e.toString());
+                setLayoutParameterForVideoPlayer(false);
+                Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
+
+            }
+        }else{
+            setLayoutParameterForVideoPlayer(false);
+        }
+
+    }
+
+    private void makeFullScreen(){
+        fullscreenMode = true;
+        if (portrait_video){
+            player_container.setLayoutParams(new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            defineVideoViewHeight();
+        }else{
+            landscape = true;
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+    }
+
+    private void setLayoutParameterForVideoPlayer(boolean portrait){
+
+        portrait_video = portrait;
+        postExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                int width, height;
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                width = displayMetrics.widthPixels;
+                height = (width * 9) / 16;
+                if(portrait){
+                    height = width-50;
+                }
+                RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(width,height);
+                layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT,RelativeLayout.TRUE);
+                playerView.setLayoutParams(layoutParams);
+                wv.setLayoutParams(layoutParams);
+
+                if(portrait){
+                    iv_fullscreen.setVisibility(View.GONE);
+                    tv_fullscreen.setVisibility(View.GONE);
+                }else{
+                    iv_fullscreen.setVisibility(View.VISIBLE);
+                    tv_fullscreen.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
 
@@ -615,11 +704,11 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
     private void playNext(LessonModel model){
         iframeLoaded = false;
         postLoaded = false;
-        videoId = model.getLink();
+        //  videoId = model.getLink();
         a = model.getTime();
         timeCheck = "0";
-
-        if (model.isDownloaded()) {
+        isDownloadedVideo = model.isDownloaded();
+        if (isDownloadedVideo) {
             wv.setVisibility(View.GONE);
             wv.loadUrl("");
             playerView.setVisibility(View.VISIBLE);
@@ -635,8 +724,8 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
             playerView.setVisibility(View.GONE);
             wv.loadUrl(Routing.PLAY_VIDEO + "?post_id=" + a);
         }
-
         getVideoData();
+        defineVideoViewHeight();
     }
 
     public String setMyanmar(String s) {
@@ -664,7 +753,6 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
                                 JSONObject jo = ja.getJSONObject(0);
                                 String viewCount = jo.getString("view_count");
                                 String comments = jo.getString("comments");
-                                videoUrl = jo.getString("video_url");
                                 int noOfComments = Integer.parseInt(comments);
                                 int views = Integer.parseInt(viewCount);
                                 tv_view.setText(viewCountFormat(views) + "  .  " + formatTime(a));
@@ -852,35 +940,14 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
 
     private void playVideo() {
 
-        DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(
-                this, Util.getUserAgent(this, "app"));
-
-        concatenatingMediaSource = new ConcatenatingMediaSource();
-        MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(MediaItem.fromUri(Uri.parse(String.valueOf(videoUri))));
-
-        concatenatingMediaSource.addMediaSource(mediaSource);
+        MediaItem mediaItem = MediaItem.fromUri(videoUri);
 
         playerView.setPlayer(player);
         playerView.setKeepScreenOn(true);
-        player.prepare(concatenatingMediaSource);
-        player.seekTo(0, C.TIME_UNSET);
 
-
-
-        playError();
-    }
-
-    private void playError() {
-        player.addListener(new Player.Listener() {
-            @Override
-            public void onPlayerError(PlaybackException error) {
-                Player.Listener.super.onPlayerError(error);
-                Toast.makeText(getApplicationContext(), "Playing Playing Error", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        player.setPlayWhenReady(true);
+        player.setMediaItem(mediaItem);
+        player.prepare();
+        player.play();
     }
 
     @Override
@@ -916,18 +983,6 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
                     }
                     finish();
                 }
-                break;
-            case R.id.lock:
-                controlsMode = VideoPlayerActivity.ControlsMode.FULLSCREEN;
-                root.setVisibility(View.VISIBLE);
-                lock.setVisibility(View.INVISIBLE);
-                Toast.makeText(this, "Unlocked", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.unlock:
-                controlsMode = VideoPlayerActivity.ControlsMode.LOCK;
-                root.setVisibility(View.INVISIBLE);
-                lock.setVisibility(View.VISIBLE);
-                Toast.makeText(this, "Locked", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -990,11 +1045,22 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
         iv_pickup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isPermissionGranted()) {
-                    pickImageFromGallery();
-                } else {
-                    takePermission();
-                }
+                myImagePicker.pick(new MyImagePicker.Callback() {
+                    @Override
+                    public void onResult(Uri uri) {
+                        iv_msg.setVisibility(View.VISIBLE);
+                        iv_cancel.setVisibility(View.VISIBLE);
+                        iv_msg.setImageURI(uri);
+                        if(uri!=null){
+                            pickiT.getPath(uri, Build.VERSION.SDK_INT);
+                        }else {
+                            iv_msg.setImageBitmap(null);
+                            iv_msg.setVisibility(View.GONE);
+                            iv_cancel.setVisibility(View.GONE);
+                            commentImagePath = "";
+                        }
+                    }
+                });
             }
         });
 
@@ -1103,48 +1169,6 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
         fetchPost(timeCheck);
 
     }
-
-    private boolean isPermissionGranted(){
-        int  readExternalStorage;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES);
-        }else{
-            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        }
-        return  readExternalStorage==PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void takePermission(){
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_MEDIA_IMAGES},101);
-        }else{
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},101);
-        }
-
-    }
-
-    private void pickImageFromGallery(){
-        mGetContent.launch("image/*");
-    }
-
-    ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
-            new ActivityResultCallback<Uri>() {
-                @Override
-                public void onActivityResult(Uri uri) {
-                    // Handle the returned Uri
-                    iv_msg.setVisibility(View.VISIBLE);
-                    iv_cancel.setVisibility(View.VISIBLE);
-                    iv_msg.setImageURI(uri);
-                    if(uri!=null){
-                        pickiT.getPath(uri, Build.VERSION.SDK_INT);
-                    }else {
-                        iv_msg.setImageBitmap(null);
-                        iv_msg.setVisibility(View.GONE);
-                        iv_cancel.setVisibility(View.GONE);
-                        commentImagePath = "";
-                    }
-                }
-            });
 
     private void fetchPost(String time) {
 

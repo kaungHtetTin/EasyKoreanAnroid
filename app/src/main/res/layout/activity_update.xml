@@ -3,6 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/appBar"
+    android:fitsSystemWindows="true"
     android:id="@+id/layout_update">
 
     <include layout="@layout/my_action_bar"

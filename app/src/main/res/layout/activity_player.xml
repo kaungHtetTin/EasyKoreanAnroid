@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".PlayerActivity"
     android:id="@+id/mContainer"
+    android:fitsSystemWindows="true"
     android:background="@drawable/bg_player"
     android:orientation="vertical">
 

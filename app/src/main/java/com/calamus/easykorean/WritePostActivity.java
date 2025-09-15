@@ -2,6 +2,7 @@ package com.calamus.easykorean;
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +28,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.calamus.easykorean.app.MyImagePicker;
 import com.hbisoft.pickit.PickiT;
 import com.hbisoft.pickit.PickiTCallbacks;
 import com.calamus.easykorean.adapters.NewFeedAdapter;
@@ -44,7 +48,7 @@ public class WritePostActivity extends AppCompatActivity implements PickiTCallba
     ImageView iv_profile,iv_post,iv_cancel;
     TextView tv_post_writer;
     SharedPreferences sharedPreferences;
-    String imageProfile,phone,userName,imagePath="",postText,oldPostId,newPostId;
+    String imageProfile,phone,userName,imagePath="",postText,oldPostId;
     EditText et_post;
     CardView cardView;
     ProgressBar pb;
@@ -55,7 +59,7 @@ public class WritePostActivity extends AppCompatActivity implements PickiTCallba
     Executor postExecutor;
     TextView tv_appbar,tv_post;
     ImageView iv_back;
-
+    MyImagePicker myImagePicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +88,8 @@ public class WritePostActivity extends AppCompatActivity implements PickiTCallba
                 showDiscardDialog();
             }
         });
+
+        myImagePicker = new MyImagePicker(this);
 
     }
 
@@ -145,18 +151,29 @@ public class WritePostActivity extends AppCompatActivity implements PickiTCallba
                     pb.setVisibility(View.INVISIBLE);
                     Toast.makeText(getApplicationContext(),"Discuss something about this post",Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isPermissionGranted()){
-                    pickImageFromGallery();
-                }else {
-                    takePermission();
-                }
+                myImagePicker.pick(new MyImagePicker.Callback() {
+                    @Override
+                    public void onResult(Uri uri) {
+                        iv_post.setVisibility(View.VISIBLE);
+                        iv_cancel.setVisibility(View.VISIBLE);
+                        iv_post.setImageURI(uri);
+                        if(uri!=null){
+                            pickiT.getPath(uri, Build.VERSION.SDK_INT);
+                        }else{
+                            iv_post.setImageBitmap(null);
+                            iv_post.setVisibility(View.GONE);
+                            iv_cancel.setVisibility(View.GONE);
+                            imagePath="";
+                            cloudImageUrl="";
+                        }
+                    }
+                });
             }
         });
 
@@ -183,66 +200,6 @@ public class WritePostActivity extends AppCompatActivity implements PickiTCallba
 
     }
 
-    private boolean isPermissionGranted(){
-        int  readExternalStorage;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES);
-        }else{
-            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        }
-        return  readExternalStorage==PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void takePermission(){
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_MEDIA_IMAGES},101);
-        }else{
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},101);
-        }
-
-    }
-
-    private void pickImageFromGallery(){
-        mGetContent.launch("image/*");
-    }
-
-    ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
-            new ActivityResultCallback<Uri>() {
-                @Override
-                public void onActivityResult(Uri uri) {
-                    // Handle the returned Uri
-                    iv_post.setVisibility(View.VISIBLE);
-                    iv_cancel.setVisibility(View.VISIBLE);
-                    iv_post.setImageURI(uri);
-                    if(uri!=null){
-                        pickiT.getPath(uri, Build.VERSION.SDK_INT);
-                    }else{
-                        iv_post.setImageBitmap(null);
-                        iv_post.setVisibility(View.GONE);
-                        iv_cancel.setVisibility(View.GONE);
-                        imagePath="";
-                        cloudImageUrl="";
-                    }
-                }
-            });
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
-    {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(grantResults.length>0){
-            if(requestCode==101){
-                boolean readExternalStorage=grantResults[0]==PackageManager.PERMISSION_GRANTED;
-                if(readExternalStorage){
-                    pickImageFromGallery();
-                }else {
-                    takePermission();
-                }
-            }
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add("POST")
@@ -266,7 +223,6 @@ public class WritePostActivity extends AppCompatActivity implements PickiTCallba
                     setResult(Activity.RESULT_OK,intent);
                     finish();
                 }
-
                 else
                     editPost(oldPostId,et_post.getText().toString());
             }else {

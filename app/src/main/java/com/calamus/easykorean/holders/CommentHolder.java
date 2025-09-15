@@ -126,8 +126,6 @@ public class CommentHolder extends RecyclerView.ViewHolder{
         }
 
 
-
-
         tv_reactCount.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_comment_normal_react, 0, 0);
         if(cModel.getIsLiked().equals("1")){
             tv_reactCount.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_song_love_react, 0, 0);

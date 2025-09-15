@@ -1,23 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".VideoPlayerActivity">
+    android:fitsSystemWindows="true"
+    android:background="#333"
+    android:orientation="vertical">
 
-    <com.google.android.exoplayer2.ui.PlayerView
+    <!-- Media3 PlayerView -->
+    <androidx.media3.ui.PlayerView
         android:id="@+id/exoplayer_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#000000"
-        app:controller_layout_id="@layout/custom_playback_view"
-        app:hide_on_touch="true"
-        app:player_layout_id="@layout/exo_player_view"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
         app:resize_mode="fit"
-        app:show_timeout="4000"
-        app:shutter_background_color="#000000"
-        app:surface_type="surface_view"
-        app:use_controller="true" />
+        app:use_controller="true"
+        app:show_timeout="4000" />
+
+    <!-- Top toolbar -->
+    <LinearLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="10dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp">
+
+        <ImageView
+            android:id="@+id/video_back"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_back_white"/>
+
+        <TextView
+            android:id="@+id/video_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="This is title"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"/>
+    </LinearLayout>
 
 </RelativeLayout>

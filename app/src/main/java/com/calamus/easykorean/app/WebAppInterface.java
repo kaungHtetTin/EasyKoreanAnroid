@@ -37,6 +37,12 @@ public class WebAppInterface {
     }
 
     @JavascriptInterface
+    public void onVideoOrientation(String mode){
+        callBack.onVideoPortrait(mode);
+    }
+
+
+    @JavascriptInterface
     public void showInAppAd(String msg){
         Intent i = new Intent(mContext, WebSiteActivity.class);
         i.putExtra("link", Routing.PAYMENT);
@@ -46,6 +52,7 @@ public class WebAppInterface {
 
     public interface CallBack{
         void onEvent();
+        void onVideoPortrait(String mode);
     }
 }
 

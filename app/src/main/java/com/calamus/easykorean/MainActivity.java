@@ -3,17 +3,21 @@ package com.calamus.easykorean;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
+
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -72,8 +76,6 @@ public class MainActivity extends AppCompatActivity {
         postExecutor= ContextCompat.getMainExecutor(this);
         FirebaseMessaging.getInstance().subscribeToTopic(Routing.subscribeToTopic);
 
-        mainLayout.setBackgroundResource(R.color.fragmentOneLayout);
-
         Objects.requireNonNull(getSupportActionBar()).hide();
         setUpView();
         makeActiveNow(Long.parseLong(currentUserId)+"");
@@ -87,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         switch (goSomeWhere) {
             case "splash":
                 String version = share.getString("version", "");
-                if (!version.equals("3.3.31")) confirmUpdate(); //check the version in generaldata.php
+                if (!version.equals("3.3.33")) confirmUpdate(); //check the version in generaldata.php
                 break;
             case "login":
                 Toast.makeText(this, "Welcome!", Toast.LENGTH_SHORT).show();
@@ -178,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        postNotificationPermission();
     }
 
 
@@ -201,7 +204,6 @@ public class MainActivity extends AppCompatActivity {
                 switch (position){
                     case 0:
                         bnv.getMenu().findItem(R.id.frag_one).setChecked(true);
-                        mainLayout.setBackgroundResource(R.color.fragmentOneLayout);
                         pagerPosition=true;
                         isHome=true;
                         break;
@@ -209,19 +211,16 @@ public class MainActivity extends AppCompatActivity {
                         bnv.getMenu().findItem(R.id.frag_two).setChecked(true);
                         pagerPosition=true;
                         isHome=false;
-                        mainLayout.setBackgroundResource(R.color.appBar);
                         break;
 
                     case 2:
                         bnv.getMenu().findItem(R.id.frag_three).setChecked(true);
                         pagerPosition=true;
                         isHome=false;
-                        mainLayout.setBackgroundResource(R.color.appBar);
                         break;
 
                     case 3:
                         bnv.getMenu().findItem(R.id.frag_four).setChecked(true);
-                        mainLayout.setBackgroundResource(R.color.appBar);
                         pagerPosition=false;
                         isHome=false;
                         break;
@@ -229,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
                         bnv.getMenu().findItem(R.id.frag_five).setChecked(true);
                         pagerPosition=true;
                         isHome=false;
-                        mainLayout.setBackgroundResource(R.color.appBar);
                 }
 
             }
@@ -264,6 +262,15 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
+    }
+
+    public void postNotificationPermission(){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            int readExternalStorage = ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS);
+            if(!(readExternalStorage== PackageManager.PERMISSION_GRANTED)){
+                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.POST_NOTIFICATIONS},101);
+            }
+        }
     }
 
     public class ViewPagerAdapter extends FragmentStatePagerAdapter {

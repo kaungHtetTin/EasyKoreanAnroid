@@ -45,6 +45,7 @@ import android.widget.Toast;
 import com.calamus.easykorean.adapters.ChatAdapter;
 import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.app.MyHttp;
+import com.calamus.easykorean.app.MyImagePicker;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.controller.NotificationController;
 import com.calamus.easykorean.models.ChatModel;
@@ -92,9 +93,7 @@ public class ChattingActivity extends AppCompatActivity {
     final String dbName="conservation.db";
     String dbPath;
     int counting;
-
     Uri imageUri;
-    private final int galleryPick=1;
     String downloadImageUrl,hasImage="";
     private StorageReference chatImageRef;
     ImageView iv_msg,iv_cancel,iv_insert_photo;
@@ -110,6 +109,7 @@ public class ChattingActivity extends AppCompatActivity {
     ImageView iv_profile,iv_back,iv_more;
 
     ValueEventListener valueEventListener;
+    MyImagePicker myImagePicker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,7 +122,7 @@ public class ChattingActivity extends AppCompatActivity {
         myImage=sharedPreferences.getString("imageUrl",null);
         myName=sharedPreferences.getString("Username",null);
         my_token=sharedPreferences.getString("token","");
-
+        myImagePicker = new MyImagePicker(this);
 
         FId=getIntent().getExtras().getString("fId");
         fImage=getIntent().getExtras().getString("fImage");
@@ -167,6 +167,8 @@ public class ChattingActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
 
     }
 
@@ -289,11 +291,16 @@ public class ChattingActivity extends AppCompatActivity {
         iv_insert_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isPermissionGranted()){
-                    pickImageFromGallery();
-                }else {
-                    takePermission();
-                }
+                myImagePicker.pick(new MyImagePicker.Callback() {
+                    @Override
+                    public void onResult(Uri uri) {
+                        imageUri=uri;
+                        iv_msg.setVisibility(View.VISIBLE);
+                        iv_msg.setImageURI(imageUri);
+                        iv_cancel.setVisibility(View.VISIBLE);
+                        hasImage=imageUri.toString();
+                    }
+                });
             }
         });
 
@@ -318,42 +325,6 @@ public class ChattingActivity extends AppCompatActivity {
         });
 
     }
-
-    private boolean isPermissionGranted(){
-        int  readExternalStorage;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES);
-        }else{
-            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        }
-        return  readExternalStorage==PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void takePermission(){
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_MEDIA_IMAGES},101);
-        }else{
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},101);
-        }
-
-    }
-
-    private void pickImageFromGallery(){
-        mGetContent.launch("image/*");
-    }
-
-    ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
-            new ActivityResultCallback<Uri>() {
-                @Override
-                public void onActivityResult(Uri uri) {
-                    // Handle the returned Uri
-                    imageUri=uri;
-                    iv_msg.setVisibility(View.VISIBLE);
-                    iv_msg.setImageURI(imageUri);
-                    iv_cancel.setVisibility(View.VISIBLE);
-                    hasImage=imageUri.toString();
-                }
-            });
 
     private boolean isConservationExist(){
         String query="SELECT*FROM Conservations WHERE fri_id="+FId+" and my_id="+myId;
@@ -681,20 +652,6 @@ public class ChattingActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
 
     }
-
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode==galleryPick && resultCode==RESULT_OK && data!=null){
-            imageUri=data.getData();
-
-        }
-    }
-
-
 
     private void sendingImage(String msg,long time){
         StorageReference filePath=chatImageRef.child(time+"");

@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
@@ -28,6 +29,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.calamus.easykorean.app.MyImagePicker;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -78,6 +81,7 @@ public class TeacherActivity extends AppCompatActivity {
     Executor postExecutor;
     boolean isVip;
     String team,pushNotificationToAdmin;
+    MyImagePicker myImagePicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +95,7 @@ public class TeacherActivity extends AppCompatActivity {
         my_token=sharedPreferences.getString("token","");
         isVip=sharedPreferences.getBoolean("isVIP",false);
         team=getIntent().getExtras().getString("team");
+        myImagePicker = new MyImagePicker(this);
 
 
         fImage=getIntent().getExtras().getString("imageUrl");
@@ -216,11 +221,16 @@ public class TeacherActivity extends AppCompatActivity {
         iv_insert_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isPermissionGranted()){
-                    pickImageFromGallery();
-                }else {
-                    takePermission();
-                }
+                myImagePicker.pick(new MyImagePicker.Callback() {
+                    @Override
+                    public void onResult(Uri uri) {
+                        imageUri=uri;
+                        iv_msg.setVisibility(View.VISIBLE);
+                        iv_msg.setImageURI(imageUri);
+                        iv_cancel.setVisibility(View.VISIBLE);
+                        hasImage=imageUri.toString();
+                    }
+                });
             }
         });
 
@@ -369,44 +379,6 @@ public class TeacherActivity extends AppCompatActivity {
             myHttp.runTask();
         }).start();
     }
-
-    private boolean isPermissionGranted(){
-        int  readExternalStorage;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES);
-        }else{
-            readExternalStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        }
-        return  readExternalStorage==PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void takePermission(){
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_MEDIA_IMAGES},101);
-        }else{
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},101);
-        }
-
-    }
-
-    private void pickImageFromGallery(){
-        mGetContent.launch("image/*");
-    }
-
-    ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
-            new ActivityResultCallback<Uri>() {
-                @Override
-                public void onActivityResult(Uri uri) {
-                    // Handle the returned Uri
-                    imageUri=uri;
-                    iv_msg.setVisibility(View.VISIBLE);
-                    iv_msg.setImageURI(imageUri);
-                    iv_cancel.setVisibility(View.VISIBLE);
-                    hasImage=imageUri.toString();
-                }
-            });
-
-
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
