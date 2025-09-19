@@ -31,7 +31,7 @@ android:orientation="vertical">
             android:fontFamily="@font/poppins_medium"
             android:text="Songs With Lyrics"
             android:textColor="@color/white"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
     </RelativeLayout>

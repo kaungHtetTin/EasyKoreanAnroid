@@ -3,10 +3,16 @@ package com.calamus.easykorean.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -42,6 +48,9 @@ public class SongFragmentOne extends Fragment {
 
     String userId;
     RecyclerView recyclerView;
+    EditText et_search;
+    ImageButton ibt_search;
+    boolean searchMode = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,6 +66,8 @@ public class SongFragmentOne extends Fragment {
     private void setUpView() {
         swipe=v.findViewById(R.id.swipeSong);
         recyclerView=v.findViewById(R.id.recyclerSongOne);
+        et_search = v.findViewById(R.id.et_search);
+        ibt_search = v.findViewById(R.id.ibt_search);
 
         swipe.setRefreshing(true);
 
@@ -67,13 +78,14 @@ public class SongFragmentOne extends Fragment {
         recyclerView.setAdapter(adapter);
         postExecutor = ContextCompat.getMainExecutor(getActivity());
         songOnlineLists.clear();
-        songOnlineLists.add(0,new SongOnlineModel());
+        songOnlineLists.add(0,"Add Some thing");
         fetchPopularSong();
         fetchSong(1,false);
 
         swipe.setOnRefreshListener(() -> {
             page=1;
             loading=true;
+            searchMode = false;
             fetchSong(1,true);
         });
 
@@ -82,21 +94,61 @@ public class SongFragmentOne extends Fragment {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 pastVisibleItems=lm.findFirstVisibleItemPosition();
-                if(dy>0){
-                    visibleItemCount=lm.getChildCount();
-                    totalItemCount=lm.getItemCount();
+                if(!searchMode){
+                    if(dy>0){
+                        visibleItemCount=lm.getChildCount();
+                        totalItemCount=lm.getItemCount();
 
-                    if(loading){
+                        if(loading){
 
-                        if((visibleItemCount+pastVisibleItems)>=totalItemCount-7){
-                            loading=false;
-                            page++;
-                            fetchSong(page,false);
+                            if((visibleItemCount+pastVisibleItems)>=totalItemCount-7){
+                                loading=false;
+                                page++;
+                                fetchSong(page,false);
+                            }
                         }
+
+
                     }
-
-
                 }
+            }
+        });
+
+        ibt_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String search = et_search.getText().toString();
+                if(!TextUtils.isEmpty(search)){
+                    searchASong(search);
+                }else{
+                    Toast.makeText(getActivity(),"Please enter the search box",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        et_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.toString().equals("")){
+                    page=1;
+                    loading=true;
+                    searchMode = false;
+                    swipe.setRefreshing(true);
+                    songOnlineLists.clear();
+                    adapter.notifyDataSetChanged();
+
+                    fetchSong(1,true);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
@@ -110,7 +162,7 @@ public class SongFragmentOne extends Fragment {
                     postExecutor.execute(() -> {
                         if (isRefresh){
                             songOnlineLists.clear();
-                            songOnlineLists.add(0,new SongOnlineModel());
+                            songOnlineLists.add(0,"Add Some thing");
                         }
                         doAsResult(response);
                     });
@@ -171,14 +223,17 @@ public class SongFragmentOne extends Fragment {
     }
 
     private void searchASong(String search){
-
+        swipe.setRefreshing(true);
+        searchMode = true;
+        songOnlineLists.clear();
+        adapter.notifyDataSetChanged();
         new Thread(() -> {
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
                 @Override
                 public void onResponse(String response) {
                     postExecutor.execute(() -> {
                         songOnlineLists.clear();
-                        songOnlineLists.add(0,new SongOnlineModel());
+                       // songOnlineLists.add(0,new SongOnlineModel());
                         doAsResult(response);
                     });
                 }

@@ -116,7 +116,7 @@ public class TeacherActivity extends AppCompatActivity {
             pushNotificationToAdmin=Routing.PUSH_NOTIFICATION_TO_TEACHER;
         }
 
-
+        getSupportActionBar().hide();
         setUpView();
         setUpActionBar();
 
@@ -135,20 +135,16 @@ public class TeacherActivity extends AppCompatActivity {
     private void setUpActionBar(){
         TextView tv_name,tv_status;
         ImageView iv_profile,iv_back,iv_more;
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowCustomEnabled(true);
 
-        LayoutInflater inflator = (LayoutInflater) this .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflator.inflate(R.layout.my_action_bar_chat, null);
 
-        tv_name=v.findViewById(R.id.tv_username2);
-        tv_status=v.findViewById(R.id.tv_status);
-        iv_back=v.findViewById(R.id.iv_back);
-        iv_profile=v.findViewById(R.id.iv_profile);
-        iv_more=v.findViewById(R.id.iv_menuMore);
+        tv_name=findViewById(R.id.tv_username2);
+        tv_status=findViewById(R.id.tv_status);
+        iv_back=findViewById(R.id.iv_back);
+        iv_profile=findViewById(R.id.iv_profile);
+        iv_more=findViewById(R.id.iv_menuMore);
 
         if(team.equals("Developer")){
-            tv_name.setText("Customer Service");
+            tv_name.setText("Calamus Team");
         }else{
            tv_name.setText(team);
         }
@@ -169,7 +165,7 @@ public class TeacherActivity extends AppCompatActivity {
 
         AppHandler.setPhotoFromRealUrl(iv_profile,fImage);
 
-        actionBar.setCustomView(v);
+
 
     }
 

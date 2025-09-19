@@ -103,13 +103,9 @@ public class ChattingActivity extends AppCompatActivity {
     LinearLayoutManager lm;
     Executor postExecutor;
     FirebaseDatabase firebaseDatabase;
-
-    //app bar;
-    TextView tv_name,tv_status;
-    ImageView iv_profile,iv_back,iv_more;
-
     ValueEventListener valueEventListener;
     MyImagePicker myImagePicker;
+    TextView tv_status;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,6 +137,7 @@ public class ChattingActivity extends AppCompatActivity {
         dbLite=SQLiteDatabase.openDatabase(dbPath,null,SQLiteDatabase.OPEN_READWRITE);
 
         setUpView();
+        getSupportActionBar().hide();
         setUpActionBar();
 
         status(FId);
@@ -181,18 +178,13 @@ public class ChattingActivity extends AppCompatActivity {
     }
 
     private void setUpActionBar(){
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowCustomEnabled(true);
-
-        LayoutInflater inflator = (LayoutInflater) this .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflator.inflate(R.layout.my_action_bar_chat, null);
-
-        tv_name=v.findViewById(R.id.tv_username2);
-        tv_status=v.findViewById(R.id.tv_status);
-        iv_back=v.findViewById(R.id.iv_back);
-        iv_profile=v.findViewById(R.id.iv_profile);
-        iv_more=v.findViewById(R.id.iv_menuMore);
+        TextView tv_name;
+        ImageView iv_profile,iv_back,iv_more;
+        tv_name = findViewById(R.id.tv_username2);
+        tv_status = findViewById(R.id.tv_status);
+        iv_back = findViewById(R.id.iv_back);
+        iv_profile = findViewById(R.id.iv_profile);
+        iv_more = findViewById(R.id.iv_menuMore);
 
         tv_name.setText(fName);
 
@@ -208,13 +200,9 @@ public class ChattingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                  showChatMenu(v);
-
-
             }
         });
-
         AppHandler.setPhotoFromRealUrl(iv_profile,fImage);
-        actionBar.setCustomView(v);
     }
 
     private void showChatMenu(View v){

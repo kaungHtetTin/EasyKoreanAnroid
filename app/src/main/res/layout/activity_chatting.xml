@@ -3,7 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/appBar"
+    android:orientation="vertical"
     android:fitsSystemWindows="true">
+
+    <include layout="@layout/my_action_bar_chat"/>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe"
@@ -12,7 +15,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:background="@color/appBar"
+            android:background="@color/chatBackground"
             android:layout_height="match_parent">
 
             <androidx.recyclerview.widget.RecyclerView

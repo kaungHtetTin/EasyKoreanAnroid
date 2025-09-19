@@ -68,13 +68,18 @@ public class SongOnlineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemViewType(int position) {
-        return  position;
+        Object o = data.get(position);
+        if(o instanceof SongOnlineModel){
+            return 1;
+        }else{
+            return 0;
+        }
     }
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int i) {
-
-        if(i==0){
+        Object o = data.get(i);
+        if(! (o instanceof  SongOnlineModel)){
             PopularHolder popularHolder=(PopularHolder)holder;
             SongPopularAdapter adapter=new SongPopularAdapter(c,dataPopular);
             LinearLayoutManager lm = new LinearLayoutManager(c, LinearLayoutManager.HORIZONTAL, false);

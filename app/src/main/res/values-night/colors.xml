@@ -36,8 +36,6 @@
     <color name="bgClassRoomSearchBox">#262626</color>
     <color name="colorConversationMsg">#CCCCCC</color>
     <color name="bgSeeAll">#4E4E4E</color>
-
-
-
+    <color name="chatBackground">#4E4E4E</color>
 
 </resources>

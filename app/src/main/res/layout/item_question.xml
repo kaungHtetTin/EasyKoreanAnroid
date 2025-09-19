@@ -8,6 +8,7 @@
     <RelativeLayout
         android:id="@+id/layout_teacher"
         android:layout_width="100dp"
+        android:visibility="gone"
         android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/iv_teacher"
@@ -53,7 +54,7 @@
 
         <TextView
             android:id="@+id/tv_developer"
-            android:text="Customer Service"
+            android:text="Calamus Team"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="7dp"

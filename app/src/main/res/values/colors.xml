@@ -50,5 +50,6 @@
     <color name="bgBottomNavChatting">#EEF8FE</color>
     <color name="bgClassRoomSearchBox">#F3F3F3</color>
     <color name="bgSeeAll">#DCDCDC</color>
+    <color name="chatBackground">#DFDEF4</color>
 
 </resources>

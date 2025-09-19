@@ -6,12 +6,44 @@
     android:layout_height="match_parent"
     android:background="@color/purple_500">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:padding="7dp"
-        android:id="@+id/recyclerSongOne"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:scrollbars="none"/>
+        android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:hint="Search a Song"
+            android:textColorHint="#aaa"
+            android:layout_margin="7dp"
+            android:padding="10dp"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:layout_toStartOf="@id/ibt_search"
+            android:fontFamily="@font/poppins_regular"
+            android:background="@drawable/bg_song_search"/>
+
+        <ImageButton
+            android:id="@+id/ibt_search"
+            android:layout_width="90dp"
+            android:layout_height="45dp"
+            android:layout_margin="7dp"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_search_white"
+            android:background="@drawable/bg_song_search"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:padding="7dp"
+            android:id="@+id/recyclerSongOne"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:scrollbars="none"
+            android:layout_below="@id/et_search"/>
+
+    </RelativeLayout>
+
+
  </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
