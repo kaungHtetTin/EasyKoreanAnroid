@@ -3,6 +3,8 @@ package com.calamus.easykorean.controller;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 
@@ -21,7 +23,9 @@ public class NotificationController {
         new Thread(() -> {
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.POST, new MyHttp.Response() {
                 @Override
-                public void onResponse(String response) {}
+                public void onResponse(String response) {
+                    Log.e("PushNotificationRes", response);
+                }
                 @Override
                 public void onError(String msg) {
 

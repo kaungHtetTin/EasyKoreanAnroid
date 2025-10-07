@@ -252,6 +252,7 @@ public class SignUpActivity extends AppCompatActivity {
                             tv_error.setVisibility(View.VISIBLE);
                             tv_error.setText("An unexpected error! Connect to help center");
                             bt.setEnabled(true);
+                            Log.e("SignUpErr",msg);
                         }
                     });
                 }

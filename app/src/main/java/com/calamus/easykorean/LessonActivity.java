@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -192,6 +193,12 @@ public class LessonActivity extends AppCompatActivity
         TextView tv=findViewById(R.id.tv_appbar);
         ImageView iv=findViewById(R.id.iv_back);
         tv.setText(appBarTitle);
+
+        tv.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+        tv.setMarqueeRepeatLimit(-1);
+        tv.setSingleLine(true);
+        tv.setSelected(true);
+
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

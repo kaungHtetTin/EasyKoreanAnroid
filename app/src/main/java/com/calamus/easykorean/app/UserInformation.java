@@ -27,15 +27,12 @@ public class UserInformation {
     SharedPreferences.Editor editor;
     String myToken;
     Executor postExecutor;
-
-
     public UserInformation(Activity c) {
         this.c = c;
         sharedPreferences=c.getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         myToken=sharedPreferences.getString("token","abcdef");
         editor=sharedPreferences.edit();
         postExecutor= ContextCompat.getMainExecutor(c);
-
     }
 
     public void getGeneralData(String phone,String auth_token){
@@ -49,7 +46,6 @@ public class UserInformation {
                 @Override
                 public void onError(String msg) {
                     postExecutor.execute(() -> {
-                        //Toast.makeText(c,msg,Toast.LENGTH_SHORT).show();
 
                     });
                 }
@@ -77,6 +73,10 @@ public class UserInformation {
                 SharedPreferences.Editor editor1 = sharedPreferences1.edit();
                 editor1.clear();
                 editor1.apply();
+
+                Intent intent = new Intent(c, SplashScreenActivity.class);
+                c.startActivity(intent);
+                c.finish();
 
                 return;
             }
@@ -111,7 +111,6 @@ public class UserInformation {
                 editor.putBoolean("course"+course,true);
                 editor.apply();
             }
-
             editor.putString("vipCourses",courseJson);
             editor.apply();
         }catch (Exception e){

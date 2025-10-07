@@ -167,7 +167,7 @@ public class FragmentOne extends Fragment {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
 
-                Log.e("scrollRange ",verticalOffset+"");
+              //  Log.e("scrollRange ",verticalOffset+"");
 
                 if (scrollRange == -1) {
                     scrollRange = appBarLayout.getTotalScrollRange();
@@ -268,6 +268,8 @@ public class FragmentOne extends Fragment {
                         int total=Integer.parseInt(jo2.getString("total"));
                         if(course_id.equals(id)){
                             progress=(learned*100)/total;
+                            Log.e("progress","Course _id"+course_id);
+                            Log.e("progress","Progress"+progress);
                         }
                     }
                 }

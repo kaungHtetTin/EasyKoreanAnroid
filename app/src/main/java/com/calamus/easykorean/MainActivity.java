@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
-
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -89,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         switch (goSomeWhere) {
             case "splash":
                 String version = share.getString("version", "");
-                if (!version.equals("3.3.33")) confirmUpdate(); //check the version in generaldata.php
+                if (!version.equals(BuildConfig.VERSION_NAME)) confirmUpdate(); //check the version in generaldata.php
                 break;
             case "login":
                 Toast.makeText(this, "Welcome!", Toast.LENGTH_SHORT).show();

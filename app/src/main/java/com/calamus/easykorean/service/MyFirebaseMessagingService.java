@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.calamus.easykorean.MainActivity;
 import com.calamus.easykorean.app.Config;
@@ -14,40 +16,59 @@ import com.google.firebase.messaging.RemoteMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Map;
+
 /**
  * Created by Ravi Tamada on 08/08/16.
  * www.androidhive.info
  */
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
-    private static final String TAG = MyFirebaseMessagingService.class.getSimpleName();
+    private static final String TAG = "FireBaseCM";
 
     private NotificationUtils notificationUtils;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        Log.e(TAG, "From: " + remoteMessage.getFrom());
+        Log.d(TAG, "=== FCM MESSAGE RECEIVED ===");
+        Log.d(TAG, "Message ID: " + remoteMessage.getMessageId());
+        Log.d(TAG, "From: " + remoteMessage.getFrom());
+        Log.d(TAG, "Message Type: " + remoteMessage.getMessageType());
+        Log.d(TAG, "Collapse Key: " + remoteMessage.getCollapseKey());
+        Log.d(TAG, "TTL: " + remoteMessage.getTtl());
+        Log.d(TAG, "Sent Time: " + remoteMessage.getSentTime());
 
-        if (remoteMessage == null)
-            return;
-
-        // Check if message contains a notification payload.
+        // Check notification payload
         if (remoteMessage.getNotification() != null) {
-            Log.e(TAG, "Notification Body: " + remoteMessage.getNotification().getBody());
-            handleNotification(remoteMessage.getNotification().getBody());
+            RemoteMessage.Notification notification = remoteMessage.getNotification();
+            Log.d(TAG, "Notification Title: " + notification.getTitle());
+            Log.d(TAG, "Notification Body: " + notification.getBody());
+            Log.d(TAG, "Notification Channel: " + notification.getChannelId());
+            Log.d(TAG, "Notification Icon: " + notification.getIcon());
+            Log.d(TAG, "Notification Color: " + notification.getColor());
+            handleNotification(notification.getBody());
+        } else {
+            Log.d(TAG, "No notification payload");
         }
 
-        // Check if message contains a data payload.
-        if (remoteMessage.getData().size() > 0) {
-            Log.e(TAG, "Data Payload: " + remoteMessage.getData().toString());
-
+        // Check data payload
+        if (!remoteMessage.getData().isEmpty()) {
+            Map<String, String> data = remoteMessage.getData();
+            Log.d(TAG, "Data payload size: " + data.size());
+            for (Map.Entry<String, String> entry : data.entrySet()) {
+                Log.d(TAG, "Data - " + entry.getKey() + ": " + entry.getValue());
+            }
             try {
-                JSONObject json = new JSONObject(remoteMessage.getData().toString());
+                JSONObject json = new JSONObject(remoteMessage.getData());
                 handleDataMessage(json);
             } catch (Exception e) {
-                Log.e(TAG, "Exception: " + e.getMessage());
+                Log.e(TAG, "Exception processing data: " + e.getMessage(), e);
             }
+        } else {
+            Log.d(TAG, "No data payload");
         }
+
+        Log.d(TAG, "=== FCM MESSAGE PROCESSING COMPLETE ===");
     }
 
     private void handleNotification(String message) {
@@ -69,15 +90,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.e(TAG, "push json: " + json.toString());
 
         try {
-            JSONObject data = json.getJSONObject("data");
 
-            String title = data.getString("title");
-            String message = data.getString("message");
-            boolean isBackground = data.getBoolean("is_background");
-            String imageUrl = data.getString("image");
-            String timestamp = data.getString("timestamp");
-            JSONObject payload = data.getJSONObject("payload");
-            String payloadStr=data.getString("payload");
+            String title = json.getString("title");
+            String message = json.getString("message");
+            boolean isBackground = json.getBoolean("is_background");
+            String imageUrl = json.getString("image");
+            String timestamp = json.getString("timestamp");
+            String payloadStr=json.getString("payload");
+            JSONObject payload = new JSONObject(payloadStr);
             String go=payload.getString("go");
 
             SharedPreferences sharedPreferences=getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
@@ -131,5 +151,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationUtils = new NotificationUtils(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         notificationUtils.showNotificationMessage(title, message, timeStamp, intent, imageUrl);
+    }
+
+    @Override
+    public void onNewToken(@NonNull String token) {
+        super.onNewToken(token);
     }
 }

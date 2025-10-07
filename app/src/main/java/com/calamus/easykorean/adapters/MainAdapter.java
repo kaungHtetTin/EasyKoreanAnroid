@@ -1,5 +1,7 @@
 package com.calamus.easykorean.adapters;
 
+import static android.view.View.GONE;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -7,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,7 +48,7 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final ArrayList<Object> data;
     private final LayoutInflater mInflater;
     SharedPreferences sharedPreferences;
-    String currentUserId;
+    String currentUserId,auth_token;
     Executor postExecutor;
     public MainAdapter(Activity c, ArrayList<Object> data) {
         this.data = data;
@@ -53,6 +56,7 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.mInflater = LayoutInflater.from(c);
         sharedPreferences=c.getSharedPreferences("GeneralData", Context.MODE_PRIVATE);
         currentUserId=sharedPreferences.getString("phone",null);
+        auth_token=sharedPreferences.getString("auth_token","");
         postExecutor= ContextCompat.getMainExecutor(c);
 
     }
@@ -102,8 +106,7 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 courseHolder.tv_start_course.setTextColor(Color.parseColor(courseModel.getColorCode()));
 
                 courseHolder.mLayout.setBackgroundColor(Color.parseColor(courseModel.getColorCode()));
-
-
+                courseHolder.tv_get_certificate.setTextColor(Color.parseColor(courseModel.getColorCode()));
                 if(courseModel.getLesson_count()!=0){
                     courseHolder.tv_start_course.setText("Enter");
                     courseHolder.tv_progress.setText("Completed "+courseModel.getLesson_count()+"%");
@@ -115,10 +118,12 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 courseHolder.pb_enroll.setProgress(courseModel.getLesson_count());
                 courseHolder.pb_enroll.setProgressTintList(ColorStateList.valueOf(Color.parseColor(courseModel.getColorCode())));
 
-                if(courseModel.getLesson_count()==100){
-
+                if(courseModel.getLesson_count()>=100){
+                    courseHolder.layout_certificate.setVisibility(View.VISIBLE);
+                    courseHolder.iv_certificate.setVisibility(View.VISIBLE);
                 }else {
-
+                    courseHolder.layout_certificate.setVisibility(GONE);
+                    courseHolder.iv_certificate.setVisibility(GONE);
                 }
 
                 AppHandler.setPhotoFromRealUrl(courseHolder.iv_cover,courseModel.getCover_url());
@@ -145,10 +150,11 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public class Holder extends RecyclerView.ViewHolder {
 
-        ImageView iv_cover,iv_rating;
-        TextView tv_course_title,tv_description,tv_progress,tv_day,tv_start_course,tv_rating;
+        ImageView iv_cover,iv_rating,iv_certificate;
+        TextView tv_course_title,tv_description,tv_progress,tv_day,tv_start_course,tv_rating,
+                tv_get_certificate;
         ProgressBar pb_enroll;
-        LinearLayout layout_start_course;
+        LinearLayout layout_start_course,layout_certificate;
         ConstraintLayout mLayout;
 
         public Holder(View view) {
@@ -163,6 +169,9 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             pb_enroll=view.findViewById(R.id.progressBar);
             iv_cover=view.findViewById(R.id.iv_course_cover);
             layout_start_course=view.findViewById(R.id.layout_start_course);
+            layout_certificate = view.findViewById(R.id.layout_certificate);
+            tv_get_certificate = view.findViewById(R.id.tv_get_certificate);
+            iv_certificate = view.findViewById(R.id.iv_certificate);
             mLayout=view.findViewById(R.id.layout_course_item);
 
             tv_description.setEllipsize(TextUtils.TruncateAt.MARQUEE);
@@ -208,9 +217,32 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     c.startActivity(intent);
                 }
             });
+
+            layout_certificate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    CourseModel model=(CourseModel)data.get(getAbsoluteAdapterPosition());
+                    getCertificate(model.getCourse_id());
+                }
+            });
+
+            iv_certificate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    CourseModel model=(CourseModel)data.get(getAbsoluteAdapterPosition());
+                    getCertificate(model.getCourse_id());
+                }
+            });
         }
     }
 
+    private void getCertificate(String course_id){
+        String url = "https://www.calamuseducation.com/calamus/generate_certificate.php?course_id="
+                +course_id+"&auth_token="+auth_token+"&user_id="+currentUserId+"&major="+Routing.MAJOR;
+        Log.e("Certificate Url", url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        c.startActivity(intent);
+    }
 
 
     public class VipPurchaseHolder extends RecyclerView.ViewHolder{

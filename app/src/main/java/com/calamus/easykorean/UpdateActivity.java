@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.calamus.easykorean.adapters.AppAdapter;
+import com.calamus.easykorean.app.Config;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.models.AppModel;
@@ -87,6 +88,8 @@ public class UpdateActivity extends AppCompatActivity {
         pb_loading=findViewById(R.id.pb_loading);
         RecyclerView recycler = findViewById(R.id.recyclerProduct);
 
+        TextView tv_current_version =findViewById(R.id.tv_current_version);
+        tv_current_version.setText("Current version is "+ BuildConfig.VERSION_NAME);
 
         if(!isOnline())tv.setText(checkOnline);
         bt2.setOnClickListener(v -> {
