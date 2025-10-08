@@ -41,6 +41,11 @@ public class WebAppInterface {
         callBack.onVideoPortrait(mode);
     }
 
+    @JavascriptInterface
+    public void onTimeUpdate(String second){
+        callBack.onTimeUpdate(second);
+    }
+
 
     @JavascriptInterface
     public void showInAppAd(String msg){
@@ -53,6 +58,8 @@ public class WebAppInterface {
     public interface CallBack{
         void onEvent();
         void onVideoPortrait(String mode);
+
+        void onTimeUpdate(String second);
     }
 }
 

@@ -163,6 +163,36 @@
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_note" />
+
+        <TextView
+            android:id="@+id/tv_note"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:textColor="@color/textPrimary"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="12sp"
+            android:background="@drawable/bg_video_note"
+            android:padding="7dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_view_all_notes" />
+
+        <TextView
+            android:id="@+id/tv_view_all_notes"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:fontFamily="@font/poppins_medium"
+            android:padding="7dp"
+            android:text="View Notes"
+            android:visibility="gone"
+            android:textColor="@color/textSecondary"
+            android:drawableStart="@drawable/ic_view_node"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_info_header" />
 
         <TextView
@@ -171,6 +201,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
             android:text="Full Screen"
+            android:fontFamily="@font/poppins_medium"
             android:textColor="@color/textSecondary"
             app:layout_constraintBottom_toBottomOf="@+id/iv_fullscreen"
             app:layout_constraintStart_toEndOf="@+id/iv_fullscreen"

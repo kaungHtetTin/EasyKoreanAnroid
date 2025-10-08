@@ -95,6 +95,7 @@ public class UserInformation {
             editor.putString("Username", userName);
             editor.putString("userEmail",email);
             editor.putString("version",version);
+            editor.putBoolean("force_update",jsonObject.getBoolean("force_update"));
             editor.putInt("GameScore",Integer.parseInt(gameScore));
             editor.putBoolean("isVIP", user.getString("isVip").equals("1"));
             editor.putBoolean("isGoldPlan",user.getString("gold_plan").equals("1"));

@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
@@ -53,6 +54,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.calamus.easykorean.app.FileManager;
 import com.calamus.easykorean.app.MyImagePicker;
 import com.calamus.easykorean.app.WebAppInterface;
+import com.calamus.easykorean.dialogs.LectureNoteMenu;
 import com.calamus.easykorean.models.FileModel;
 import com.calamus.easykorean.models.SavedVideoModel;
 import com.google.android.gms.ads.AdError;
@@ -95,12 +97,12 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
 
     WebView wv;
     TextView tv_title, tv_mini_title, tv_react, tv_comment, tv_share, tv_view, tv_related_lesson,tv_fullscreen,
-            tv_description;
+            tv_description,tv_video_note,tv_view_all_notes;
     RecyclerView recyclerViewLesson;
     ConstraintLayout vimeoLayout;
     ProgressBar pb_vimeo, pb_video_frame;
 
-    String videoId1, videoTitle, relatedLesson, post_description;
+    String videoTitle, relatedLesson, post_description;
     String currentUserId, currentUserName;
     SharedPreferences sharedPreferences;
     ProgressBar pb;
@@ -115,7 +117,7 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
     String timeCheck = "";
 
     int reactCount;
-    String videoUrl1 = "", folderName;
+    String folderName,lectureNotes;
     Executor postExecutor;
     NotificationController notificationController;
     PickiT pickiT;
@@ -147,6 +149,7 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
     MyImagePicker myImagePicker;
     long playbackPosition;
     boolean playWhenReady;
+
     @SuppressLint("StaticFieldLeak")
     @Override
     protected void onCreate(Bundle bundle) {
@@ -277,6 +280,8 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
         player_container=findViewById(R.id.player_container);
         iv_fullscreen = findViewById(R.id.iv_fullscreen);
         tv_fullscreen = findViewById(R.id.tv_fullscreen);
+        tv_video_note = findViewById(R.id.tv_note);
+        tv_view_all_notes = findViewById(R.id.tv_view_all_notes);
 
         vimeoLayout.setVisibility(View.GONE);
         tv_description.setText(post_description);
@@ -310,6 +315,13 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
             @Override
             public void onVideoPortrait(String mode) {
                 setLayoutParameterForVideoPlayer(mode.equals("p"));
+               // Log.e("WebAppInterFace ","Video is in portrait mode");
+            }
+
+            @Override
+            public void onTimeUpdate(String second) {
+                Log.e("WebAppInterFace ",second);
+                displayLectureNote(second);
             }
         }), "Android");
 
@@ -389,6 +401,78 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
                 makeFullScreen();
             }
         });
+
+        tv_view_all_notes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!lectureNotes.equals("")){
+                    new LectureNoteMenu(VimeoPlayerActivity.this,lectureNotes).show();
+                }
+            }
+        });
+    }
+
+    private void displayLectureNote(String currentSecond){
+        final int[] VIDEO_PLAYING_SECOND = new int[1];
+        postExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONArray ja = new JSONArray(lectureNotes);
+                    for(int i=0;i<ja.length();i++){
+                        JSONObject jo = ja.getJSONObject(i);
+                        String time = jo.getString("time");
+                        String note = jo.getString("note");
+
+                        if(currentSecond.equals(time)){
+                            tv_video_note.setVisibility(View.VISIBLE);
+                            tv_video_note.setText(Html.fromHtml(formatTimeAndLectureNote(time,note)));
+                           // Log.e("WebAppInterFace ","Event trigger");
+                            VIDEO_PLAYING_SECOND[0] = Integer.parseInt(currentSecond);
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        int localSecond = VIDEO_PLAYING_SECOND[0];
+                                        Thread.sleep(9000);
+                                        Log.e("ExoUpdate", "Local-"+localSecond+" Vs Global-"+ VIDEO_PLAYING_SECOND[0]);
+                                        if(localSecond == VIDEO_PLAYING_SECOND[0]){
+                                            postExecutor.execute(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    tv_video_note.setVisibility(View.GONE);
+                                                }
+                                            });
+                                        }
+                                    } catch (InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                            }).start();
+                        }
+                    }
+                }catch (Exception e){
+                    Log.e("WebAppInterFace ","JSON ERROR"+e.toString());
+                }
+            }
+        });
+    }
+
+    private String formatTimeAndLectureNote(String time, String note){
+        String result = "";
+
+        int total_second = Integer.parseInt(time);
+        int hour = total_second/(60*60);
+        int temp = total_second%(60*60);
+        int min = temp/60;
+        int second = temp%60;
+
+        String h = hour<10? "0"+hour: hour+"";
+        String m = min<10? "0"+min: ""+min;
+        String s = second < 10? "0"+second: second+"";
+
+        result = String.format("<b>%s:%s:%s</b><br>%s ", h,m,s,note);
+        return result;
     }
 
     private void loadAd(){
@@ -537,6 +621,8 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
                 Toast.makeText(VimeoPlayerActivity.this, "Video playback error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
+
     }
 
     @Override
@@ -724,6 +810,8 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
             playerView.setVisibility(View.GONE);
             wv.loadUrl(Routing.PLAY_VIDEO + "?post_id=" + a);
         }
+        tv_video_note.setVisibility(View.GONE);
+        tv_view_all_notes.setVisibility(View.GONE);
         getVideoData();
         defineVideoViewHeight();
     }
@@ -764,6 +852,8 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
                                 postLikes = jo.getString("postLikes");
 
                                 String title_mini = jo.getString("title_mini");
+                                lectureNotes = jo.getString("notes");
+                                if(!lectureNotes.equals("")) tv_view_all_notes.setVisibility(View.VISIBLE);
                                 if (title_mini.equals("null")) tv_mini_title.setText("");
                                 else tv_mini_title.setText(title_mini);
 
@@ -948,7 +1038,32 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
         player.setMediaItem(mediaItem);
         player.prepare();
         player.play();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true){
+                    try {
+                        postExecutor.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                long currentTime = player.getCurrentPosition();
+                                currentTime = currentTime/1000;
+                                displayLectureNote(currentTime+"");
+                                Log.e("ExoUpdate", currentTime+"");
+                            }
+                        });
+
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }).start();
     }
+
+
 
     @Override
     protected void onPause() {

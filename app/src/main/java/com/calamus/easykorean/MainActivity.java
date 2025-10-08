@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     RelativeLayout mainLayout;
     ExecutorService myExecutor;
     Executor postExecutor;
-    boolean isVip;
+    boolean isVip,fore_update;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         studyTime=share.getString("studyTime",null);
         inAppAds=share.getString("inappads",null);
         isVip=share.getBoolean("isVIP",false);
+        fore_update = share.getBoolean("force_update",false);
         myExecutor= Executors.newFixedThreadPool(1);
         postExecutor= ContextCompat.getMainExecutor(this);
         FirebaseMessaging.getInstance().subscribeToTopic(Routing.subscribeToTopic);
@@ -88,7 +89,15 @@ public class MainActivity extends AppCompatActivity {
         switch (goSomeWhere) {
             case "splash":
                 String version = share.getString("version", "");
-                if (!version.equals(BuildConfig.VERSION_NAME)) confirmUpdate(); //check the version in generaldata.php
+                if (!version.equals(BuildConfig.VERSION_NAME)) {
+                    if(fore_update){
+                        Intent intent = new Intent(getApplicationContext(),UpdateActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }else{
+                        confirmUpdate();
+                    }
+                }
                 break;
             case "login":
                 Toast.makeText(this, "Welcome!", Toast.LENGTH_SHORT).show();
