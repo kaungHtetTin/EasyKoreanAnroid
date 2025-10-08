@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.VimeoPlayerActivity;
 import com.calamus.easykorean.WebSiteActivity;
+import com.calamus.easykorean.app.FileNameSanitizer;
 import com.calamus.easykorean.app.MyDialog;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
@@ -197,7 +198,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.Holder> {
 
                             Log.e("downloadUrl ",response);
                             Intent intent=new Intent(c, DownloaderService.class);
-                            String checkTitle=title.replace("/"," ");
+                            String checkTitle= FileNameSanitizer.sanitizeFileName(title);
                             intent.putExtra("dir",c.getExternalFilesDir(Environment.DIRECTORY_MOVIES).getPath()+"/"+lessonCategory);
                             intent.putExtra("filename",checkTitle+".mp4");
                             intent.putExtra("downloadUrl",response);

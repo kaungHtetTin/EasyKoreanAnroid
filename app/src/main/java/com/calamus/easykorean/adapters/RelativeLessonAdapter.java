@@ -24,6 +24,7 @@ import com.calamus.easykorean.DetailActivity;
 import com.calamus.easykorean.R;
 import com.calamus.easykorean.WebSiteActivity;
 import com.calamus.easykorean.app.AppHandler;
+import com.calamus.easykorean.app.FileNameSanitizer;
 import com.calamus.easykorean.app.MyDialog;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.models.LessonModel;
@@ -228,9 +229,8 @@ public class RelativeLessonAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     @Override
                     public void onResponse(String response) {
                         postExecutor.execute(() -> {
-
                             Intent intent=new Intent(c, DownloaderService.class);
-                            String checkTitle=title.replace("/"," ");
+                            String checkTitle= FileNameSanitizer.sanitizeFileName(title);
                             intent.putExtra("dir",c.getExternalFilesDir(Environment.DIRECTORY_MOVIES).getPath()+"/"+lessonCategory);
                             intent.putExtra("filename",checkTitle+".mp4");
                             intent.putExtra("downloadUrl",response);

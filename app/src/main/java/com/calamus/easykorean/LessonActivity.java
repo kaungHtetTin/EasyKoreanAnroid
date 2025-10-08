@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.calamus.easykorean.app.FileManager;
+import com.calamus.easykorean.app.FileNameSanitizer;
 import com.calamus.easykorean.models.FileModel;
 import com.calamus.easykorean.models.SavedVideoModel;
 import com.google.android.material.snackbar.Snackbar;
@@ -296,10 +297,14 @@ public class LessonActivity extends AppCompatActivity
                 if(isVideo){
                     String checkTitle=title.replace("/"," ");
                     checkTitle=checkTitle+".mp4";
+
+                    String titleNewFormat = FileNameSanitizer.sanitizeFileName(title);
+                    titleNewFormat = titleNewFormat+".mp4";
+
                     if(downloadedVideoFiles.size()>0){
                         for(int j=0;j<downloadedVideoFiles.size();j++){
                             FileModel file=downloadedVideoFiles.get(j);
-                            if(file.getFile().getName().equals(checkTitle)){
+                            if( file.getFile().getName().equals(checkTitle) || file.getFile().getName().equals(titleNewFormat) ){
                                 model.setDownloaded(true);
                                 model.setVideoModel((SavedVideoModel) file);
                                 Log.e("Downloaded ", checkTitle + " is downloaded");
