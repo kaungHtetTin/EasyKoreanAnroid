@@ -166,22 +166,24 @@ public class SongOnlineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             tv_reactCount=v.findViewById(R.id.tv_react);
             tv_downloadCount=v.findViewById(R.id.tv_downloadCount);
 
-
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SongOnlineModel model=(SongOnlineModel) data.get(getAbsoluteAdapterPosition());
-                    Intent intent=new Intent(c, SongDetailActivity.class);
-                    intent.putExtra("id",model.getId());
-                    intent.putExtra("title",model.getTitle());
-                    intent.putExtra("artist",model.getArtist());
-                    intent.putExtra("likeCount",model.getLikeCount());
-                    intent.putExtra("commentCount",model.getCommentCount());
-                    intent.putExtra("downloadCount",model.getDownloadCount());
-                    intent.putExtra("url",model.getUrl());
-                    intent.putExtra("isLike",model.getIsLike().equals("1"));
-                    intent.putExtra("userId",currentUserId);
-                    c.startActivity(intent);
+                    Object  o= data.get(getAbsoluteAdapterPosition());
+                    if(o instanceof  SongOnlineModel){
+                        SongOnlineModel model = (SongOnlineModel) o;
+                        Intent intent=new Intent(c, SongDetailActivity.class);
+                        intent.putExtra("id",model.getId());
+                        intent.putExtra("title",model.getTitle());
+                        intent.putExtra("artist",model.getArtist());
+                        intent.putExtra("likeCount",model.getLikeCount());
+                        intent.putExtra("commentCount",model.getCommentCount());
+                        intent.putExtra("downloadCount",model.getDownloadCount());
+                        intent.putExtra("url",model.getUrl());
+                        intent.putExtra("isLike",model.getIsLike().equals("1"));
+                        intent.putExtra("userId",currentUserId);
+                        c.startActivity(intent);
+                    }
                 }
             });
         }

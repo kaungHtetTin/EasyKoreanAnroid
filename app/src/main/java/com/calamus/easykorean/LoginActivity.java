@@ -23,6 +23,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.app.UserInformation;
@@ -240,7 +242,8 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }).url(Routing.LOGIN)
                         .field("phone",phone)
-                        .field("password",password);
+                        .field("password",password)
+                        .field("device_type", AppHandler.isTablet(LoginActivity.this)? "tablet":"phone");
 
                 myHttp.runTask();
             }).start();

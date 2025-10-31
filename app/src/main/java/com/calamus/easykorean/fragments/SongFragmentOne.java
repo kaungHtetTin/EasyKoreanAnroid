@@ -269,6 +269,8 @@ public class SongFragmentOne extends Fragment {
                 songOnlineLists.add(new SongOnlineModel(songId,title,artist,reactCount,commentCount,downloadCount,url,isLiked,drama));
             }
 
+            adapter.notifyDataSetChanged();
+
         }catch (Exception e){
             loading=false;
             swipe.setRefreshing(false);

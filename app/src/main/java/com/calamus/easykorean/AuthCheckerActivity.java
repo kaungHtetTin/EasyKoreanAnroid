@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 
+import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.app.MyHttp;
 import com.calamus.easykorean.app.Routing;
 
@@ -56,6 +57,7 @@ public class AuthCheckerActivity extends AppCompatActivity {
     }
 
     private void fetchToken(){
+        String device_type = AppHandler.isTablet(AuthCheckerActivity.this)?"tablet":"phone";
         new Thread(() -> {
             MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
                 @Override
@@ -92,7 +94,7 @@ public class AuthCheckerActivity extends AppCompatActivity {
                     setResult(Activity.RESULT_OK,intent);
                     finish();
                 }
-            }).url(Routing.REQUEST_TOKEN+"?request_app="+request_app+"&phone="+phone+"&host_token="+auth_token);
+            }).url(Routing.REQUEST_TOKEN+"?request_app="+request_app+"&phone="+phone+"&host_token="+auth_token+"&device_type="+device_type);
             myHttp.runTask();
         }).start();
     }

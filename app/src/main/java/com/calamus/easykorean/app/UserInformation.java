@@ -52,7 +52,8 @@ public class UserInformation {
             }).url(Routing.GET_LOGIN_USERDATA)
                     .field("phone",phone)
                     .field("token",myToken)
-                    .field("auth_token",auth_token);
+                    .field("auth_token",auth_token)
+                    .field("device_type", AppHandler.isTablet(c)? "tablet":"phone");
 
             myHttp.runTask();
         }).start();

@@ -1,5 +1,7 @@
 package com.calamus.easykorean.app;
 
+import android.content.Context;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
 import com.calamus.easykorean.R;
@@ -243,6 +245,12 @@ public class AppHandler {
                     .field("id",id);
             myHttp.runTask();
         }).start();
+    }
+
+    public static boolean isTablet(Context context) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        float widthDp = metrics.widthPixels / metrics.density;
+        return widthDp >= 600; // 600dp is the threshold for tablets
     }
 
 }

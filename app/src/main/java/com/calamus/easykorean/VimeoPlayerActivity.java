@@ -150,6 +150,7 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
     MyImagePicker myImagePicker;
     long playbackPosition;
     boolean playWhenReady;
+    boolean showMessage = true;
 
     @SuppressLint("StaticFieldLeak")
     @Override
@@ -411,6 +412,7 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
                 }
             }
         });
+
     }
 
     private void displayLectureNote(String currentSecond){
@@ -771,7 +773,6 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
                                 if (file.getFile().getName().equals(checkTitle) || file.getFile().getName().equals(titleNewFormat) ) {
                                     model.setDownloaded(true);
                                     model.setVideoModel((SavedVideoModel) file);
-                                    Log.e("Downloaded ", checkTitle + " is downloaded");
 
                                 }
                             }
@@ -940,6 +941,14 @@ public class VimeoPlayerActivity extends AppCompatActivity implements AudioManag
             pb_vimeo.setVisibility(View.GONE);
             pb_video_frame.setVisibility(View.GONE);
             vimeoLayout.setVisibility(View.VISIBLE);
+
+            if(showMessage){
+                final Snackbar sb = Snackbar.make(main, "Rotate to view full screen", Snackbar.LENGTH_LONG);
+                sb.setAction("Ok", v -> sb.dismiss())
+                        .setActionTextColor(Color.WHITE)
+                        .show();
+                showMessage = false;
+            }
         }
     }
 

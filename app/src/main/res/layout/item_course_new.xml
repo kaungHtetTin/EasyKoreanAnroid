@@ -157,7 +157,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
                 android:fontFamily="@font/poppins_semibold"
-                android:text="Certificate"
+                android:text="Get Certificate"
                 android:textColor="@color/black"
                 android:textSize="11sp"
                 android:textStyle="bold" />

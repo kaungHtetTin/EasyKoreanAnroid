@@ -14,6 +14,8 @@ import android.widget.*;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+
+import com.calamus.easykorean.app.AppHandler;
 import com.calamus.easykorean.app.Routing;
 import com.calamus.easykorean.app.UserInformation;
 import com.calamus.easykorean.app.MyHttp;
@@ -259,7 +261,8 @@ public class SignUpActivity extends AppCompatActivity {
             }).url(Routing.SIGN_UP)
                     .field("name",name)
                     .field("phone",phone)
-                    .field("password",password);
+                    .field("password",password)
+                    .field("device_type", AppHandler.isTablet(SignUpActivity.this)? "tablet":"phone");
 
 
             myHttp.runTask();
