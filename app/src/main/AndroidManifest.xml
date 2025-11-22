@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32"/>
+        android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
@@ -40,6 +41,12 @@
         android:roundIcon="@mipmap/kommmainicon"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".FlashCardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DeckActivity"
+            android:exported="false" />
         <activity
             android:name=".AccountDeleteActivity"
             android:exported="false" />
@@ -89,7 +96,6 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".DayListActivity" />
         <activity android:name=".SearchingActivity" />
-
         <activity
             android:name=".TeacherActivity"
             android:theme="@style/AppTheme" />
@@ -161,9 +167,9 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
-        <service android:name=".service.DownloaderService"
-            android:foregroundServiceType="dataSync"/>
+        <service
+            android:name=".service.DownloaderService"
+            android:foregroundServiceType="dataSync" />
         <service
             android:name=".service.MusicService"
             android:enabled="true"

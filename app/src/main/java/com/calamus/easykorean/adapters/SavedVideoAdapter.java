@@ -141,6 +141,7 @@ public class SavedVideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         Intent intent=new Intent(c, VideoPlayerActivity.class);
                         intent.putExtra("videoData",model.getUri());
                         intent.putExtra("title",model.getName());
+                        intent.putExtra("play_list_index",getAbsoluteAdapterPosition());
                         c.startActivity(intent);
                     }else{
                         callBack.onSelected(getAbsoluteAdapterPosition());

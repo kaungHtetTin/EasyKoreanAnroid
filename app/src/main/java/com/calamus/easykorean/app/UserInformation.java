@@ -91,6 +91,7 @@ public class UserInformation {
             String version=jsonObject.getString("version");
             String music=jsonObject.getString("music");
             String inappads=jsonObject.getString("inappads");
+            String _id = user.getString("_id");
             editor.putString("inappads",inappads);
             editor.putString("music",music);
             editor.putString("Username", userName);
@@ -100,6 +101,7 @@ public class UserInformation {
             editor.putInt("GameScore",Integer.parseInt(gameScore));
             editor.putBoolean("isVIP", user.getString("isVip").equals("1"));
             editor.putBoolean("isGoldPlan",user.getString("gold_plan").equals("1"));
+            editor.putString("_id",_id);
             if(!imageUrl.equals("")){
                 editor.putString("imageUrl",imageUrl);
             }

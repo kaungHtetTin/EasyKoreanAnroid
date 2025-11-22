@@ -16,6 +16,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.calamus.easykorean.DeckActivity;
 import com.calamus.easykorean.GammingActivity;
 import com.calamus.easykorean.LessonActivity;
 import com.calamus.easykorean.R;
@@ -78,7 +80,12 @@ public class MainListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }else if(p2==3){
             View view = mInflater.inflate(R.layout.item_game, parent, false);
             return new GameHolder(view);
-        }else {
+        }else if(p2 == 4){
+            View view = mInflater.inflate(R.layout.item_flashcard, parent, false);
+            return new FlashCard(view);
+        }
+
+        {
             View view = mInflater.inflate(R.layout.item_main, parent, false);
             return new Holder(view);
         }
@@ -95,8 +102,10 @@ public class MainListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return 2;
         }else if(data.get(position) instanceof FragmentTwo.Game){
             return 3;
-        }else {
+        }else if(data.get(position) instanceof FragmentTwo.FlashCard)
             return 4;
+        {
+            return 5;
         }
     }
 
@@ -117,7 +126,9 @@ public class MainListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         }else if(data.get(i) instanceof FragmentTwo.Game){
 
-        }else{
+        }else if (data.get(i) instanceof FragmentTwo.FlashCard){
+
+        }else {
             try {
 
                 ExtraCourseModel model=(ExtraCourseModel) data.get(i);
@@ -296,6 +307,20 @@ public class MainListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public TitleHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             tv=itemView.findViewById(R.id.tv_item_title);
+        }
+    }
+
+    public class FlashCard extends RecyclerView.ViewHolder{
+
+        public FlashCard(@NonNull View itemView) {
+            super(itemView);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    c.startActivity(new Intent(c, DeckActivity.class));
+                }
+            });
         }
     }
 

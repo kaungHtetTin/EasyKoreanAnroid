@@ -349,30 +349,4 @@ public class MainActivity extends AppCompatActivity {
         NotificationUtils.clearNotifications(getApplicationContext());
     }
 
-//    private void getRecommendation(String Id){
-//        myExecutor.execute(()->{
-//            MyHttp myHttp=new MyHttp(MyHttp.RequesMethod.GET, new MyHttp.Response() {
-//                @Override
-//                public void onResponse(String response) {
-//                    Log.e("recommend : ",response);
-//                    postExecutor.execute(()->{
-//                        try{
-//                            JSONObject jo=new JSONObject(response);
-//                            new RecommendationDialog(MainActivity.this,jo.getString("msg")).showDialog();
-//                        }catch (Exception e){
-//                            if(studyTime==null){
-//                                 StudyTimeSetter studyTimeSetter=new StudyTimeSetter(MainActivity.this);
-//                                 studyTimeSetter.showTimePicker();
-//                            }
-//                        }
-//
-//                    });
-//                }
-//                @Override
-//                public void onError(String msg) {}
-//            }).url("https://www.calamuseducation.com/calamus-guide/korea/calculate.php?userid="+Id);
-//            myHttp.runTask();
-//        });
-//    }
-
 }

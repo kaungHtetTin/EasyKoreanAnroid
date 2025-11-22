@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/appBar"
+    android:fitsSystemWindows="true"
+    tools:context=".FlashCardActivity">
+
+    <!-- Action Bar -->
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/my_action_bar" />
+
+    <!-- Progress Header -->
+    <LinearLayout
+        android:id="@+id/progress_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/app_bar"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@color/appBar"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Card 0 of 0"
+                android:textColor="@color/colorBlack1"
+                android:textSize="16sp"
+                android:fontFamily="@font/poppins_semibold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="end">
+
+            <TextView
+                android:id="@+id/tv_learning_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Learning Day: -"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp"
+                android:fontFamily="@font/poppins_semibold" />
+
+            <TextView
+                android:id="@+id/tv_word_counts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New: 0 | Recall: 0"
+                android:textColor="@color/colorBlack1"
+                android:textSize="12sp"
+                android:fontFamily="@font/poppins_regular"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Main Content Container -->
+    <ScrollView
+        android:id="@+id/scroll_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/progress_header"
+        android:fillViewport="true"
+        android:padding="5dp"
+        android:background="@color/notiBlue">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="400dp"
+            android:background="@color/notiBlue">
+            <!-- Flashcard Container -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_flashcard_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:minHeight="350dp"
+                android:visibility="gone"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="8dp"
+                android:layout_margin="10dp"
+                app:cardBackgroundColor="@color/appBar">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="350dp"
+                    android:padding="5dp">
+                    <!-- Front Side -->
+                    <LinearLayout
+                        android:id="@+id/flashcard_front"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:layout_marginBottom="30dp">
+
+                            <TextView
+                                android:id="@+id/tv_card_word"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Word"
+                                android:textColor="@color/colorBlack1"
+                                android:textSize="32sp"
+                                android:fontFamily="@font/poppins_bold"
+                                android:gravity="center"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv_card_ipa"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=""
+                                android:textColor="@color/textSecondary"
+                                android:textSize="16sp"
+                                android:fontFamily="@font/poppins_regular"
+                                android:layout_marginTop="8dp"
+                                android:fontStyle="italic" />
+
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/btn_show_answer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Show Answer"
+                            android:textColor="@color/white"
+                            android:padding="5dp"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:background="@drawable/bg_flashcard_button" />
+                    </LinearLayout>
+
+                    <!-- Back Side -->
+                    <LinearLayout
+                        android:id="@+id/flashcard_back"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="20dp"
+                            android:layout_marginTop="50dp">
+                            <TextView
+                                android:id="@+id/tv_back_card_word"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Word"
+                                android:textColor="@color/colorBlack1"
+                                android:textSize="25sp"
+                                android:fontFamily="@font/poppins_bold"
+                                android:gravity="center"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv_back_card_ipa"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=""
+                                android:textColor="@color/textSecondary"
+                                android:textSize="16sp"
+                                android:fontFamily="@font/poppins_regular"
+                                android:layout_marginTop="8dp"
+                                android:fontStyle="italic" />
+                        </LinearLayout>
+
+                        <!-- Answer Section -->
+                        <ScrollView
+                            android:layout_width="match_parent"
+                            android:minHeight="200dp"
+                            android:layout_height="wrap_content"
+                            android:fillViewport="false">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_card_translation"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Translation"
+                                    android:textColor="@color/colorBlack1"
+                                    android:textSize="18sp"
+                                    android:fontFamily="@font/poppins_semibold"
+                                    android:padding="5dp"
+                                    android:background="@color/fragmentOneLayout"
+                                    android:layout_marginBottom="15dp"
+                                    android:lineSpacingExtra="4dp" />
+
+                                <TextView
+                                    android:id="@+id/tv_card_examples"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text=""
+                                    android:textColor="@color/textSecondary"
+                                    android:textSize="14sp"
+                                    android:fontFamily="@font/poppins_regular"
+                                    android:lineSpacingExtra="6dp" />
+                            </LinearLayout>
+                        </ScrollView>
+
+                        <!-- Rating Section -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginTop="15dp"
+                            android:layout_margin="15dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="How well did you know this?"
+                                android:textColor="@color/textSecondary"
+                                android:textSize="14sp"
+                                android:fontFamily="@font/poppins_regular"
+                                android:layout_gravity="center"
+                                android:layout_marginBottom="12dp" />
+
+                            <LinearLayout
+                                android:id="@+id/rating_buttons_container"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center"
+                                android:layout_marginBottom="15dp">
+
+                                <Button
+                                    android:id="@+id/btn_rating_1"
+                                    android:layout_width="45dp"
+                                    android:layout_height="45dp"
+                                    android:text="1"
+                                    android:textColor="@color/colorBlack1"
+                                    android:textSize="20sp"
+                                    android:fontFamily="@font/poppins_bold"
+                                    android:layout_marginEnd="8dp"
+                                    android:background="@drawable/bg_flashcard_rating_button" />
+
+                                <Button
+                                    android:id="@+id/btn_rating_2"
+                                    android:layout_width="45dp"
+                                    android:layout_height="45dp"
+                                    android:text="2"
+                                    android:textColor="@color/colorBlack1"
+                                    android:textSize="20sp"
+                                    android:fontFamily="@font/poppins_bold"
+                                    android:layout_marginEnd="8dp"
+                                    android:background="@drawable/bg_flashcard_rating_button" />
+
+                                <Button
+                                    android:id="@+id/btn_rating_3"
+                                    android:layout_width="45dp"
+                                    android:layout_height="45dp"
+                                    android:text="3"
+                                    android:textColor="@color/colorBlack1"
+                                    android:textSize="20sp"
+                                    android:fontFamily="@font/poppins_bold"
+                                    android:layout_marginEnd="8dp"
+                                    android:background="@drawable/bg_flashcard_rating_button" />
+
+                                <Button
+                                    android:id="@+id/btn_rating_4"
+                                    android:layout_width="45dp"
+                                    android:layout_height="45dp"
+                                    android:text="4"
+                                    android:textColor="@color/colorBlack1"
+                                    android:textSize="20sp"
+                                    android:fontFamily="@font/poppins_bold"
+                                    android:layout_marginEnd="8dp"
+                                    android:background="@drawable/bg_flashcard_rating_button" />
+
+                                <Button
+                                    android:id="@+id/btn_rating_5"
+                                    android:layout_width="45dp"
+                                    android:layout_height="45dp"
+                                    android:text="5"
+                                    android:textColor="@color/colorBlack1"
+                                    android:textSize="20sp"
+                                    android:fontFamily="@font/poppins_bold"
+                                    android:background="@drawable/bg_flashcard_rating_button" />
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/btn_skip"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Skip Word"
+                                android:textColor="@color/white"
+                                android:padding="5dp"
+                                android:fontFamily="@font/poppins_semibold"
+                                android:layout_gravity="center"
+                                android:background="@drawable/bg_flashcard_button_skip" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Loading Overlay -->
+                    <RelativeLayout
+                        android:id="@+id/loading_overlay"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#71FFFFFF"
+                        android:visibility="gone"
+                        android:gravity="center">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <ProgressBar
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:indeterminateTint="@color/colorAccent" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Loading..."
+                                android:textColor="@color/colorAccent"
+                                android:textSize="16sp"
+                                android:fontFamily="@font/poppins_semibold"
+                                android:layout_marginTop="15dp" />
+                        </LinearLayout>
+                    </RelativeLayout>
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Empty State -->
+            <LinearLayout
+                android:id="@+id/empty_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="40dp"
+                android:layout_centerInParent="true"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No cards available"
+                    android:textColor="@color/colorBlack1"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:layout_marginBottom="10dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Please select a deck to start learning."
+                    android:textColor="@color/textSecondary"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <!-- Completed State -->
+            <LinearLayout
+                android:id="@+id/completed_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="40dp"
+                android:layout_centerInParent="true"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🎉 Great job!"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="28sp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:layout_marginBottom="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="You've completed all cards in this session."
+                    android:textColor="@color/textSecondary"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:layout_marginBottom="30dp"
+                    android:gravity="center" />
+
+                <Button
+                    android:id="@+id/btn_start_new_session"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Start New Session"
+                    android:textColor="@color/white"
+                    android:paddingStart="40dp"
+                    android:paddingEnd="40dp"
+                    android:paddingTop="14dp"
+                    android:paddingBottom="14dp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:textSize="16sp"
+                    android:background="@drawable/bg_flashcard_button" />
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+    <!-- Skip Confirmation Dialog (will be shown programmatically) -->
+    <RelativeLayout
+        android:id="@+id/skip_dialog_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="20dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="20dp"
+            app:cardBackgroundColor="@color/appBar">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="25dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⚠️"
+                    android:textSize="48sp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="10dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Confirm Skip Word"
+                    android:textColor="@color/colorBlack1"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="15dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="The skipping word will be permanently removed from the learning process. Make sure you know this word well. Do you really want to skip?"
+                    android:textColor="@color/textSecondary"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_marginBottom="25dp"
+                    android:lineSpacingExtra="4dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="end">
+
+                    <Button
+                        android:id="@+id/btn_skip_cancel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cancel"
+                        android:textColor="@color/colorBlack1"
+                        android:paddingStart="28dp"
+                        android:paddingEnd="28dp"
+                        android:paddingTop="12dp"
+                        android:paddingBottom="12dp"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:textSize="14sp"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/bg_flashcard_dialog_button" />
+
+                    <Button
+                        android:id="@+id/btn_skip_confirm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="OK"
+                        android:textColor="@color/white"
+                        android:paddingStart="28dp"
+                        android:paddingEnd="28dp"
+                        android:paddingTop="12dp"
+                        android:paddingBottom="12dp"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:textSize="14sp"
+                        android:background="@drawable/bg_flashcard_button" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+
+
+</RelativeLayout>

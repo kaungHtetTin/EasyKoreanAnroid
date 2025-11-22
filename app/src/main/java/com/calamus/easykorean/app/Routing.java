@@ -11,6 +11,7 @@ public class Routing {
     public static final String PUSH_NOTIFICATION_TO_DEVELOPER="ekDeveloper";
     public static final String timerMessage="It's time to learn Korean! Easy Korean is ready for you.";
     public static final String subscribeToTopic="koreaUsers";
+    public static final String FLASHCARD_LANGUAGE_ID = "1";
 
     //course routes
     public static final String GET_COURSE_RATING=DOMAIN_API+"/course/reviews";
@@ -131,4 +132,9 @@ public class Routing {
     public static final String RECORD_A_CLICK=DOMAIN_API+"/click/korean";
     public static final String TERMS_OF_USE="https://www.calamuseducation.com/calamus-v2/terms-of-use";
     public static final String PRIVACY_POLICY="https://www.calamuseducation.com/calamus-v2/privacy-policy";
+
+    public static final String FC_GET_PROGRESS = "https://www.calamuseducation.com/calamus/api/vocab-learning/get-vocab-progress.php";
+    public static final String FC_GET_CARDS = "https://www.calamuseducation.com/calamus/api/vocab-learning/get-cards.php";
+    public static final String FC_RATE_WORD = "https://www.calamuseducation.com/calamus/api/vocab-learning/rate-word.php";
+    public static final String FC_SKIP_WORD = "https://www.calamuseducation.com/calamus/api/vocab-learning/skip-word.php";
 }

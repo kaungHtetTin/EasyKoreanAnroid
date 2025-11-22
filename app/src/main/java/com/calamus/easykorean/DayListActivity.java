@@ -207,6 +207,7 @@ public class DayListActivity extends AppCompatActivity {
         try {
 
             JSONArray ja=new JSONArray(response);
+            dayLists.add("You can get a certificate when all lessons has been studied.");
             dayLists.add("Lessons By Daily Plan");
             for(int i=0;i<ja.length();i++){
                 JSONArray jsonArray=ja.getJSONArray(i);

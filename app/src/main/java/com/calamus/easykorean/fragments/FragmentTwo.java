@@ -66,7 +66,7 @@ public class FragmentTwo extends Fragment {
             @Override
             public int getSpanSize(int position) {
                 Object o=categoryList.get(position);
-                if(o instanceof String || o instanceof WordOfTheDay || o instanceof LyricsSong || o instanceof Game){
+                if(o instanceof FlashCard || o instanceof String || o instanceof WordOfTheDay || o instanceof LyricsSong || o instanceof Game){
                     return 3;
                 }else {
                     return 1;
@@ -77,8 +77,12 @@ public class FragmentTwo extends Fragment {
         adapter = new MainListAdapter(getActivity(), categoryList);
         recycler.setAdapter(adapter);
         categoryList.clear();
-        categoryList.add(0,"Word Of The Day");
-        categoryList.add(1,new WordOfTheDay(wordOfTheDayJson));
+
+        categoryList.add(0,"Flashcard Learning");
+        categoryList.add(1,new FlashCard());
+
+        categoryList.add("Word Of The Day");
+        categoryList.add(new WordOfTheDay(wordOfTheDayJson));
 
         if(music!=null){
             if(music.equals("on")){
@@ -198,5 +202,6 @@ public class FragmentTwo extends Fragment {
     public class LyricsSong{}
 
     public class Game{}
+    public class FlashCard{}
 
 }
